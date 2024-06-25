@@ -47,7 +47,7 @@ if(isset($_POST['login'])){
             <h1 class="display-5 mb-5"><strong>LOGIN</strong></h1>
         </div>
         <div class="main row justify-content-center">
-            <form action="login.php" method="post" id="student-form" class="row justify-content-center mb-4" autocomplete="off">
+            <form action="index.php" method="post" id="student-form" class="row justify-content-center mb-4" autocomplete="off">
                 <div class="col-7 mb-2">
                     <label for="firstName">Email</label>
                     <input class="form-control" id="email" type="text" name="email" placeholder="Email" required>

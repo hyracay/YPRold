@@ -3,7 +3,7 @@
     include("conne.php");
 
     if (!isset($_SESSION['email'])) {
-        header("location: login.php");
+        header("location: index.php");
         exit(); // Ensure that no further code is executed after the redirection
     }
 ?>
