@@ -1,0 +1,119 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f5f9; /* Light blue-gray background */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 20%;
+    background-color: #3a8bc3; /* Medium blue sidebar background */
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.sidebar p {
+    color: #fff; /* White text color */
+    text-align: center;
+}
+
+.sidebar a {
+    font-family: Arial, sans-serif;
+    color: #333; /* Dark text color */
+    text-decoration: none;
+    margin: 10px 0;
+    width: 80%;
+    text-align: center;
+    padding: 12px 18px;
+    background-color: #e0e0e0; /* Light gray background */
+    border-radius: 5px;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar a:hover {
+    background-color: #4a9fd3; /* Light blue hover */
+    color: #fff; /* White text on hover */
+}
+
+.sidebar a[href="homepage.php"] {
+    background-color: #9e9e9e; /* Medium gray */
+}
+
+.sidebar a[href="homepage.php"]:hover {
+    background-color: #bdbdbd; /* Light gray hover */
+}
+
+.content {
+    width: 80%;
+    padding: 20px;
+    background-color: #fff; /* White content background */
+    overflow-y: auto;
+}
+
+.tabcontent {
+    display: none;
+}
+
+.tabcontent:target {
+    display: block;
+}
+
+.logout {
+    margin-top: 10px;
+}
+
+.logout a {
+    color: #3a8bc3; /* Medium blue logout link color */
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.logout a:hover {
+    color: #1d5f85; /* Darker blue hover */
+}
+
+.search-container {
+    margin-top: 20px;
+}
+
+.search-container form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-container input[type="search"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    background-color: #4caf50; /* Green button background */
+    color: white;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-container button:hover {
+    background-color: #388e3c; /* Darker green hover */
+}
