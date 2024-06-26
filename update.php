@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 include("conne.php");
@@ -120,6 +121,7 @@ if (isset($_POST['update'])) {
         ?>
 
         <a href="homepage.php">Back</a>
+        <a href="calendar.php">Calendar</a>
         <a href="logout.php">Logout</a>
     </div>
 
