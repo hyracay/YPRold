@@ -45,9 +45,6 @@ while($row = mysqli_fetch_assoc($result_edu)){
     <title>HOMEPAGE</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <style>
         .chart {
             width: 20%;
