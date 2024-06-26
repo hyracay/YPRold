@@ -17,13 +17,24 @@ if (isset($_SESSION['role'])) {
 }
 
 // pie chart for age_group
-$query = "SELECT age_group, COUNT(*) as count FROM profiles GROUP BY age_group";
-$result = mysqli_query($conn, $query);
+$data_age = "SELECT age_group, COUNT(*) as count FROM profiles GROUP BY age_group";
+$result_age = mysqli_query($conn, $data_age);
 
-$data = array();
-while ($row = mysqli_fetch_assoc($result)) {
-    $data[] = $row;
+$data_age= array();
+while ($row = mysqli_fetch_assoc($result_age)) {
+    $data_age[] = $row;
 }
+
+
+$data_edu = "SELECT educational_background, COUNT(*) as count FROM profiles GROUP BY educational_background";
+$result_edu = mysqli_query($conn, $data_edu);
+
+$data_edu= array();
+while($row = mysqli_fetch_assoc($result_edu)){
+    $data_edu []=$row;
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -72,14 +83,17 @@ while ($row = mysqli_fetch_assoc($result)) {
     <div class="content">
         <h3>Welcome to the Homepage</h3>
         <div class="chart">
-            <div id="chart"></div>
+            <div id="chart_age"></div>
+        </div>
+        <div class="chart">
+            <div id="chart_edu"></div>
         </div>
     </div>
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Build the chart
-        Highcharts.chart('chart', {
+        Highcharts.chart('chart_age', {
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
@@ -113,8 +127,51 @@ while ($row = mysqli_fetch_assoc($result)) {
                 colorByPoint: true,
                 data: [
                     <?php
-                    foreach ($data as $row) {
+                    foreach ($data_age as $row) {
                         echo "{ name: '" . $row['age_group'] . "', y: " . $row['count'] . " },";
+                        
+                    }
+                    ?>
+                ]
+            }]
+        });
+        Highcharts.chart('chart_edu', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Educational Background'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y}</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.y}'
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Educational Background',
+                colorByPoint: true,
+                data: [
+                    <?php
+                    foreach ($data_edu as $row) {
+                        echo "{ name: '" . $row['educational_background'] . "', y: " . $row['count'] . " },";
+                        
                     }
                     ?>
                 ]
