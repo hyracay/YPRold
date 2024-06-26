@@ -50,8 +50,20 @@ if (isset($_SESSION['role'])) {
         }
         ?>
         <a href="crud.php">Create Profile</a>
-        <a href="#accounts.php">Accounts</a>
-        <a href="#calendar.php">Calendar</a>
+        <?php
+        // Display links based on user's role
+        if ($role == 'admin') {
+            echo '<a href="accounts.php">Accounts</a>';
+        } elseif ($role == 'employee') {
+            // For employees, you can customize what to display or leave it empty
+            // Here, we do nothing to omit displaying "Create Accounts"
+
+        } else {
+            // Handle unexpected roles (optional)
+            echo "Unknown role.";
+        }
+        ?>
+        <a href="homepage.php">Back</a>
         <a href="logout.php">Logout</a>
     </div>
 

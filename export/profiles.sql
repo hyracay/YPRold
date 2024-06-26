@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 25, 2024 at 11:36 AM
+-- Generation Time: Jun 26, 2024 at 08:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,18 +47,20 @@ CREATE TABLE `profiles` (
   `youth_classification` varchar(50) DEFAULT NULL,
   `age_group` varchar(50) DEFAULT NULL,
   `work_status` varchar(50) DEFAULT NULL,
-  `educational_backround` varchar(50) DEFAULT NULL,
-  `register_sk_voter` varchar(3) DEFAULT NULL
+  `educational_background` varchar(50) DEFAULT NULL,
+  `register_sk_voter` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `profiles`
 --
 
-INSERT INTO `profiles` (`id`, `lname`, `fname`, `mname`, `suffix`, `region`, `province`, `municipality`, `barangay`, `purok`, `sex`, `age`, `email`, `birth_date`, `contactnumber`, `civil_status`, `youth_classification`, `age_group`, `work_status`, `educational_backround`, `register_sk_voter`) VALUES
-(1, 'Boquiren', 'Dale Matthew', 'Ramirez', 'hatdog', 'CAR', 'Benguet', 'La Trinidad', 'Wangal', '2601', 'Male', 20, 'dalematthewramirez@gmail.com', '0000-00-00', '09995288075', 'Single', 'InYouthSchool', 'core', 'unemployed', 'collegelevel', 'nov'),
-(2, 'Boquiren', 'Dale Matthew', 'Ramirez', 'hatdog', 'CAR', 'Benguet', 'La Trinidad', 'Wangal', '2601', 'Male', 20, 'dalematthewramirez@gmail.com', '0000-00-00', '09995288075', 'Single', 'InYouthSchool', 'core', 'unemployed', 'collegelevel', 'nov'),
-(3, 'b', 'Dale Matthew', 'Ramirez', 'hatdog', '', 'Benguet', 'La Trinidad', 'Wangal', '2601', 'Male', 20, 'dalematthewramirez@gmail.com', '2004-03-30', '09995288075', 'Single', 'InYouthSchool', 'core', 'unemployed', 'collegelevel', 'yes');
+INSERT INTO `profiles` (`id`, `lname`, `fname`, `mname`, `suffix`, `region`, `province`, `municipality`, `barangay`, `purok`, `sex`, `age`, `email`, `birth_date`, `contactnumber`, `civil_status`, `youth_classification`, `age_group`, `work_status`, `educational_background`, `register_sk_voter`) VALUES
+(2, 'w', 'w', 'w', 'w', 'w', 'Benguet', 'La Trinidad', 'Wangal', '2601', 'Male', 20, 'dalematthewramirez@gmail.com', '2005-01-02', '09995288075', 'Single', 'Out of School Youth', 'Core Youth', 'Currently looking for job', 'High School Graduate', 'Not'),
+(3, 'b', 'Dale Matthew', 'Ramirez', 'hatdog', '', 'Benguet', 'La Trinidad', 'Wangal', '2601', 'Male', 20, 'dalematthewramirez@gmail.com', '2004-03-30', '09995288075', 'Married', 'InYouthSchool', 'core', 'unemployed', 'collegelevel', 'yes'),
+(4, 'rod', 'tang', 'pogs', 'QWE', 'CAR', 'MT prov', 'baguio', 'camp7 ', 'purok 3', 'Male', 12, 'zxc@gmail.com', '0000-00-00', '124124124212', 'Single', 'InYouthSchool', 'child', 'selfemployed', 'masterlevel', 'yes'),
+(5, 'Pasio', 'Djay', 'M', 'PDM', 'na', 'na', 'na', 'na', 'na', 'Male', 21, 'asd@gmail.com', '0000-00-00', '0912308', 'Single', 'InYouthSchool', 'core', 'unemployed', 'hsgrad', 'yes'),
+(6, 'Niratag', 'Rhoeder', 'Waking', 'GTR', 'CAR', 'MT prov', 'baguio', 'camp7 ', 'purok 3', 'Male', 21, 'zxc@gmail.com', '0000-00-00', '124124124212', 'Single', 'In Youth School', 'Core Youth', 'Unemployed', 'College Level', 'Not');
 
 --
 -- Indexes for dumped tables
@@ -78,7 +80,7 @@ ALTER TABLE `profiles`
 -- AUTO_INCREMENT for table `profiles`
 --
 ALTER TABLE `profiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
