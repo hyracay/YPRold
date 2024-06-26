@@ -29,10 +29,10 @@ if (isset($_SESSION['role'])) {
 <body>
     <div class="sidebar">
         <img src="src/avatar.png" alt="Avatar">
-        <p><?php echo $_SESSION['fname'] . " " . $_SESSION['lname'] . "<br>"; ?>
+        <p><?php echo "Hello ".$_SESSION['fname'] . " " . $_SESSION['lname'] ."!". "<br>"; ?>
            Logged in as: <?php echo $_SESSION['email']; ?></p>
        
-         <a href = "search.php">Search</a>
+         <a href = "viewprofile.php">Profiles</a>
         <?php
         // Display links based on user's role
         if ($role == 'admin') {

@@ -29,10 +29,10 @@ if (isset($_SESSION['role'])) {
 <body>
     <div class="sidebar">
         <img src="src/avatar.png" alt="Avatar">
-        <p><?php echo $_SESSION['fname'] . " " . $_SESSION['lname'] . "<br>"; ?>
+        <p><?php echo "Hello ".$_SESSION['fname'] . " " . $_SESSION['lname'] ."!". "<br>"; ?>
            Logged in as: <?php echo $_SESSION['email']; ?></p>
        
-        <a href="search.php">Search</a>
+        <a href="viewprofile.php">Profiles</a>
         <?php
         // Display links based on user's role
         if ($role == 'admin') {
@@ -52,10 +52,38 @@ if (isset($_SESSION['role'])) {
     </div>
 
     <div class="content">
-        <h3>Welcome to the Homepage</h3>
+        <!-- Search -->
+        <div class="search-container">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <form action="" method="GET">
+                                            <div class="input-group mb-3">
+                                                <input type="text" name="search" value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Search data">
+                                                <button type="submit" class="btn btn-primary">Search</button>
+                                                <input type="submit" value="Advance Search Dito Na Banda" style="margin-left:100px">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
         <?php
-        // Fetch all rows from the profiles table
-        $sql = "SELECT * FROM profiles";
+        // Fetch all rows from the profiles table, filtering by search query if provided
+        $searchQuery = "";
+        if (isset($_GET['search'])) {
+            $searchQuery = $_GET['search'];
+            $sql = "SELECT * FROM profiles WHERE fname LIKE '%$searchQuery%' OR lname LIKE '%$searchQuery%' OR mname LIKE '%$searchQuery%'";
+        } else {
+            $sql = "SELECT * FROM profiles";
+        }
         $result = mysqli_query($conn, $sql);
         
         if($result && mysqli_num_rows($result) > 0) {
