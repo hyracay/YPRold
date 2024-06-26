@@ -46,8 +46,22 @@ if (isset($_SESSION['role'])) {
             echo "Unknown role.";
         }
         ?>
+
         <a href="homepage.php">back</a>
-        <a href="#accounts.php">Accounts</a>
+                <?php
+        // Display links based on user's role
+        if ($role == 'admin') {
+            echo '<a href="accounts.php">Accounts</a>';
+        } elseif ($role == 'employee') {
+            // For employees, you can customize what to display or leave it empty
+            // Here, we do nothing to omit displaying "Create Accounts"
+
+        } else {
+            // Handle unexpected roles (optional)
+            echo "Unknown role.";
+        }
+        ?>
+
         <a href="logout.php">Logout</a>
     </div>
 
@@ -82,7 +96,7 @@ if (isset($_SESSION['role'])) {
                             <td style="border: 1px solid;">
                                 Sex Assigned as Birth: <br>
                                 <input type="radio" name="sex" value="Male">Male<br>
-                                <input type="radio" name="sex" value="Male">Female
+                                <input type="radio" name="sex" value="Female">Female
                             </td>
                             <td>
                                 Age:<input type="text" name="age" placeholder="Age">
@@ -110,10 +124,10 @@ if (isset($_SESSION['role'])) {
                             </td>
                             <td style="border: 1px solid;">
                                 Youth Classification:<br>
-                                <input type="radio" name="youth_classification" value="InYouthSchool"> In Youth School<br>
-                                <input type="radio" name="youth_classification" value="OutofSchoolYouth"> Out of School Youth<br>
-                                <input type="radio" name="youth_classification" value="WorkingYouth"> Working Youth<br>
-                                <input type="radio" name="youth_classification" value="PersonwithDisability"> Person with Disability (PWD)<br>
+                                <input type="radio" name="youth_classification" value="In Youth School"> In Youth School<br>
+                                <input type="radio" name="youth_classification" value="Out of School Youth"> Out of School Youth<br>
+                                <input type="radio" name="youth_classification" value="Working Youth"> Working Youth<br>
+                                <input type="radio" name="youth_classification" value="Person with Disability (PWD)"> Person with Disability (PWD)<br>
                             </td>
                         </tr>
                     </table>
@@ -125,16 +139,16 @@ if (isset($_SESSION['role'])) {
                         <tr>
                             <td style="border: 1px solid;">
                                 Your Age Group:<br>
-                                <input type="radio" name="age_group" value="child"> Child Youth(15-17 yrs. old)<br>
-                                <input type="radio" name="age_group" value="core"> Core Youth(18-24 yrs. old)<br>
-                                <input type="radio" name="age_group" value="youngadult"> Young adult(25-30 yrs.old)<br>
+                                <input type="radio" name="age_group" value="Child Youth"> Child Youth(15-17 yrs. old)<br>
+                                <input type="radio" name="age_group" value="Core Youth"> Core Youth(18-24 yrs. old)<br>
+                                <input type="radio" name="age_group" value="Young adult"> Young adult(25-30 yrs.old)<br>
                             </td>
                             <td style="border: 1px solid;">
                                 Work Status:<br>
-                                <input type="radio" name="work_status" value="employed"> Employed<br>
-                                <input type="radio" name="work_status" value="unemployed"> Unemployed<br>
-                                <input type="radio" name="work_status" value="selfemployed"> Self-Employed<br>
-                                <input type="radio" name="work_status" value="lookingforjob"> Currently looking for job<br>
+                                <input type="radio" name="work_status" value="Employed"> Employed<br>
+                                <input type="radio" name="work_status" value="Unemployed"> Unemployed<br>
+                                <input type="radio" name="work_status" value="Self-Employed"> Self-Employed<br>
+                                <input type="radio" name="work_status" value="Currently looking for job"> Currently looking for job<br>
                             </td>
                         </tr>
                     </table>
@@ -145,22 +159,22 @@ if (isset($_SESSION['role'])) {
                     <table>
                         <tr>
                             <td style="border: 1px solid;">
-                                Educational Backround:<br>
-                                <input type="radio" name="educational_backround" value="elementarylevel"> Elementary Level<br>
-                                <input type="radio" name="educational_backround" value="elementarygrad"> Elementary Graduate<br>
-                                <input type="radio" name="educational_backround" value="hslevel"> High School Level<br>
-                                <input type="radio" name="educational_backround" value="hsgrad"> High School Graduate<br>
-                                <input type="radio" name="educational_backround" value="vocgrad"> Vocational Graduate<br>
-                                <input type="radio" name="educational_backround" value="collegelevel"> College Level<br>
-                                <input type="radio" name="educational_backround" value="collegegrad"> College Graduate<br>
-                                <input type="radio" name="educational_backround" value="masterlevel"> Master's Level<br>
-                                <input type="radio" name="educational_backround" value="mastergrad"> Master's Graduate<br>
-                                <input type="radio" name="educational_backround" value="doctratelevel"> Doctrate Level<br>
+                                Educational Background:<br>
+                                <input type="radio" name="educational_background" value="Elementary Level"> Elementary Level<br>
+                                <input type="radio" name="educational_background" value="Elementary Graduate"> Elementary Graduate<br>
+                                <input type="radio" name="educational_background" value="High School Level"> High School Level<br>
+                                <input type="radio" name="educational_background" value="High School Graduate"> High School Graduate<br>
+                                <input type="radio" name="educational_background" value="Vocational Graduate"> Vocational Graduate<br>
+                                <input type="radio" name="educational_background" value="College Level"> College Level<br>
+                                <input type="radio" name="educational_background" value="College Graduate"> College Graduate<br>
+                                <input type="radio" name="educational_background" value="Master's Level"> Master's Level<br>
+                                <input type="radio" name="educational_background" value="Master's Graduate"> Master's Graduate<br>
+                                <input type="radio" name="educational_background" value="Doctrate Level"> Doctrate Level<br>
                             </td>
                             <td style="border: 1px solid;">
                                 Registered SK Voter:<br>
-                                <input type="radio" name="register_sk_voter" value="yesvote"> YES<br>
-                                <input type="radio" name="register_sk_voter" value="novote"> NO<br>
+                                <input type="radio" name="register_sk_voter" value="Registered"> YES<br>
+                                <input type="radio" name="register_sk_voter" value="Not Registered"> NO<br>
 
                             </td>
                         </tr>
@@ -199,18 +213,18 @@ if (isset($_POST['submit'])) {
     $youth_classification = $_POST['youth_classification'];
     $age_group = $_POST['age_group'];
     $work_status = $_POST['work_status'];
-    $educational_backround = $_POST['educational_backround'];
+    $educational_background = $_POST['educational_background'];
     $register_sk_voter = $_POST['register_sk_voter'];
 
     // Prepare SQL statement
     $insert = "INSERT INTO profiles 
             (lname, fname, mname, suffix, region, province, municipality, barangay, purok,
              sex, age, email, birth_date, contactnumber, civil_status, youth_classification,
-             age_group, work_status, educational_backround, register_sk_voter)
+             age_group, work_status, educational_background, register_sk_voter)
             VALUES 
             ('$lname', '$fname', '$mname', '$suffix', '$region', '$province', '$municipality', '$barangay', '$purok',
              '$sex', '$age', '$email', '$birth_date', '$contactnumber', '$civil_status', '$youth_classification',
-             '$age_group', '$work_status', '$educational_backround', '$register_sk_voter')";
+             '$age_group', '$work_status', '$educational_background', '$register_sk_voter')";
 
     $result = mysqli_query($conn, $insert);
 
