@@ -16,6 +16,14 @@ if (isset($_SESSION['role'])) {
     exit();
 }
 
+// pie chart for age_group
+$query = "SELECT age_group, COUNT(*) as count FROM profiles GROUP BY age_group";
+$result = mysqli_query($conn, $query);
+
+$data = array();
+while ($row = mysqli_fetch_assoc($result)) {
+    $data[] = $row;
+}
 ?>
 
 <!DOCTYPE html>
@@ -25,14 +33,24 @@ if (isset($_SESSION['role'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>HOMEPAGE</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <style>
+        .chart {
+            width: 20%;
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar">
         <img src="src/avatar.png" alt="Avatar">
-        <p><?php echo "Hello ".$_SESSION['fname'] . " " . $_SESSION['lname'] ."!". "<br>"; ?>
+        <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!" . "<br>"; ?>
            Logged in as: <?php echo $_SESSION['email']; ?></p>
        
-         <a href = "viewprofile.php">Profiles</a>
+        <a href="viewprofile.php">Profiles</a>
         <?php
         // Display links based on user's role
         if ($role == 'admin') {
@@ -40,7 +58,6 @@ if (isset($_SESSION['role'])) {
         } elseif ($role == 'employee') {
             // For employees, you can customize what to display or leave it empty
             // Here, we do nothing to omit displaying "Create Accounts"
-
         } else {
             // Handle unexpected roles (optional)
             echo "Unknown role.";
@@ -54,7 +71,56 @@ if (isset($_SESSION['role'])) {
 
     <div class="content">
         <h3>Welcome to the Homepage</h3>
-        <!-- Other content specific to the homepage -->
+        <div class="chart">
+            <div id="chart"></div>
+        </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Build the chart
+        Highcharts.chart('chart', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Age Group Distribution'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y}</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.y}'
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Age Group',
+                colorByPoint: true,
+                data: [
+                    <?php
+                    foreach ($data as $row) {
+                        echo "{ name: '" . $row['age_group'] . "', y: " . $row['count'] . " },";
+                    }
+                    ?>
+                ]
+            }]
+        });
+    });
+    </script>
 </body>
 </html>
