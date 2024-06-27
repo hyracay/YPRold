@@ -110,7 +110,7 @@ while($row = mysqli_fetch_assoc($result_sk)){
         <a href="crud.php">Create Profile</a>
         <?php
          if ($role == 'admin') {
-            echo '<a href="#.php">Accounts</a>';
+            echo '<a href="accounts.php">Accounts</a>';
          }
         ?>
         <a href="calendar.php">Calendar</a>

@@ -26,7 +26,7 @@
          <a href = "viewprofile.php">Profiles</a>
         <a href="homepage.php">Back</a>
          <a href="crud.php">Create Profile</a>
-        <a href="#accounts.php">Accounts</a>
+        <a href="accounts.php">Accounts</a>
         <a href="calendar.php">Calendar</a>
         <a href="logout.php">Logout</a>
     </div>

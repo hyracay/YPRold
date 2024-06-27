@@ -56,7 +56,7 @@ while ($row = mysqli_fetch_assoc($result)) {
         <a href="crud.php">Create Profile</a>
         <?php
         if ($role == 'admin') {
-            echo '<a href="#accounts.php">Accounts</a>';
+            echo '<a href="accounts.php">Accounts</a>';
         } 
         ?>
   

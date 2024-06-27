@@ -42,7 +42,7 @@ if (isset($_SESSION['role'])) {
         <a href="crud.php">Create Profile</a>
         <?php
         if ($role == 'admin') {
-            echo '<a href="#.php">Accounts</a>';
+            echo '<a href="accounts.php">Accounts</a>';
             
         }
         ?>

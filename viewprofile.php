@@ -46,7 +46,7 @@ if (isset($_SESSION['role'])) {
         <?php
         // Display links based on user's role
         if ($role == 'admin') {
-            echo '<a href="#accounts.php">Accounts</a>';
+            echo '<a href="accounts.php">Accounts</a>';
         } 
         ?>
 
