@@ -41,7 +41,7 @@ CREATE TABLE `profiles` (
   `sex` varchar(10) DEFAULT NULL,
   `age` int(11) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
-  `birth_date` date DEFAULT NULL,
+  `birth_date` varchar(50) DEFAULT NULL,
   `contactnumber` varchar(20) DEFAULT NULL,
   `civil_status` varchar(20) DEFAULT NULL,
   `youth_classification` varchar(50) DEFAULT NULL,
