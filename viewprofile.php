@@ -1,7 +1,6 @@
-
 <?php
 session_start();
-include ("conne.php");
+include("conne.php");
 
 if (!isset($_SESSION['email'])) {
     header("location: index.php");
@@ -27,6 +26,38 @@ if (isset($_SESSION['role'])) {
     <title>HOMEPAGE</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <link rel="stylesheet" type="text/css" href="src/temp.css">
+
+    <style>
+        /* Checkbox styling */
+        input[type="checkbox"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            vertical-align: middle;
+            position: relative;
+            top: 4px;
+            cursor: pointer;
+        }
+
+        /* Checked state */
+        input[type="checkbox"]:checked {
+            background-color: #FF0000;
+            border-color: #FF0000;
+        }
+
+        /* Checkmark */
+        input[type="checkbox"]:checked::before {
+            content: '\2713';
+            display: block;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
@@ -74,8 +105,8 @@ if (isset($_SESSION['role'])) {
                                                     class="form-control" placeholder="Search data">
                                                 <button type="submit" class="btn btn-primary">Search</button>
                                                 <button type="submit" style="margin-left:100px">
-                                                Advance Search
-                                                <a href="advance_search.php">click here</a>
+                                                    Advance Search
+                                                    <a href="advance_search.php">click here</a>
                                                 </button>
                                             </div>
                                         </form>
@@ -89,67 +120,78 @@ if (isset($_SESSION['role'])) {
                     </div>
 
                     <?php
-        // Fetch all rows from the profiles table, filtering by search query if provided
-        $searchQuery = "";
-        if (isset($_GET['search'])) {
-            $searchQuery = $_GET['search'];
-            $sql = "SELECT * FROM profiles WHERE fname LIKE '%$searchQuery%' OR lname LIKE '%$searchQuery%' OR mname LIKE '%$searchQuery%' OR id LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%'";
-        } else {
-            $sql = "SELECT * FROM profiles";
-        }
-        $result = mysqli_query($conn, $sql);
-        
-        if($result && mysqli_num_rows($result) > 0) {
-            $results = [];
-        ?>
-        <div class="section">
-        <table>
-            <tr>
-                <th>Avatar</th>
-                <th>Name</th> 
-      
-                <th>EMAIL</th>    
-            </tr>
-        
-            <?php
-            while($row = mysqli_fetch_assoc($result)) {
-                $results[] = $row;
-                $id = $row['id'];
-                $lname = $row['lname'];
-                $fname = $row['fname'];
-                $mname = $row['mname'];
-  
-                $email = $row['email'];
-                
-                $fullName = $fname . ' ' . $mname . ' ' . $lname;   
-            ?>
-            <tr>
-    <td>
-        <img width="50px" height="50px" src="src/avatar.png" alt="">
-    </td>
-    <td>
-        <a href="" class="profileNameLink" type="button" data-id="<?= $id; ?>"><?= $fullName; ?></a>
-    </td>
+                    // Fetch all rows from the profiles table, filtering by search query if provided
+                    $searchQuery = "";
+                    if (isset($_GET['search'])) {
+                        $searchQuery = $_GET['search'];
+                        $sql = "SELECT * FROM profiles WHERE fname LIKE '%$searchQuery%' OR lname LIKE '%$searchQuery%' OR mname LIKE '%$searchQuery%' OR id LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%'";
+                    } else {
+                        $sql = "SELECT * FROM profiles";
+                    }
+                    $result = mysqli_query($conn, $sql);
 
-    <td>
-        <p><?= $email; ?></p>
-    </td>
-    <td>
-        <a href="update.php?id=<?= $id; ?>" class="btn btn-primary">Update</a>
-        <a href="delete.php?id=<?= $id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this profile?');">Delete</a>
-    </td>
-</tr>
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        $results = [];
+                        ?>
+                        <div class="section">
+                            <form id="profilesForm" method="POST" action="bulk_delete.php">
+                                <table>
+                                    <tr>
+                                        <th>Avatar</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Actions</th>
+                                        <th>
+                                            <button type="submit" class="btn btn-danger btn-delete"
+                                                onclick="return confirm('Are you sure you want to delete the selected profiles?');">
+                                                Delete Selected
+                                            </button>
+                                        </th> <!-- Updated this line -->
+                                    </tr>
 
-            <?php
-            }
-            ?>
-        </table>
-        </div>
-        <?php
-        } else {
-            echo "No profiles found.";
-        }
-        ?>
+                                    <?php
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        $results[] = $row;
+                                        $id = $row['id'];
+                                        $lname = $row['lname'];
+                                        $fname = $row['fname'];
+                                        $mname = $row['mname'];
+                                        $email = $row['email'];
+                                        $fullName = $fname . ' ' . $mname . ' ' . $lname;
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <img width="50px" height="50px" src="src/avatar.png" alt="">
+                                            </td>
+                                            <td>
+                                                <a href="" class="profileNameLink" type="button"
+                                                    data-id="<?= $id; ?>"><?= $fullName; ?></a>
+                                            </td>
+                                            <td>
+                                                <p><?= $email; ?></p>
+                                            </td>
+                                            <td>
+                                                <a href="update.php?id=<?= $id; ?>"
+                                                    class="btn btn-primary">Update</a>
+                                                <a href="delete.php?id=<?= $id; ?>" class="btn btn-danger"
+                                                    onclick="return confirm('Are you sure you want to delete this profile?');">Delete</a>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" name="selectedProfiles[]"
+                                                    value="<?= $id; ?>">
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                    ?>
+                                </table>
+                            </form>
+                        </div>
+                    <?php
+                    } else {
+                        echo "No profiles found.";
+                    }
+                    ?>
     </div>
     <div id="myModal" class="modal">
         <!-- Modal content -->
@@ -174,82 +216,74 @@ if (isset($_SESSION['role'])) {
 
         // When the user clicks the button, open the modal 
         for (var i = 0; i < btns.length; i++) {
-            btns[i].addEventListener("click", function(e) {
+            btns[i].addEventListener("click", function (e) {
                 e.preventDefault();
                 modal.style.display = "block";
                 const selectedProfile = results.find(res => res.id == this.getAttribute('data-id'));
                 let fullName = `${selectedProfile.fname} ${selectedProfile.mname} ${selectedProfile.lname}`;
-                modalInside.innerHTML = `
-                    <div>Full name: ${fullName}</div>
-                    <div>Address: ${selectedProfile.region} ${selectedProfile.province} ${selectedProfile.municipality} ${selectedProfile.barangay} ${selectedProfile.purok}</div>
-                    <div>Sex: ${selectedProfile.sex}</div>
-                    <div>Age: ${selectedProfile.age}</div>
-                    <div>Birth Date: ${selectedProfile.birth_date}</div>
-                    <div>Email: ${selectedProfile.email}</div>
-                    <div>Contact Number: ${selectedProfile.contactnumber}</div>
-                    <div>Civil Status: ${selectedProfile.civil_status}</div>
-                    <div>Age Group: ${selectedProfile.age_group}</div>
-                    <div>Educational Background: ${selectedProfile.educational_background}</div>
-                    <?php
-                            if ($role == 'admin') {
-                            echo ' <div>Youth Classification: ${selectedProfile.youth_classification}</div>';
-                            }
-                    ?>
-                    <div>Work Status: ${selectedProfile.work_status}</div>
-                    <div>Registered SK Voter: ${selectedProfile.register_sk_voter}</div>
-                `;
+                modalInside.innerHTML =
+                    `<div>Full name: ${fullName}</div>
+                     <div>Address: ${selectedProfile.region} ${selectedProfile.province} ${selectedProfile.municipality} ${selectedProfile.barangay} ${selectedProfile.purok}</div>
+                     <div>Sex: ${selectedProfile.sex}</div>
+                     <div>Age: ${selectedProfile.age}</div>
+                     <div>Birth Date: ${selectedProfile.birth_date}</div>
+                     <div>Email: ${selectedProfile.email}</div>
+                     <div>Contact Number: ${selectedProfile.contactnumber}</div>
+                     <div>Civil Status: ${selectedProfile.civil_status}</div>
+                     <div>Age Group: ${selectedProfile.age_group}</div>
+                     <div>Educational Background: ${selectedProfile.educational_background}</div>`;
+                     <?php
+                        if ($role == 'admin') {
+                            echo 'modalInside.innerHTML += `<div>Youth Classification: ${selectedProfile.youth_classification}</div>`;';
+                        }
+                     ?>
+                     modalInside.innerHTML += `<div>Work Status: ${selectedProfile.work_status}</div>
+                     <div>Registered SK Voter: ${selectedProfile.register_sk_voter}</div>`;
             });
         }
 
-                    // When the user clicks on <span> (x), close the modal
-                    span.onclick = function () {
-                        modal.style.display = "none";
-                    }
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
 
-                    // When the user clicks anywhere outside of the modal, close it
-                    window.onclick = function (event) {
-                        if (event.target == modal) {
-                            modal.style.display = "none";
-                        }
-                    }
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
 
-                    function exportToCSV(array, filename = 'data.csv') {
-                        // Check if the array is empty
-                        if (!array.length) {
-                            return;
-                        }
+        function exportToCSV(array, filename = 'data.csv') {
+            // Check if the array is not empty
+            if (array.length > 0) {
+                const header = Object.keys(array[0]);
+                const csv = array.map(row => header.map(fieldName => JSON.stringify(row[fieldName])).join(','));
+                csv.unshift(header.join(','));
+                const csvArray = csv.join('\r\n');
 
-                        // Get the keys from the first object in the array
-                        const keys = Object.keys(array[0]);
+                const blob = new Blob([csvArray], {
+                    type: 'text/csv;charset=utf-8;'
+                });
+                const link = document.createElement("a");
+                if (link.download !== undefined) {
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute("href", url);
+                    link.setAttribute("download", filename);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+        }
 
-                        // Create CSV content
-                        const csvContent = array.map(obj => keys.map(key => obj[key]).join(',')).join('\n');
+        document.getElementById('exportBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+            exportToCSV(results, 'profiles.csv');
+        });
+    </script>
 
-                        // Add the header row
-                        const csvHeader = keys.join(',') + '\n' + csvContent;
-
-                        // Create a Blob from the CSV content
-                        const blob = new Blob([csvHeader], { type: 'text/csv;charset=utf-8;' });
-
-                        // Create a link element
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(blob);
-                        link.setAttribute('download', filename);
-
-                        // Append the link to the document body and trigger the download
-                        document.body.appendChild(link);
-                        link.click();
-
-                        // Remove the link from the document
-                        document.body.removeChild(link);
-                    }
-
-                    const exportBtn = document.getElementById('exportBtn');
-                    exportBtn.addEventListener('click', function () {
-                        exportToCSV(results);
-                    });
-
-                </script>
 </body>
 
 </html>
