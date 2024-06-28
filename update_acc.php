@@ -41,13 +41,22 @@ if (isset($_POST['update'])) {
     $lname = $_POST['lname'];
     $role = $_POST['role'];
 
+    // Check if the new email already exists for a different account
+    $check_query = "SELECT * FROM account WHERE email = '$email' AND id != '$id'";
+    $check_result = mysqli_query($conn, $check_query);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        echo "<script>alert('Email already exists');</script>";
+        exit();
+    }
+
     // Prepare SQL statement
     $update_query = "UPDATE account SET email = '$email', FirstName = '$fname', LastName = '$lname', role = '$role' WHERE id = $id";
 
     $result = mysqli_query($conn, $update_query);
 
     if ($result) {
-        header("location: homepage.php"); // Redirect to homepage after successful update
+        header("location: accounts.php"); 
         exit();
     } else {
         echo "Update failed.";

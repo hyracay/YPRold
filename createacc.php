@@ -116,9 +116,15 @@ if(isset($_POST['submit'])){
     $cpassword = $_POST['cpassword'];
     $FirstName = $_POST['fname'];
     $LastName = $_POST['lname'];
-    $role = $_POST['role']; // Retrieve role from form
-
+    $role = $_POST['role']; 
     // Check if email already exists (your existing code)
+    $check_query = "SELECT * FROM account WHERE email = '$email' ";
+    $check_result = mysqli_query($conn, $check_query);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        echo "<script>alert('Email already exists');</script>";
+        exit();
+    }
 
     if ($password == $cpassword){
         $password = md5($password); // Consider using more secure hashing methods like bcrypt
