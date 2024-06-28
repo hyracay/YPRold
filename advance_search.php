@@ -4,14 +4,13 @@ include("conne.php");
 
 if (!isset($_SESSION['email'])) {
     header("location: index.php");
-    exit(); // Ensure that no further code is executed after the redirection
+    exit();
 }
 
 // Check if 'role' is set in session
 if (isset($_SESSION['role'])) {
     $role = $_SESSION['role'];
 } else {
-    // Handle case where role is not set (e.g., redirect or error message)
     echo "Role information not found. Please contact administrator.";
     exit();
 }
@@ -31,111 +30,170 @@ if (isset($_SESSION['role'])) {
         <p>Hello <?php echo $_SESSION['fname'] . " " . $_SESSION['lname'] . "!<br>"; ?>
            Logged in as: <?php echo $_SESSION['email']; ?></p>
        
-         <a href="homepage.php">Back</a>
-        <?php
-        // Display links based on user's role
-        if ($role == 'admin') {
-            echo '<a href="createacc.php">Create Accounts</a>';
-            
-        }
-        ?>
+        <a href="homepage.php">Back</a>
+        <?php if ($role == 'admin') { echo '<a href="createacc.php">Create Accounts</a>'; } ?>
         <a href="crud.php">Create Profile</a>
-        <?php
-        if ($role == 'admin') {
-            echo '<a href="accounts.php">Accounts</a>';
-            
-        }
-        ?>
+        <?php if ($role == 'admin') { echo '<a href="accounts.php">Accounts</a>'; } ?>
         <a href="calendar.php">Calendar</a>
         <a href="logout.php">Logout</a>
     </div>
 
     <div class="content">
-        
-        <h3>Advanced Search by Age</h3>
+        <h3>Advanced Search</h3>
         <form method="POST" action="advance_search.php">
             <table>
                 <tr>
-                    <td>Minimum Age: <input type="number" name="age_min" ></td>
+                    <td>Minimum Age: <input type="number" name="age_min" min="15" max="30"></td>
                 </tr>
                 <tr>
-                    <td>Maximum Age: <input type="number" name="age_max" ></td>
+                    <td>Maximum Age: <input type="number" name="age_max" min="15" max="30"></td>
+                </tr>
+                <tr>
+                    <td>Civil Status:
+                        <select name="civil_status">
+                            <option value="">Select</option>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                        </select>
+                    </td>
                 </tr>
 
                 <tr>
-            <td>Civil Status:
-                <select name="civil_status">
-                    <option value="">Select</option>
-                    <option value="Single">Single</option>
-                    <option value="Married">Married</option>
-                    <option value="Divorced">Divorced</option>
-                    <option value="Widowed">Widowed</option>
-                </select>
-            </td>
-        </tr>
-  
+                    <td>Sex:
+                        <select name="sex">
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>                           
+                        </select>
+                    </td>
+                </tr>
 
-               <td>
-               <label for="work_status">Work Status</label>
-                    <select name="work_status" class="form-control">
-                        <option value="">Any</option>
-                        <option value="">Any</option>
-                        <option value="Employed">Employed</option>
-                        <option value="Unemployed">Unemployed</option>
-                        <option value="Self-Employed">Self-Employed</option>
-                        <option value="Currently Looking for a Job">Currently Looking for a Job</option>
-                    </select>
-                </td>
+
+
+                <tr>
+                    <td>Work Status:
+                        <select name="work_status">
+                            <option value="">Any</option>
+                            <option value="Employed">Employed</option>
+                            <option value="Unemployed">Unemployed</option>
+                            <option value="Self-Employed">Self-Employed</option>
+                            <option value="Currently looking for Job">Currently Looking for a Job</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Educational Background:
+                        <select name="educational_background">
+                            <option value="">Select</option>
+                            <option value="Elementary level">Elementary Level</option>
+                            <option value="Elementary Graduate">Elementary Graduate</option>
+                            <option value="High School Level">High School Level</option>
+                            <option value="High School Graduate">High School Graduate</option>
+                            <option value="Vocational Graduate">Vocational Graduate</option>
+                            <option value="College Level">College Level</option>
+                            <option value="College Graduate">College Graduate</option>
+                            <option value="Master Level">Master Level</option>
+                            <option value="Master Graduate">Master Graduate</option>
+                            <option value="Doctorate Level">Doctorate Level</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Youth Classification:
+                        <select name="youth_classification">
+                            <option value="">Select</option>
+                            <option value="In School Youth">In School Youth</option>
+                            <option value="Out Of School Youth">Out Of School Youth</option>
+                            <option value="Working Youth">Working Youth</option>
+                            <option value="Person With Disability (PWD)">Person With Disability (PWD)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Registered SK Voters:
+                        <select name="register_sk_voter">
+                            <option value="">Select</option>
+                            <option value="Registered">YES</option>
+                            <option value="Not Registered">NO</option>
+                        </select>
+                    </td>
+                </tr>
                 <tr>
                     <td><input type="submit" name="search" value="Search"></td>
                 </tr>
             </table>
         </form>
 
-       <?php
-if (isset($_POST['search'])) {
-    $age_min = (int)$_POST['age_min'];
-    $age_max = (int)$_POST['age_max'];
-    $civil_status = $_POST['civil_status'];
-    $work_status = $_POST['work_status'];
+        <?php
+        if (isset($_POST['search'])) {
+            $sql = "SELECT * FROM profiles WHERE 1";
+            $conditions = [];
 
-    // Validate age range
-    if ($age_min > $age_max) {
-        echo "Minimum age cannot be greater than maximum age.";
-    } else {
-        $sql = "SELECT * FROM profiles WHERE age BETWEEN $age_min AND $age_max";
-        if (!empty($civil_status)) {
-            $sql .= " AND civil_status = '$civil_status'";
-        }
-        if (!empty($educational_background)) {
-            $sql .= " AND work_status = '$work_status'";
-        }
-
-        // Query the database
-        $result = mysqli_query($conn, $sql);
-
-        // Display results
-        echo "<h3>Search Results</h3>";
-        if (mysqli_num_rows($result) > 0) {
-            echo "<table border='1'>";
-            echo "<tr><th>ID</th><th>Name</th><th>Age</th><th>Email</th></tr>";
-            while ($row = mysqli_fetch_assoc($result)) {
-                echo "<tr>";
-                echo "<td>" . $row['id'] . "</td>";
-                echo "<td>" . $row['fname'] . " " . $row['lname'] . "</td>";
-                echo "<td>" . $row['age'] . "</td>";
-                echo "<td>" . $row['email'] . "</td>";
-                echo "</tr>";
+            if (!empty($_POST['age_min']) && !empty($_POST['age_max'])) {
+                $age_min = (int)$_POST['age_min'];
+                $age_max = (int)$_POST['age_max'];
+                if ($age_min >= $age_max) {
+                    echo "Minimum age cannot be greater than maximum age.";
+                    exit();
+                }
+                $conditions[] = "age BETWEEN $age_min AND $age_max";
             }
-            echo "</table>";
+
+            if (!empty($_POST['civil_status'])) {
+                $civil_status = $_POST['civil_status'];
+                $conditions[] = "civil_status = '$civil_status'";
+            }
+
+            if (!empty($_POST['work_status'])) {
+                $work_status = $_POST['work_status'];
+                if ($work_status !== "Any") {
+                    $conditions[] = "work_status = '$work_status'";
+                }
+            }
+
+            if (!empty($_POST['educational_background'])) {
+                $educational_background = $_POST['educational_background'];
+                $conditions[] = "educational_background = '$educational_background'";
+            }
+
+            if (!empty($_POST['youth_classification'])) {
+                $youth_classification = $_POST['youth_classification'];
+                $conditions[] = "youth_classification = '$youth_classification'";
+            }
+
+            if (!empty($_POST['register_sk_voter'])) {
+                $register_sk_voter = $_POST['register_sk_voter'];
+                $conditions[] = "register_sk_voter = '$register_sk_voter'";
+            }
+
+            if (!empty($conditions)) {
+                $sql .= " AND " . implode(" AND ", $conditions);
+            }
+
+            $result = mysqli_query($conn, $sql);
+
+            echo "<h3>Search Results</h3>";
+            if (mysqli_num_rows($result) > 0) {
+                echo "<table border='1'>";
+                echo "<tr><th>ID</th><th>Name</th><th>Age</th><th>Email</th></tr>";
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo "<tr>";
+                    echo "<td>" . $row['id'] . "</td>";
+                    echo "<td>" . $row['fname'] . " " . $row['lname'] . "</td>";
+                    echo "<td>" . $row['age'] . "</td>";
+                    echo "<td>" . $row['email'] . "</td>";
+                    echo "</tr>";
+                }
+                echo "</table>";
+            } else {
+                echo "No results found.";
+            }
         } else {
-            echo "No results found.";
+            echo "Please provide search criteria.";
         }
-    }
-} else {
-    echo "Please provide an age range.";
-}
-?>
+        ?>
     </div>
 </body>
 </html>

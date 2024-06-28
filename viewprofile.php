@@ -134,7 +134,7 @@ if (isset($_SESSION['role'])) {
                         $results = [];
                         ?>
                         <div class="section">
-                            <form id="profilesForm" method="POST" action="bulk_delete.php">
+                            <form id="profilesForm" method="POST" action="delete_multiple.php">
                                 <table>
                                     <tr>
                                         <th>Avatar</th>
@@ -146,7 +146,7 @@ if (isset($_SESSION['role'])) {
                                                 onclick="return confirm('Are you sure you want to delete the selected profiles?');">
                                                 Delete Selected
                                             </button>
-                                        </th> <!-- Updated this line -->
+                                        </th>
                                     </tr>
 
                                     <?php

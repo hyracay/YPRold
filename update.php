@@ -163,7 +163,7 @@ if (isset($_POST['update'])) {
                                 <td>
                                     Age: <input type="text" name="age" placeholder="Age" value="<?php echo $profile['age']; ?>">
                                     Email Address: <input type="email" name="email" placeholder="Email Address" value="<?php echo $profile['email']; ?>" required><br><br>
-                                    Birth Date: <input type="text" name="birth_date" placeholder="Year/Month/Date" value="<?php echo $profile['birth_date']; ?>" required>
+                                    Birth Date: <input type="date" name="birth_date" placeholder="Year/Month/Date" value="<?php echo $profile['birth_date']; ?>" required>
                                     Contact Number: <input type="text" name="contactnumber" placeholder="Contact Number" value="<?php echo $profile['contactnumber']; ?>" required>
                                 </td>
                             </tr>
