@@ -108,7 +108,7 @@ if (isset($_SESSION['role'])) {
                                 <td>
                                     Age:<input type="text" name="age" placeholder="Age">
                                     Email Address:<input type="email" name="email" placeholder="Email Address" required><br><br>
-                                    Birth Date:<input type="text" name="birth_date" placeholder="Year/Month/Date" required>
+                                    Birth Date:<input type="date" name="birth_date" placeholder="Year/Month/Date" required>
                                     Contact Number:<input type="text" name="contactnumber" placeholder="Contact Number" required>
                                 </td>
                             </tr>
