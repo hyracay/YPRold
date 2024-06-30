@@ -290,7 +290,7 @@ if (isset($_POST['submit'])) {
     $result = mysqli_query($conn, $insert);
 
     if ($result) {
-        echo "Record Inserted Successfully";
+        echo " <script> alert('Record Inserted successfully'); </script>";
     } else {
         echo "Error: " . $insert . "<br>" . mysqli_error($conn);
     }
