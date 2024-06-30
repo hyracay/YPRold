@@ -78,15 +78,16 @@ if (isset($_POST['update'])) {
         <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!<br>"; ?>
            Logged in as: <?php echo $_SESSION['email']; ?></p>
 
-        <a href="homepage.php">Back</a>
+           <a href = "viewprofile.php">Profiles</a>
+        <a href="records.php">Records</a>
         <?php
         // Display links based on user's role
         if ($role == 'admin') {
             echo '<a href="createacc.php">Create Accounts</a>';
-            echo '<a href="accounts.php">Accounts</a>';
         } 
         ?>
         <a href="crud.php">Create Profile</a>
+        <a href="homepage.php">Back</a>
         <a href="calendar.php">Calendar</a>
         <a href="logout.php">Logout</a>
     </div>

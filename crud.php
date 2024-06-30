@@ -41,14 +41,7 @@ if (isset($_SESSION['role'])) {
         // Display links based on user's role
         if ($role == 'admin') {
             echo '<a href="createacc.php">Create Accounts</a>';
-        } elseif ($role == 'employee') {
-            // For employees, you can customize what to display or leave it empty
-            // Here, we do nothing to omit displaying "Create Accounts"
-        
-        } else {
-            // Handle unexpected roles (optional)
-            echo "Unknown role.";
-        }
+        } 
         ?>
 
         <a href="homepage.php">Back</a>
@@ -56,14 +49,7 @@ if (isset($_SESSION['role'])) {
         // Display links based on user's role
         if ($role == 'admin') {
             echo '<a href="accounts.php">Accounts</a>';
-        } elseif ($role == 'employee') {
-            // For employees, you can customize what to display or leave it empty
-            // Here, we do nothing to omit displaying "Create Accounts"
-        
-        } else {
-            // Handle unexpected roles (optional)
-            echo "Unknown role.";
-        }
+        } 
         ?>
 
         <a href="calendar.php">Calendar</a>
@@ -85,7 +71,7 @@ if (isset($_SESSION['role'])) {
                         Name: <input type="text" name="lname" placeholder="Last Name" required>
                         <input type="text" name="fname" placeholder="First Name" required>
                         <input type="text" name="mname" placeholder="Middle Name" required>
-                        <input type="text" name="suffix" placeholder="Suffix" >
+                        <input type="text" name="suffix" placeholder="Suffix" required>
                     </td>
                 </tr>
                 <tr>
@@ -190,10 +176,12 @@ if (isset($_SESSION['role'])) {
                                     Level<br>
                                     <input type="radio" name="educational_background" value="College Graduate" required> College
                                     Graduate<br>
-                                    <input type="radio" name="educational_background" value="Master Level" required> Master's Level<br>
-                                    <input type="radio" name="educational_background" value="Master Graduate" required> Master's Graduate<br>
-                                    <input type="radio" name="educational_background" value="Doctrate Level" required> Doctrate Level<br>
-
+                                    <input type="radio" name="educational_background" value="Master Level" required> Master's
+                                    Level<br>
+                                    <input type="radio" name="educational_background" value="Master Graduate" required>
+                                    Master's Graduate<br>
+                                    <input type="radio" name="educational_background" value="Doctrate Level" required> Doctrate
+                                    Level<br>
                                 </td>
                                 <td style="border: 1px solid;">
                                     Registered SK Voter:<br>
@@ -291,7 +279,7 @@ if (isset($_POST['submit'])) {
     $result = mysqli_query($conn, $insert);
 
     if ($result) {
-        echo " <script> alert('Record Inserted successfully'); </script>";
+        echo "Record Inserted Successfully";
     } else {
         echo "Error: " . $insert . "<br>" . mysqli_error($conn);
     }

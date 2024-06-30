@@ -33,7 +33,6 @@ if (isset($_SESSION['role'])) {
         <a href="homepage.php">Back</a>
         <a href="records.php">Records</a>
         <?php if ($role == 'admin') { echo '<a href="createacc.php">Create Accounts</a>'; } ?>
-
         <a href="crud.php">Create Profile</a>
         <?php if ($role == 'admin') { echo '<a href="accounts.php">Accounts</a>'; } ?>
         <a href="calendar.php">Calendar</a>
@@ -82,7 +81,7 @@ if (isset($_SESSION['role'])) {
                             <option value="Employed">Employed</option>
                             <option value="Unemployed">Unemployed</option>
                             <option value="Self-Employed">Self-Employed</option>
-                            <option value="Currently looking for Job">Currently Looking for a Job</option>
+                            <option value="Currently looking for job">Currently Looking for a Job</option>
                         </select>
                     </td>
                 </tr>
@@ -99,7 +98,7 @@ if (isset($_SESSION['role'])) {
                             <option value="College Graduate">College Graduate</option>
                             <option value="Master Level">Master Level</option>
                             <option value="Master Graduate">Master Graduate</option>
-                            <option value="Doctorate Level">Doctorate Level</option>
+                            <option value="Doctrate Level">Doctorate Level</option>
                         </select>
                     </td>
                 </tr>
@@ -107,19 +106,19 @@ if (isset($_SESSION['role'])) {
                     <td>Youth Classification:
                         <select name="youth_classification">
                             <option value="">Select</option>
-                            <option value="In School Youth">In School Youth</option>
+                            <option value="In Youth School">In School Youth</option>
                             <option value="Out Of School Youth">Out Of School Youth</option>
                             <option value="Working Youth">Working Youth</option>
-                            <option value="Person With Disability (PWD)">Person With Disability (PWD)</option>
+                            <option value="Person with Disability (PWD)">Person With Disability (PWD)</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
                     <td>Registered SK Voters:
-                        <select name="registered_sk_voters">
+                        <select name="register_sk_voter">
                             <option value="">Select</option>
-                            <option value="YES">YES</option>
-                            <option value="NO">NO</option>
+                            <option value="Registered">YES</option>
+                            <option value="Not Registered">NO</option>
                         </select>
                     </td>
                 </tr>
@@ -174,8 +173,8 @@ if (isset($_SESSION['role'])) {
             }
 
             if (!empty($_POST['register_sk_voter'])) {
-                $registered_sk_voters = $_POST['register_sk_voter'];
-                $conditions[] = "register_sk_voter = '$registered_sk_voters'";
+                $register_sk_voter = $_POST['register_sk_voter'];
+                $conditions[] = "register_sk_voter = '$register_sk_voter'";
             }
 
             if (!empty($conditions)) {
