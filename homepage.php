@@ -83,16 +83,25 @@ while($row = mysqli_fetch_assoc($result_sk)){
     
     <style>
         .content {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    .welcome-heading {
-    margin-top: 20px;
-}
-        
+        .welcome-heading {
+            margin-top: 20px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .chart {
+            flex: 0 0 45%; /* Adjust the width as needed */
+        }
     </style>
 </head>
 <body>
@@ -122,28 +131,36 @@ while($row = mysqli_fetch_assoc($result_sk)){
     </div>
          
     <div class="content">
-    <div class="welcome-heading">
-        <h1>DEMOGRAPHIC INSIGHTS</h1>
-    </div>
-    <div class="chart">
-        <div id="civil_status"></div>
-    </div>
-    <div class="chart">
-        <div id="chart_age"></div>
-    </div>
-    <div class="chart">
-        <div id="chart_edu"></div>
-    </div>
-    <div class="chart">
-        <div id="youth_classification"></div>
-    </div>
-    <div class="chart">
-        <div id="work_status"></div>
-    </div>
-    <div class="chart">
-        <div id="register_sk_voter"></div>
-    </div>
-</div>
+        <div class="welcome-heading">
+            <h3>Welcome to the Homepage</h3>
+        </div>
+
+        <div class="row">
+            <div class="chart">
+                <div id="civil_status"></div>
+            </div>
+            <div class="chart">
+                <div id="chart_age"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="chart">
+                <div id="chart_edu"></div>
+            </div>
+            <div class="chart">
+                <div id="youth_classification"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="chart">
+                <div id="work_status"></div>
+            </div>
+            <div class="chart">
+                <div id="register_sk_voter"></div>
+            </div>
+        </div>
 
 
     <script>
