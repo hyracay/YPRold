@@ -127,29 +127,50 @@ while($row = mysqli_fetch_assoc($result_sk)){
     </div>
          
     <div class="content">
-    <div class="welcome-heading">
-        <h3>Welcome to the Homepage</h3>
-    </div>
-    <div class="chart">
-        <div id="civil_status"></div>
-    </div>
-    <div class="chart">
-        <div id="chart_age"></div>
-    </div>
-    <div class="chart">
-        <div id="chart_edu"></div>
-    </div>
-    <div class="chart">
-        <div id="youth_classification"></div>
-    </div>
-    <div class="chart">
-        <div id="work_status"></div>
-    </div>
-    <div class="chart">
-        <div id="register_sk_voter"></div>
-    </div>
-</div>
+        <div class="welcome-heading">
+            <h3>Welcome to the Homepage</h3>
+        </div>
 
+        <table>
+            <tr>
+                <td>
+                    <div class="chart">
+                        <div id="civil_status"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="chart">
+                        <div id="chart_age"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="chart">
+                        <div id="chart_edu"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="chart">
+                        <div id="youth_classification"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="chart">
+                        <div id="work_status"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="chart">
+                        <div id="register_sk_voter"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
