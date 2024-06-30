@@ -95,6 +95,8 @@ while($row = mysqli_fetch_assoc($result_sk)){
            Logged in as: <?php echo $_SESSION['email']; ?></p>
        
         <a href="viewprofile.php">Profiles</a>
+
+        <a href="records.php">Records</a>
         <?php
         // Display links based on user's role
         if ($role == 'admin') {

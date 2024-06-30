@@ -31,7 +31,9 @@ if (isset($_SESSION['role'])) {
            Logged in as: <?php echo $_SESSION['email']; ?></p>
        
         <a href="homepage.php">Back</a>
+        <a href="records.php">Records</a>
         <?php if ($role == 'admin') { echo '<a href="createacc.php">Create Accounts</a>'; } ?>
+
         <a href="crud.php">Create Profile</a>
         <?php if ($role == 'admin') { echo '<a href="accounts.php">Accounts</a>'; } ?>
         <a href="calendar.php">Calendar</a>
@@ -60,6 +62,7 @@ if (isset($_SESSION['role'])) {
                     </td>
                 </tr>
 
+
                 <tr>
                     <td>Sex:
                         <select name="sex">
@@ -87,7 +90,7 @@ if (isset($_SESSION['role'])) {
                     <td>Educational Background:
                         <select name="educational_background">
                             <option value="">Select</option>
-                            <option value="Elementary level">Elementary Level</option>
+                            <option value="Elementary Level">Elementary Level</option>
                             <option value="Elementary Graduate">Elementary Graduate</option>
                             <option value="High School Level">High School Level</option>
                             <option value="High School Graduate">High School Graduate</option>
@@ -113,10 +116,10 @@ if (isset($_SESSION['role'])) {
                 </tr>
                 <tr>
                     <td>Registered SK Voters:
-                        <select name="register_sk_voter">
+                        <select name="registered_sk_voters">
                             <option value="">Select</option>
-                            <option value="Registered">YES</option>
-                            <option value="Not Registered">NO</option>
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
                         </select>
                     </td>
                 </tr>
@@ -134,7 +137,7 @@ if (isset($_SESSION['role'])) {
             if (!empty($_POST['age_min']) && !empty($_POST['age_max'])) {
                 $age_min = (int)$_POST['age_min'];
                 $age_max = (int)$_POST['age_max'];
-                if ($age_min >= $age_max) {
+                if ($age_min > $age_max) {
                     echo "Minimum age cannot be greater than maximum age.";
                     exit();
                 }
@@ -144,6 +147,13 @@ if (isset($_SESSION['role'])) {
             if (!empty($_POST['civil_status'])) {
                 $civil_status = $_POST['civil_status'];
                 $conditions[] = "civil_status = '$civil_status'";
+            }
+
+            if (!empty($_POST['sex'])) {
+                $sex = $_POST['sex'];
+                if ($sex!== "Any") {
+                    $conditions[] = "sex = '$sex'";
+                }            
             }
 
             if (!empty($_POST['work_status'])) {
@@ -164,8 +174,8 @@ if (isset($_SESSION['role'])) {
             }
 
             if (!empty($_POST['register_sk_voter'])) {
-                $register_sk_voter = $_POST['register_sk_voter'];
-                $conditions[] = "register_sk_voter = '$register_sk_voter'";
+                $registered_sk_voters = $_POST['register_sk_voter'];
+                $conditions[] = "register_sk_voter = '$registered_sk_voters'";
             }
 
             if (!empty($conditions)) {
@@ -177,14 +187,19 @@ if (isset($_SESSION['role'])) {
             echo "<h3>Search Results</h3>";
             if (mysqli_num_rows($result) > 0) {
                 echo "<table border='1'>";
-                echo "<tr><th>ID</th><th>Name</th><th>Age</th><th>Email</th></tr>";
+                echo "<tr><th>Name</th><th>Age</th><th>Sex</th><th>Civil Status</th><th>Work Status</th><th>Educational Background</th><th>Youth Classification</th><th>Registered</th></tr>";
                 while ($row = mysqli_fetch_assoc($result)) {
                     echo "<tr>";
-                    echo "<td>" . $row['id'] . "</td>";
                     echo "<td>" . $row['fname'] . " " . $row['lname'] . "</td>";
                     echo "<td>" . $row['age'] . "</td>";
-                    echo "<td>" . $row['email'] . "</td>";
-                    echo "</tr>";
+                    echo "<td>" . $row['sex'] . "</td>";
+                    echo "<td>" . $row['civil_status'] . "</td>";
+                    echo "<td>" . $row['work_status'] . "</td>";
+                    echo "<td>" . $row['educational_background'] . "</td>";
+                    echo "<td>" . $row['youth_classification'] . "</td>";
+                    echo "<td>" . $row['register_sk_voter'] . "</td>";
+
+
                 }
                 echo "</table>";
             } else {

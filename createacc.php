@@ -24,6 +24,7 @@
         <p><?php echo "Hello ".$_SESSION['fname'] . " " . $_SESSION['lname'] ."!". "<br>"; ?>
            Logged in as: <?php echo $_SESSION['email']; ?></p>
          <a href = "viewprofile.php">Profiles</a>
+         <a href="records.php">Records</a>
         <a href="homepage.php">Back</a>
          <a href="crud.php">Create Profile</a>
         <a href="accounts.php">Accounts</a>
@@ -116,9 +117,15 @@ if(isset($_POST['submit'])){
     $cpassword = $_POST['cpassword'];
     $FirstName = $_POST['fname'];
     $LastName = $_POST['lname'];
-    $role = $_POST['role']; // Retrieve role from form
-
+    $role = $_POST['role']; 
     // Check if email already exists (your existing code)
+    $check_query = "SELECT * FROM account WHERE email = '$email' ";
+    $check_result = mysqli_query($conn, $check_query);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        echo "<script>alert('Email already exists');</script>";
+        exit();
+    }
 
     if ($password == $cpassword){
         $password = md5($password); // Consider using more secure hashing methods like bcrypt

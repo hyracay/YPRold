@@ -36,11 +36,10 @@ $sql_result = mysqli_query($conn, $sql_fetch);
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
 
-    <style>
-        .chart {
-            width: 20%;
-            padding: 20px;
-        }
+    <link rel="stylesheet" type="text/css" href="src/css.css">
+    <link rel="stylesheet" type="text/css" href="src/temp.css">
+
+    
     </style>
 </head>
 <body>
@@ -50,6 +49,7 @@ $sql_result = mysqli_query($conn, $sql_fetch);
            Logged in as: <?php echo $_SESSION['email']; ?></p>
        
         <a href="viewprofile.php">Profiles</a>
+        <a href="records.php">Records</a>
         <?php
         if ($role == 'admin') {
             echo '<a href="createacc.php">Create Accounts</a>';
@@ -84,6 +84,10 @@ $sql_result = mysqli_query($conn, $sql_fetch);
                     <td><?php echo $row['FirstName']; ?></td>
                     <td><?php echo $row['LastName']; ?></td>
                     <td><?php echo $row['role']; ?></td>
+                    <td>
+                    <a href="update_acc.php?id=<?= $row['id']; ?>" class="btn btn-primary">Update</a>
+                    <a href="delete_acc.php?id=<?= $row['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this profile?');">Delete</a>
+                    </td>
                 </tr>
                 <?php
             }
