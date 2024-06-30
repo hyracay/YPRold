@@ -47,6 +47,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['report'])) {
         echo "Sorry, there was an error uploading your file.";
     }
 }
+
+// Handle delete action
+if (isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['file'])) {
+    $file_to_delete = $_POST['file'];
+
+    // Delete from database
+    $stmt_delete = $conn->prepare("DELETE FROM reports WHERE filename = ?");
+    $stmt_delete->bind_param("s", $file_to_delete);
+    if ($stmt_delete->execute()) {
+        // Delete from filesystem
+        if (unlink($file_to_delete)) {
+            echo "File deleted successfully.";
+        } else {
+            echo "Error deleting file.";
+        }
+    } else {
+        echo "Error deleting file from database.";
+    }
+    exit(); // Ensure no further output
+}
+
+// Fetch and display reports from database
+$result = $conn->query("SELECT filename, upload_date FROM reports");
+$reports = [];
+while ($row = $result->fetch_assoc()) {
+    $reports[] = $row;
+}
 ?>
 
 <!DOCTYPE html>
@@ -57,6 +84,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['report'])) {
     <title>HOMEPAGE</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script>
+        function deleteFile(filename) {
+            if (confirm('Are you sure you want to delete this file?')) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'records.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // Reload the page or update the UI as needed
+                        location.reload(); // Example: Reload the page after deletion
+                    } else {
+                        alert('Error deleting file.');
+                    }
+                };
+                xhr.send('action=delete&file=' + encodeURIComponent(filename));
+            }
+        }
+    </script>
 
     <style>
         .chart {
@@ -145,22 +190,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['report'])) {
                     <th>Date Uploaded</th>
                     <th>Action</th>
                 </tr>
-                <?php
-                // Fetch and display reports from database
-                $result = $conn->query("SELECT filename, upload_date FROM reports");
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars(basename($row['filename'])) . "</td>";
-                    echo "<td>" . date('Y-m-d H:i:s', strtotime($row['upload_date'])) . "</td>";
-                    echo "<td><a href='" . htmlspecialchars($row['filename']) . "' target='_blank'>Download</a></td>";
-                    echo "</tr>";
-                }
-                ?>
-                <a href= "reports/"></a>
+                <?php foreach ($reports as $report): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars(basename($report['filename'])); ?></td>
+                    <td><?php echo date('Y-m-d H:i:s', strtotime($report['upload_date'])); ?></td>
+                    <td>
+                        <a href="<?php echo htmlspecialchars($report['filename']); ?>" target="_blank">Download</a>
+                        <button onclick="deleteFile('<?php echo htmlspecialchars($report['filename']); ?>')">Delete</button>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
             </table>
         </div>
     </div>
 </body>
 </html>
-
-
