@@ -80,12 +80,19 @@ while($row = mysqli_fetch_assoc($result_sk)){
     <title>HOMEPAGE</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
-
+    
     <style>
-        .chart {
-            width: 20%;
-            padding: 20px;
-        }
+        .content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+    .welcome-heading {
+    margin-top: 20px;
+}
+        
     </style>
 </head>
 <body>
@@ -118,28 +125,31 @@ while($row = mysqli_fetch_assoc($result_sk)){
         <a href="calendar.php">Calendar</a>
         <a href="logout.php">Logout</a>
     </div>
-
+         
     <div class="content">
+    <div class="welcome-heading">
         <h3>Welcome to the Homepage</h3>
-        <div class= "chart">
-            <div id="civil_status"></div>
-        </div>
-        <div class="chart">
-            <div id="chart_age"></div>
-        </div>
-        <div class="chart">
-            <div id="chart_edu"></div>
-        </div>
-        <div class= "chart">
-            <div id="youth_classification"></div>
-        </div>
-        <div class="chart">
-            <div id="work_status"></div>
-        </div>
-        <div class="chart">
-            <div id="register_sk_voter"></div>
-        </div>
     </div>
+    <div class="chart">
+        <div id="civil_status"></div>
+    </div>
+    <div class="chart">
+        <div id="chart_age"></div>
+    </div>
+    <div class="chart">
+        <div id="chart_edu"></div>
+    </div>
+    <div class="chart">
+        <div id="youth_classification"></div>
+    </div>
+    <div class="chart">
+        <div id="work_status"></div>
+    </div>
+    <div class="chart">
+        <div id="register_sk_voter"></div>
+    </div>
+</div>
+
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
