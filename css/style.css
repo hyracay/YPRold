@@ -3,7 +3,7 @@ body {
   background-color: #fff; }
 
 p {
-  color: #b3b3b3;
+  color: black;
   font-weight: 300; }
 
 h1, h2, h3, h4, h5, h6,
@@ -32,7 +32,7 @@ h2 {
     height: 200px; } }
 
 .half .contents {
-  background: #f6f7fc; }
+  background: #C5CBE3; }
 
 .half .contents, .half .bg {
   width: 50%; }
@@ -142,3 +142,11 @@ h2 {
 .control--checkbox input:disabled:checked ~ .control__indicator {
   background-color: #7e0cf5;
   opacity: .2; }
+
+.login-btn {
+  background-color: #566ebd;
+  width: 100%;
+  border: none;
+  border-radius: 4px;
+  height: 54px;
+}

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include ("conne.php");
+include("conne.php");
 
 if (!isset($_SESSION['email'])) {
     header("location:index.php");
@@ -14,7 +14,6 @@ if (isset($_SESSION['role'])) {
     exit();
 }
 
-
 $searchQuery = "";
 $sql = "SELECT * FROM events";
 $result = mysqli_query($conn, $sql);
@@ -22,7 +21,44 @@ $results = [];
 while ($row = mysqli_fetch_assoc($result)) {
     $results[] = $row;
 }
+
+// Handle event creation
+if (isset($_POST['new_event'])) {
+    $title = mysqli_real_escape_string($conn, $_POST['title']);
+    $description = mysqli_real_escape_string($conn, $_POST['description']);
+    $start_date = mysqli_real_escape_string($conn, $_POST['start_date']);
+    $end_date = mysqli_real_escape_string($conn, $_POST['end_date']);
+
+    $event_insert = "INSERT INTO events(title, description, start_date, end_date) VALUES('$title', '$description', '$start_date', '$end_date')";
+    $insert_result = mysqli_query($conn, $event_insert);
+
+    if (!$insert_result) {
+        echo "Error creating event: " . mysqli_error($conn);
+    }
+}
+
+// Handle event update
+if (isset($_POST['update_event'])) {
+    $event_id = mysqli_real_escape_string($conn, $_POST['event_id']);
+    $title = mysqli_real_escape_string($conn, $_POST['title']);
+    $description = mysqli_real_escape_string($conn, $_POST['description']);
+    $start_date = mysqli_real_escape_string($conn, $_POST['start_date']);
+    $end_date = mysqli_real_escape_string($conn, $_POST['end_date']);
+
+    $event_update = "UPDATE events SET 
+                    title = '$title',
+                    description = '$description',
+                    start_date = '$start_date',
+                    end_date = '$end_date'
+                    WHERE event_id = $event_id";
+    $update_result = mysqli_query($conn, $event_update);
+
+    if (!$update_result) {
+        echo "Error updating event: " . mysqli_error($conn);
+    }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -40,23 +76,24 @@ while ($row = mysqli_fetch_assoc($result)) {
         <img src="src/avatar.png" alt="Avatar">
         <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!" . "<br>"; ?>
             Logged in as: <?php echo $_SESSION['email']; ?></p>
-
-        <a href="viewprofile.php">Profiles</a>
-        <a href="records.php">Records</a>
+            <a href="viewprofile.php">Profiles</a>
+        <a href="crud.php">Create Profile</a>
+        <a href="records.php">SK Reports</a>
+        <a href="homepage.php">Back</a>
+        <?php
+         if ($role == 'admin') {
+            echo '<a href="accounts.php">Accounts</a>';
+         }
+        ?>
         <?php
         // Display links based on user's role
         if ($role == 'admin') {
             echo '<a href="createacc.php">Create Accounts</a>';
+        } elseif ($role == 'employee') {
+        } else {
+            echo "Unknown role.";
         }
         ?>
-        <a href="crud.php">Create Profile</a>
-        <?php
-        if ($role == 'admin') {
-            echo '<a href="accounts.php">Accounts</a>';
-        }
-        ?>
-
-        <a href="homepage.php">Back</a>
         <a href="logout.php">Logout</a>
     </div>
 
@@ -99,10 +136,9 @@ while ($row = mysqli_fetch_assoc($result)) {
 
         const addEventBtn = document.getElementById('addEventBtn');
 
-        function openEvent(eventId = null) {
+        function createEvent(eventId = null) {
             modal.style.display = "block";
-            if (eventId === null) {
-                modalInside.innerHTML = `
+            modalInside.innerHTML = `
                 <div class="eventFormContainer">
                     <form id="eventForm" method="POST" action="calendar.php">
                         <h3>Create Event</h3><br>
@@ -114,9 +150,12 @@ while ($row = mysqli_fetch_assoc($result)) {
                     </form>
                 </div>
             `;
-            } else {
-                const selectedEvent = results.find(item => item.id == eventId);
-                modalInside.innerHTML = `
+        }
+
+        function editEvent(eventId) {
+            const selectedEvent = results.find(item => item.id == eventId);
+            modal.style.display = "block";
+            modalInside.innerHTML = `
                 <div class="eventFormContainer">
                     <form id="eventForm" method="POST" action="calendar.php">
                         <h3>Edit Event</h3><br>
@@ -130,7 +169,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                     </form>
                 </div>
             `;
-            }
         }
 
         function deleteEvent(eventId) {
@@ -151,7 +189,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                 },
                 events: resultsToShow,
                 eventClick: function (info) {
-                    openEvent(info.event.id);
+                    editEvent(info.event.id);
                 }
             });
 
@@ -159,67 +197,30 @@ while ($row = mysqli_fetch_assoc($result)) {
         });
 
         addEventBtn.addEventListener('click', function () {
-            openEvent();
+            createEvent();
         });
 
         // Optional: Submit form via AJAX to avoid page reload
-        document.getElementById('eventForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            fetch(form.action, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.text())
-                .then(data => {
-                    alert(data);
-                    modal.style.display = "none";
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+        document.addEventListener('submit', function (event) {
+            if (event.target.id === 'eventForm') {
+                event.preventDefault();
+                const form = event.target;
+                const formData = new FormData(form);
+                fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        alert(data);
+                        modal.style.display = "none";
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
         });
-
     </script>
 </body>
-
 </html>
-
-<?php
-    // Handle event creation
-    if (isset($_POST['new_event'])) {
-        $title = mysqli_real_escape_string($conn, $_POST['title']);
-        $description = mysqli_real_escape_string($conn, $_POST['description']);
-        $start_date = mysqli_real_escape_string($conn, $_POST['start_date']);
-        $end_date = mysqli_real_escape_string($conn, $_POST['end_date']);
-
-        $event_insert = "INSERT INTO events(title, description, start_date, end_date) VALUES('$title', '$description', '$start_date', '$end_date')";
-        $insert_result = mysqli_query($conn, $event_insert);
-
-        if (!$insert_result) {
-            echo "Error creating event: " . mysqli_error($conn);
-        }
-    }
-
-    // Handle event update
-    if (isset($_POST['update_event'])) {
-        $event_id = mysqli_real_escape_string($conn, $_POST['event_id']);
-        $title = mysqli_real_escape_string($conn, $_POST['title']);
-        $description = mysqli_real_escape_string($conn, $_POST['description']);
-        $start_date = mysqli_real_escape_string($conn, $_POST['start_date']);
-        $end_date = mysqli_real_escape_string($conn, $_POST['end_date']);
-
-        $event_update = "UPDATE events SET 
-                        title = '$title',
-                        description = '$description',
-                        start_date = '$start_date',
-                        end_date = '$end_date'
-                        WHERE event_id = $event_id";
-        $update_result = mysqli_query($conn, $event_update);
-
-        if (!$update_result) {
-            echo "Error updating event: " . mysqli_error($conn);
-        }
-    }
-?>

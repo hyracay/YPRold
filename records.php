@@ -129,29 +129,23 @@ while ($row = $result->fetch_assoc()) {
         <img src="src/avatar.png" alt="Avatar">
         <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!" . "<br>"; ?>
            Logged in as: <?php echo $_SESSION['email']; ?></p>
-       
         <a href="viewprofile.php">Profiles</a>
-
-        <a href="homepage.php">Back</a>
-        <?php
-        // Display links based on user's role
-        if ($role == 'admin') {
-            echo '<a href="createacc.php">Create Accounts</a>';
-        } elseif ($role == 'employee') {
-            // For employees, you can customize what to display or leave it empty
-            // Here, we do nothing to omit displaying "Create Accounts"
-        } else {
-            // Handle unexpected roles (optional)
-            echo "Unknown role.";
-        }
-        ?>
         <a href="crud.php">Create Profile</a>
+        <a href="homepage.php">Back</a>
+        <a href="calendar.php">Calendar</a>
         <?php
          if ($role == 'admin') {
             echo '<a href="accounts.php">Accounts</a>';
          }
         ?>
-        <a href="calendar.php">Calendar</a>
+        <?php
+        if ($role == 'admin') {
+            echo '<a href="createacc.php">Create Accounts</a>';
+        } elseif ($role == 'employee') {
+        } else {
+            echo "Unknown role.";
+        }
+        ?>
         <a href="logout.php">Logout</a>
     </div>
 

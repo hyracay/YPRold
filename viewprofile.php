@@ -67,26 +67,28 @@ if (isset($_SESSION['role'])) {
             Logged in as: <?php echo $_SESSION['email']; ?></p>
 
         <a href="homepage.php">Back</a>
-        <a href="records.php">Records</a>
+        <a href="crud.php">Create Profile</a>
+        <a href="records.php">SK Reports</a>
+        <a href="calendar.php">Calendar</a>
+        <?php
+         if ($role == 'admin') {
+            echo '<a href="accounts.php">Accounts</a>';
+         }
+        ?>
         <?php
         // Display links based on user's role
         if ($role == 'admin') {
             echo '<a href="createacc.php">Create Accounts</a>';
-        } 
+        } elseif ($role == 'employee') {
+        } else {
+            echo "Unknown role.";
+        }
         ?>
-        <a href="crud.php">Create Profile</a>
-        <?php
-        // Display links based on user's role
-        if ($role == 'admin') {
-            echo '<a href="accounts.php">Accounts</a>';
-        } 
-        ?>
-
-        <a href="calendar.php">Calendar</a>
         <a href="logout.php">Logout</a>
     </div>
 
     <div class="content">
+        <h1>YOUTH PROFILES</h1>
         <!-- Search -->
         <div class="search-container">
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -106,8 +108,7 @@ if (isset($_SESSION['role'])) {
                                                     class="form-control" placeholder="Search data">
                                                 <button type="submit" class="btn btn-primary">Search</button>
                                                 <button type="submit" style="margin-left:100px">
-                                                    Advance Search
-                                                    <a href="advance_search.php">click here</a>
+                                                <a href="advance_search.php">Advance Search</a>
                                                 </button>
                                             </div>
                                         </form>
