@@ -189,7 +189,7 @@ while ($row = $result->fetch_assoc()) {
                     <td><?php echo htmlspecialchars(basename($report['filename'])); ?></td>
                     <td><?php echo date('Y-m-d H:i:s', strtotime($report['upload_date'])); ?></td>
                     <td>
-                        <a href="<?php echo htmlspecialchars($report['filename']); ?>" target="_blank">Download</a>
+                        <a href="download.php?file=<?php echo urlencode($report['filename']); ?>" target="_blank">Download</a>
                         <button onclick="deleteFile('<?php echo htmlspecialchars($report['filename']); ?>')">Delete</button>
                     </td>
                 </tr>
