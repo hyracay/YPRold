@@ -96,7 +96,7 @@ if (isset($_POST['update'])) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Update Profile</title>
+    <title>EDIT PROFILE</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
 </head>
 <body>

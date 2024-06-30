@@ -13,12 +13,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>HOMEPAGE</title>
-    <link rel="stylesheet" type="text/css" href="src/css.css">
-     <link rel="stylesheet" type="text/css" href="src/newcss.css">
+    <title>CREATE USER ACCOUNT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="src/newcss.css">
+    <link rel="stylesheet" type="text/css" href="src/css.css">
 </head>
 <body>
+    
     <div class="sidebar">
         <img src="src/avatar.png" alt="Avatar">
         <p><?php echo "Hello ".$_SESSION['fname'] . " " . $_SESSION['lname'] ."!". "<br>"; ?>

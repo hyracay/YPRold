@@ -28,12 +28,14 @@ if (isset($_POST['new_event'])) {
     $description = mysqli_real_escape_string($conn, $_POST['description']);
     $start_date = mysqli_real_escape_string($conn, $_POST['start_date']);
     $end_date = mysqli_real_escape_string($conn, $_POST['end_date']);
-
-    $event_insert = "INSERT INTO events(title, description, start_date, end_date) VALUES('$title', '$description', '$start_date', '$end_date')";
+    $event_insert = "INSERT INTO events (title, description, start_date, end_date) VALUES ('$title', '$description', '$start_date', '$end_date')";
     $insert_result = mysqli_query($conn, $event_insert);
 
     if (!$insert_result) {
         echo "Error creating event: " . mysqli_error($conn);
+    } else {
+        header("location: calendar.php");
+        exit();
     }
 }
 
@@ -44,39 +46,47 @@ if (isset($_POST['update_event'])) {
     $description = mysqli_real_escape_string($conn, $_POST['description']);
     $start_date = mysqli_real_escape_string($conn, $_POST['start_date']);
     $end_date = mysqli_real_escape_string($conn, $_POST['end_date']);
-
-    $event_update = "UPDATE events SET 
-                    title = '$title',
-                    description = '$description',
-                    start_date = '$start_date',
-                    end_date = '$end_date'
-                    WHERE event_id = $event_id";
+    $event_update = "UPDATE events SET title = '$title', description = '$description', start_date = '$start_date', end_date = '$end_date' WHERE event_id = $event_id";
     $update_result = mysqli_query($conn, $event_update);
 
     if (!$update_result) {
         echo "Error updating event: " . mysqli_error($conn);
+    } else {
+        header("location: calendar.php");
+        exit();
+    }
+}
+
+// Handle event deletion
+if (isset($_GET['event_id'])) {
+    $id = mysqli_real_escape_string($conn, $_GET['event_id']);
+    $sql_delete = "DELETE FROM events WHERE event_id = '$id'";
+
+    if (mysqli_query($conn, $sql_delete)) {
+        header("location: calendar.php");
+        exit();
+    } else {
+        echo "Error deleting event: " . mysqli_error($conn);
     }
 }
 ?>
 
-
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CALENDAR</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <link rel="stylesheet" type="text/css" href="src/calendar.css">
+    <link rel="stylesheet" type="text/css" href="src/temp.css">
 </head>
-
 <body>
     <div class="sidebar">
         <img src="src/avatar.png" alt="Avatar">
         <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!" . "<br>"; ?>
-            Logged in as: <?php echo $_SESSION['email']; ?></p>
-            <a href="viewprofile.php">Profiles</a>
+        Logged in as: <?php echo $_SESSION['email']; ?></p>
+        <a href="viewprofile.php">Profiles</a>
         <a href="crud.php">Create Profile</a>
         <a href="records.php">SK Reports</a>
         <a href="homepage.php">Back</a>
@@ -86,7 +96,6 @@ if (isset($_POST['update_event'])) {
          }
         ?>
         <?php
-        // Display links based on user's role
         if ($role == 'admin') {
             echo '<a href="createacc.php">Create Accounts</a>';
         } elseif ($role == 'employee') {
@@ -99,12 +108,12 @@ if (isset($_POST['update_event'])) {
 
     <div class="content">
         <h1>Event Calendar</h1>
-        <button id="addEventBtn">Add Event</button>
+        <button id="addEventBtn" class="btn btn-primary">Add Event</button>
         <div id='calendar'></div>
     </div>
 
     <div id="myModal" class="modal">
-        <div class="modal-content">
+        <div class="modalContent">
             <span class="close">&times;</span>
             <div id="modalInside"></div>
         </div>
@@ -142,30 +151,30 @@ if (isset($_POST['update_event'])) {
                 <div class="eventFormContainer">
                     <form id="eventForm" method="POST" action="calendar.php">
                         <h3>Create Event</h3><br>
-                        <input type="text" id="title" name="title" placeholder="Event Title"><br><br>
-                        <textarea id="description" name="description" placeholder="Event Description"></textarea><br><br>
-                        <input type="datetime-local" id="start_date" name="start_date" placeholder="Start Date"><br><br>
-                        <input type="datetime-local" id="end_date" name="end_date" placeholder="End Date"><br><br>
-                        <input type="submit" name="new_event" value="Create Event">
+                        <input type="text" id="title" name="title" placeholder="Event Title" required class="form-control"><br><br>
+                        <textarea id="description" name="description" placeholder="Event Description" class="form-control"></textarea><br><br>
+                        <input type="datetime-local" id="start_date" name="start_date" placeholder="Start Date" required class="form-control"><br><br>
+                        <input type="datetime-local" id="end_date" name="end_date" placeholder="End Date" required class="form-control"><br><br>
+                        <input type="submit" name="new_event" value="Create Event" class="btn btn-success">
                     </form>
                 </div>
             `;
         }
 
         function editEvent(eventId) {
-            const selectedEvent = results.find(item => item.id == eventId);
+            const selectedEvent = results.find(item => item.event_id == eventId);
             modal.style.display = "block";
             modalInside.innerHTML = `
                 <div class="eventFormContainer">
                     <form id="eventForm" method="POST" action="calendar.php">
                         <h3>Edit Event</h3><br>
-                        <input type="hidden" id="event_id" name="event_id" value="${selectedEvent.id}">
-                        <input type="text" id="title" name="title" placeholder="Event Title" value="${selectedEvent.title}"><br><br>
-                        <textarea id="description" name="description" placeholder="Event Description">${selectedEvent.description}</textarea><br><br>
-                        <input type="datetime-local" id="start_date" name="start_date" value="${selectedEvent.start}"><br><br>
-                        <input type="datetime-local" id="end_date" name="end_date" value="${selectedEvent.end}"><br><br>
-                        <input type="submit" name="update_event" value="Update Event">
-                        <button type="button" onclick="deleteEvent(${selectedEvent.id})">Delete Event</button>
+                        <input type="hidden" id="event_id" name="event_id" value="${selectedEvent.event_id}">
+                        <input type="text" id="title" name="title" placeholder="Event Title" value="${selectedEvent.title}" class="form-control"><br><br>
+                        <textarea id="description" name="description" placeholder="Event Description" class="form-control">${selectedEvent.description}</textarea><br><br>
+                        <input type="datetime-local" id="start_date" name="start_date" value="${selectedEvent.start_date}" class="form-control"><br><br>
+                        <input type="datetime-local" id="end_date" name="end_date" value="${selectedEvent.end_date}" class="form-control"><br><br>
+                        <input type="submit" name="update_event" value="Update Event" class="btn btn-primary">
+                        <input type="button" name="delete_event" value="Delete Event" onclick="deleteEvent(${selectedEvent.event_id})" class="btn btn-danger">
                     </form>
                 </div>
             `;
@@ -173,9 +182,13 @@ if (isset($_POST['update_event'])) {
 
         function deleteEvent(eventId) {
             if (confirm('Are you sure you want to delete this event?')) {
-                window.location.href = `delete_event.php?event_id=${eventId}`;
+                window.location.href = `calendar.php?event_id=${eventId}`;
             }
         }
+
+        addEventBtn.addEventListener('click', function () {
+            createEvent();
+        });
 
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
@@ -194,32 +207,6 @@ if (isset($_POST['update_event'])) {
             });
 
             calendar.render();
-        });
-
-        addEventBtn.addEventListener('click', function () {
-            createEvent();
-        });
-
-        // Optional: Submit form via AJAX to avoid page reload
-        document.addEventListener('submit', function (event) {
-            if (event.target.id === 'eventForm') {
-                event.preventDefault();
-                const form = event.target;
-                const formData = new FormData(form);
-                fetch(form.action, {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.text())
-                    .then(data => {
-                        alert(data);
-                        modal.style.display = "none";
-                        window.location.reload();
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
         });
     </script>
 </body>

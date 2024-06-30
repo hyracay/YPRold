@@ -1,6 +1,15 @@
+*, ::after, ::before {
+  box-sizing: unset;
+}
+
+h1 {
+  font-size: 50%;
+}
+
 body {
-  font-family: "Roboto", sans-serif;
-  background-color: #fff; }
+  font-family: "Helvetica", sans-serif;
+  background-color: #fff; 
+}
 
 p {
   color: black;
@@ -8,7 +17,7 @@ p {
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: "Roboto", sans-serif; }
+  font-family: "Helvetica", sans-serif; }
 
 a {
   -webkit-transition: .3s all ease;
@@ -18,7 +27,8 @@ a {
     text-decoration: none !important; }
 
 .content {
-  padding: 7rem 0; }
+  padding: 7rem 0; 
+}
 
 h2 {
   font-size: 20px; }
@@ -32,7 +42,7 @@ h2 {
     height: 200px; } }
 
 .half .contents {
-  background: #C5CBE3; }
+  background: #fffcdc; }
 
 .half .contents, .half .bg {
   width: 50%; }
@@ -41,15 +51,13 @@ h2 {
       width: 100%; } }
   .half .contents .form-control, .half .bg .form-control {
     border: none;
-    -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 2px 0 #f37a1f;
+    box-shadow: 0 1px 0px 0 #f37a1f;
     height: 54px;
     background: #fff; }
     .half .contents .form-control:active, .half .contents .form-control:focus, .half .bg .form-control:active, .half .bg .form-control:focus {
       outline: none;
-      -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1); }
+      box-shadow: 0 1px 4px 0 #f37a1f; }
 
 .half .bg {
   background-size: cover;
@@ -93,10 +101,7 @@ h2 {
   height: 20px;
   width: 20px;
   background: #e6e6e6;
-  border-radius: 4px; }
-
-.control--radio .control__indicator {
-  border-radius: 50%; }
+}
 
 .control:hover input ~ .control__indicator,
 .control input:focus ~ .control__indicator {
@@ -144,9 +149,15 @@ h2 {
   opacity: .2; }
 
 .login-btn {
-  background-color: #566ebd;
+  background-color: #f37a1f;
   width: 100%;
   border: none;
-  border-radius: 4px;
   height: 54px;
+}
+
+h1 {
+  font-size: 55px;
+  text-transform: uppercase;
+  font-family: Helvetica;
+  font-weight: 700;
 }

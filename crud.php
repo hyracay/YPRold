@@ -24,9 +24,10 @@ if (isset($_SESSION['role'])) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>HOMEPAGE</title>
+    <title>CREATE YOUTH PROFILE</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <link rel="stylesheet" type="text/css" href="src/temp.css">
+    <link rel="stylesheet" type="text/css" href="src/crud.css">
 </head>
 
 <body>
@@ -57,7 +58,6 @@ if (isset($_SESSION['role'])) {
 
     <div class="content">
         <h1>Create new youth Profile</h1>
-        <button id="importBtn">Import</button>
         <form method="POST" action="crud.php">
             <table>
                 <tr>
@@ -68,7 +68,7 @@ if (isset($_SESSION['role'])) {
                         Name: <input type="text" name="lname" placeholder="Last Name" required>
                         <input type="text" name="fname" placeholder="First Name" required>
                         <input type="text" name="mname" placeholder="Middle Name" required>
-                        <input type="text" name="suffix" placeholder="Suffix" required>
+                        <input type="text" name="suffix" placeholder="Suffix">
                     </td>
                 </tr>
                 <tr>
@@ -85,7 +85,7 @@ if (isset($_SESSION['role'])) {
                         <table>
                             <tr><br>
                                 <td style="border: 1px solid;">
-                                    Sex Assigned as Birth: <br>
+                                    Sex Assigned at Birth: <br>
                                     <input type="radio" name="sex" value="Male" required>Male<br>
                                     <input type="radio" name="sex" value="Female" required>Female
                                 </td>
@@ -115,14 +115,13 @@ if (isset($_SESSION['role'])) {
                                 </td>
                                 <td style="border: 1px solid;">
                                     Youth Classification:<br>
-                                    <input type="radio" name="youth_classification" value="In Youth School" required> In Youth
-                                    School<br>
-                                    <input type="radio" name="youth_classification" value="Out of School Youth" required> Out of
+                                    <input type="radio" name="youth_classification" value="In Youth School" required> In School Youth<br>
+                                    <input type="radio" name="youth_classification" value="Out of School Youth" required> Out Of
                                     School Youth<br>
                                     <input type="radio" name="youth_classification" value="Working Youth" required> Working
                                     Youth<br>
                                     <input type="radio" name="youth_classification"
-                                        value="Person with Disability (PWD)" required> Person with Disability (PWD)<br>
+                                        value="Person with Disability (PWD)" required> Person With Disability (PWD)<br>
                                 </td>
                             </tr>
                         </table>
@@ -138,7 +137,7 @@ if (isset($_SESSION['role'])) {
                                     old)<br>
                                     <input type="radio" name="age_group" value="Core Youth" required> Core Youth(18-24 yrs.
                                     old)<br>
-                                    <input type="radio" name="age_group" value="Young adult" required> Young adult(25-30
+                                    <input type="radio" name="age_group" value="Young adult" required> Young Adult(25-30
                                     yrs.old)<br>
                                 </td>
                                 <td style="border: 1px solid;">
@@ -147,7 +146,7 @@ if (isset($_SESSION['role'])) {
                                     <input type="radio" name="work_status" value="Unemployed" required> Unemployed<br>
                                     <input type="radio" name="work_status" value="Self-Employed" required> Self-Employed<br>
                                     <input type="radio" name="work_status" value="Currently looking for job" required> Currently
-                                    looking for job<br>
+                                    Looking For Job<br>
                                 </td>
                             </tr>
                         </table>
@@ -177,7 +176,7 @@ if (isset($_SESSION['role'])) {
                                     Level<br>
                                     <input type="radio" name="educational_background" value="Master Graduate" required>
                                     Master's Graduate<br>
-                                    <input type="radio" name="educational_background" value="Doctrate Level" required> Doctrate
+                                    <input type="radio" name="educational_background" value="Doctorate Level" required> Doctorate
                                     Level<br>
                                 </td>
                                 <td style="border: 1px solid;">
@@ -193,6 +192,7 @@ if (isset($_SESSION['role'])) {
                 <tr>
                     <td>
                         <button name="submit">Submit</button>
+                        <button id="importBtn">Import</button>
                     </td>
                 </tr>
             </table>
@@ -200,7 +200,7 @@ if (isset($_SESSION['role'])) {
     </div>
 
     <div id="myModal" class="modal">
-        <div class="modal-content">
+        <div class="modalContent">
             <span class="close">&times;</span>
             <div id="modalInside">
                 <form action="upload.php" method="post" enctype="multipart/form-data">
@@ -275,9 +275,7 @@ if (isset($_POST['submit'])) {
 
     $result = mysqli_query($conn, $insert);
 
-    if ($result) {
-        echo "Record Inserted Successfully";
-    } else {
+    if (!$result) {
         echo "Error: " . $insert . "<br>" . mysqli_error($conn);
     }
 }

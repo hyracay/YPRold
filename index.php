@@ -38,11 +38,11 @@ if(isset($_POST['login'])){
     <link rel="stylesheet" href="css/owl.carousel.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <title>LOGIN</title>
+    <title>LOGIN TO YPR</title>
 </head>
 <body>
     <div class="d-lg-flex half">
-        <div class="bg order-1 order-md-2" style="background-image: url('src/bg.jpg');"></div>
+        <div class="bg order-1 order-md-2" style="background-image: url('src/bg.png');"></div>
         <div class="contents order-2 order-md-1">
         <div class="container">
             <div class="row align-items-center justify-content-center">

@@ -10,12 +10,12 @@ if (!isset($_SESSION['email'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['selectedProfiles'])) {
     $selected_profiles = $_POST['selectedProfiles'];
     foreach ($selected_profiles as $id) {
-        $id = intval($id); // Ensure the ID is an integer for security
+        $id = intval($id);
         $sql = "DELETE FROM profiles WHERE id = $id";
         mysqli_query($conn, $sql);
     }
 }
 
-header("location: viewprofile.php"); // Redirect back to homepage after deletion
+header("location: viewprofile.php");
 exit();
 ?>

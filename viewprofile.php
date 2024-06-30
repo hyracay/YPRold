@@ -23,12 +23,12 @@ if (isset($_SESSION['role'])) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>HOMEPAGE</title>
-    <link rel="stylesheet" type="text/css" href="src/css.css">
+    <title>VIEW PROFILES</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="src/temp.css">
+    <link rel="stylesheet" type="text/css" href="src/css.css">
 
     <style>
-        /* Checkbox styling */
         input[type="checkbox"] {
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -42,14 +42,10 @@ if (isset($_SESSION['role'])) {
             top: 4px;
             cursor: pointer;
         }
-
-        /* Checked state */
         input[type="checkbox"]:checked {
             background-color: #FF0000;
             border-color: #FF0000;
         }
-
-        /* Checkmark */
         input[type="checkbox"]:checked::before {
             content: '\2713';
             display: block;
@@ -88,10 +84,9 @@ if (isset($_SESSION['role'])) {
     </div>
 
     <div class="content">
-        <h1>YOUTH PROFILES</h1>
+        <h1>youth profiles</h1>
         <!-- Search -->
         <div class="search-container">
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -100,16 +95,15 @@ if (isset($_SESSION['role'])) {
                                 <div class="row">
                                     <div class="col-md-7">
                                         <form action="" method="GET">
-                                            <div class="input-group mb-3">
+                                        <div class="input-group mb-3">
                                                 <input type="text" name="search"
                                                     value="<?php if (isset($_GET['search'])) {
                                                         echo $_GET['search'];
                                                     } ?>"
-                                                    class="form-control" placeholder="Search data">
+                                                    class="form-control" placeholder="Enter name:">
                                                 <button type="submit" class="btn btn-primary">Search</button>
                                                 <button type="submit" style="margin-left:100px">
-                                                <a href="advance_search.php">Advance Search</a>
-                                                </button>
+                                                <a href="advance_search.php" style="text-decoration: none; color: #fff; float: right">Advance Search</a>
                                             </div>
                                         </form>
                                     </div>
@@ -139,8 +133,8 @@ if (isset($_SESSION['role'])) {
                             <form id="profilesForm" method="POST" action="delete_multiple.php">
                                 <table>
                                     <tr>
-                                        <th>Avatar</th>
-                                        <th>Name</th>
+                                        <th colspan="1">Name</th>
+                                        <th></th>
                                         <th>Email</th>
                                         <th>Actions</th>
                                         <th>
@@ -170,7 +164,7 @@ if (isset($_SESSION['role'])) {
                                                     data-id="<?= $id; ?>"><?= $fullName; ?></a>
                                             </td>
                                             <td>
-                                                <p><?= $email; ?></p>
+                                                <p ><?= $email; ?></p>
                                             </td>
                                             <td>
                                                 <a href="update.php?id=<?= $id; ?>"
@@ -190,14 +184,12 @@ if (isset($_SESSION['role'])) {
                             </form>
                         </div>
                     <?php
-                    } else {
-                        echo "No profiles found.";
                     }
                     ?>
     </div>
     <div id="myModal" class="modal">
         <!-- Modal content -->
-        <div class="modal-content">
+        <div class="modalContent">
             <span class="close">&times;</span>
             <div id="modalInside"></div>
         </div>
@@ -205,18 +197,10 @@ if (isset($_SESSION['role'])) {
 
     <script>
         const results = <?php echo json_encode($results); ?>;
-        // Get the modal
         var modal = document.getElementById("myModal");
-
-        // Get the buttons that open the modal
         var btns = document.getElementsByClassName("profileNameLink");
-
-        // Get the <span> element that closes the modal
         var span = document.getElementsByClassName("close")[0];
-
         var modalInside = document.getElementById('modalInside');
-
-        // When the user clicks the button, open the modal 
         for (var i = 0; i < btns.length; i++) {
             btns[i].addEventListener("click", function (e) {
                 e.preventDefault();
@@ -229,7 +213,7 @@ if (isset($_SESSION['role'])) {
                      <div>Sex: ${selectedProfile.sex}</div>
                      <div>Age: ${selectedProfile.age}</div>
                      <div>Birth Date: ${selectedProfile.birth_date}</div>
-                     <div>Email: ${selectedProfile.email}</div>
+                     <div style="text-transform: none">Email: ${selectedProfile.email}</div>
                      <div>Contact Number: ${selectedProfile.contactnumber}</div>
                      <div>Civil Status: ${selectedProfile.civil_status}</div>
                      <div>Age Group: ${selectedProfile.age_group}</div>
@@ -244,12 +228,10 @@ if (isset($_SESSION['role'])) {
             });
         }
 
-        // When the user clicks on <span> (x), close the modal
         span.onclick = function () {
             modal.style.display = "none";
         }
 
-        // When the user clicks anywhere outside of the modal, close it
         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
@@ -257,7 +239,6 @@ if (isset($_SESSION['role'])) {
         }
 
         function exportToCSV(array, filename = 'data.csv') {
-            // Check if the array is not empty
             if (array.length > 0) {
                 const header = Object.keys(array[0]);
                 const csv = array.map(row => header.map(fieldName => JSON.stringify(row[fieldName])).join(','));

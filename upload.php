@@ -1,5 +1,5 @@
 <?php
-include ("conne.php");
+include("conne.php");
 
 if (isset($_POST['upload'])) {
     // Check if a file is uploaded
@@ -41,28 +41,26 @@ if (isset($_POST['upload'])) {
 
             // Read and insert the data
             while (($row = fgetcsv($file, 1000, ",")) !== FALSE) {
-                // var_dump($row);
-                // die();
-                $lname = $row[1];
-                $fname = $row[2];
-                $mname = $row[3];
-                $suffix = $row[4];
-                $region = $row[5];
-                $province = $row[6];
-                $municipality = $row[7];
-                $barangay = $row[8];
-                $purok = $row[9];
-                $sex = $row[10];
-                $age = $row[11];
-                $email = $row[12];
-                $birth_date = $row[13];
-                $contactnumber = $row[14];
-                $civil_status = $row[15];
-                $youth_classification = $row[16];
-                $age_group = $row[17];
-                $work_status = $row[18];
-                $educational_background = $row[19];
-                $register_sk_voter = $row[20] == 'true' ? 1 : 0;
+                $lname = $row[0];
+                $fname = $row[1];
+                $mname = $row[2];
+                $suffix = $row[3];
+                $region = $row[4];
+                $province = $row[5];
+                $municipality = $row[6];
+                $barangay = $row[7];
+                $purok = $row[8];
+                $sex = $row[9];
+                $age = $row[10];
+                $email = $row[11];
+                $birth_date = $row[12];
+                $contactnumber = $row[13];
+                $civil_status = $row[14];
+                $youth_classification = $row[15];
+                $age_group = $row[16];
+                $work_status = $row[17];
+                $educational_background = $row[18];
+                $register_sk_voter = $row[19] == 'true' ? 1 : 0;
 
                 $stmt->execute();
             }
@@ -73,15 +71,19 @@ if (isset($_POST['upload'])) {
 
             // Close the file
             fclose($file);
-
-            echo "CSV data imported successfully.";
+            header("location: crud.php");
+            exit();
+            
         } else {
             echo "Please upload a valid CSV file.";
+            header("location: crud.php");
         }
     } else {
         echo "No file uploaded or there was an upload error.";
+        header("location: crud.php");
     }
 } else {
     echo "Upload form not submitted.";
+    header("location: crud.php");
 }
 ?>

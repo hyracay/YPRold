@@ -102,6 +102,10 @@ while($row = mysqli_fetch_assoc($result_sk)){
         .chart {
             flex: 0 0 45%; /* Adjust the width as needed */
         }
+
+        h1 {
+            margin-right: auto;
+        }
     </style>
 </head>
 <body>
@@ -131,10 +135,7 @@ while($row = mysqli_fetch_assoc($result_sk)){
     </div>
          
     <div class="content">
-        <div class="welcome-heading">
-            <h3>Welcome to the Homepage</h3>
-        </div>
-
+        <h1>demographic insights</h1>
         <div class="row">
             <div class="chart">
                 <div id="civil_status"></div>

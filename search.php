@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 session_start();
 include("conne.php");
 
@@ -23,7 +23,7 @@ if (isset($_SESSION['role'])) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>HOMEPAGE</title>
+    <title>SEARCH PROFILES</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
 </head>
 <body>
@@ -156,4 +156,4 @@ if (isset($_SESSION['role'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
+ -->
