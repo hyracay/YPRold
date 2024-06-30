@@ -34,33 +34,30 @@ if (isset($_SESSION['role'])) {
         <img src="src/avatar.png" alt="Avatar">
         <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!" . "<br>"; ?>
             Logged in as: <?php echo $_SESSION['email']; ?></p>
-
-        <a href="viewprofile.php">Profiles</a>
-        <a href="records.php">Records</a>
+            <a href="viewprofile.php">Profiles</a>
+        <a href="homepage.php">Back</a>
+        <a href="records.php">SK Reports</a>
+        <a href="calendar.php">Calendar</a>
         <?php
-        // Display links based on user's role
+         if ($role == 'admin') {
+            echo '<a href="accounts.php">Accounts</a>';
+         }
+        ?>
+        <?php
         if ($role == 'admin') {
             echo '<a href="createacc.php">Create Accounts</a>';
-        } 
+        } elseif ($role == 'employee') {
+        } else {
+            echo "Unknown role.";
+        }
         ?>
-
-        <a href="homepage.php">Back</a>
-        <?php
-        // Display links based on user's role
-        if ($role == 'admin') {
-            echo '<a href="accounts.php">Accounts</a>';
-        } 
-        ?>
-
-        <a href="calendar.php">Calendar</a>
-
         <a href="logout.php">Logout</a>
     </div>
 
 
     <div class="content">
+        <h1>Create new youth Profile</h1>
         <button id="importBtn">Import</button>
-        <h3>Create new Profile</h3>
         <form method="POST" action="crud.php">
             <table>
                 <tr>

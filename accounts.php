@@ -35,11 +35,8 @@ $sql_result = mysqli_query($conn, $sql_fetch);
     <title>HOMEPAGE</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
-
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <link rel="stylesheet" type="text/css" href="src/temp.css">
-
-    
     </style>
 </head>
 <body>
@@ -47,27 +44,28 @@ $sql_result = mysqli_query($conn, $sql_fetch);
         <img src="src/avatar.png" alt="Avatar">
         <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!" . "<br>"; ?>
            Logged in as: <?php echo $_SESSION['email']; ?></p>
-       
-        <a href="viewprofile.php">Profiles</a>
-        <a href="records.php">Records</a>
+           <a href="viewprofile.php">Profiles</a>
+        <a href="crud.php">Create Profile</a>
+        <a href="records.php">SK Reports</a>
+        <a href="calendar.php">Calendar</a>
+        <?php
+         if ($role == 'admin') {
+            echo '<a href="homepage.php">Back</a>';
+         }
+        ?>
         <?php
         if ($role == 'admin') {
             echo '<a href="createacc.php">Create Accounts</a>';
         } elseif ($role == 'employee') {
-            // For employees, you can customize what to display or leave it empty
         } else {
             echo "Unknown role.";
         }
         ?>
-        <a href="crud.php">Create Profile</a>
-        <a href="homepage.php">Back</a>
-        
-        <a href="calendar.php">Calendar</a>
         <a href="logout.php">Logout</a>
     </div>
 
     <div class="content">
-        <h3>Welcome to the Homepage</h3>
+        <h1>User Accounts</h1>
         <table style="margin: auto;" border="1">
             <tr>
                 <td>Email</td>

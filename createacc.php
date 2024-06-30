@@ -23,89 +23,78 @@
         <img src="src/avatar.png" alt="Avatar">
         <p><?php echo "Hello ".$_SESSION['fname'] . " " . $_SESSION['lname'] ."!". "<br>"; ?>
            Logged in as: <?php echo $_SESSION['email']; ?></p>
-         <a href = "viewprofile.php">Profiles</a>
-         <a href="records.php">Records</a>
-        <a href="homepage.php">Back</a>
-         <a href="crud.php">Create Profile</a>
-        <a href="accounts.php">Accounts</a>
+        <a href = "viewprofile.php">Profiles</a>
+        <a href="crud.php">Create Profile</a>
+        <a href="records.php">Records</a>
         <a href="calendar.php">Calendar</a>
+        <a href="accounts.php">Accounts</a>
+        <a href="homepage.php">Back</a>
         <a href="logout.php">Logout</a>
     </div>
 
     <div class="content">
- <div class="table-container">
-        <form method="POST" action="createacc.php">
-            <section class="vh-100 -custom">
-                <div class="container py-5 h-100">
-                    <div class="row justify-content-center align-items-center h-100">
-                        <div class="col-12 col-lg-9 col-xl-7">
-                            <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
-                                <div class="card-body p-4 p-md-5">
-                                    <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registration Form</h3>
-                                    
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4">
-
+        <h1>Create a user account</h1>
+        <div class="table-container">
+            <form method="POST" action="createacc.php">
+                <section class="vh-100 -custom">
+                    <div class="container py-5 h-100">
+                        <div class="row justify-content-center align-items-center h-100">
+                            <div class="col-12 col-lg-9 col-xl-7">
+                                <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                                    <div class="card-body p-4 p-md-5">
+                                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registration Form</h3>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4">
                                                 <div data-mdb-input-init class="form-outline">
                                                 <input type="text" id="firstName" name="fname" class="form-control form-control-lg" />
                                                 <label class="form-label" for="firstName">First Name</label>
                                             </div>
-
-                                        </div>
-                                        <div class="col-md-6 mb-4">
-                                            <div data-mdb-input-init class="form-outline">
-                                                <input type="text" id="lastName" name="lname" class="form-control form-control-lg" />
-                                                <label class="form-label" for="lastName">Last Name</label>
+                                            </div>
+                                            <div class="col-md-6 mb-4">
+                                                <div data-mdb-input-init class="form-outline">
+                                                    <input type="text" id="lastName" name="lname" class="form-control form-control-lg" />
+                                                    <label class="form-label" for="lastName">Last Name</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                            <div class="row">
+                                            <div class="col-md-15 mb-4 pb-2">
+                                                <div data-mdb-input-init class="form-outline">
+                                                    <input type="email" id="email" name="email" class="form-control form-control-lg" />
+                                                    <label class="form-label" for="email">Email</label>
+                                                </div>
+                                            </div>
                                         <div class="row">
-                                        <div class="col-md-15 mb-4 pb-2">
-                                            <div data-mdb-input-init class="form-outline">
-                                                <input type="email" id="email" name="email" class="form-control form-control-lg" />
-                                                <label class="form-label" for="email">Email</label>
+                                            <div class="col-md-6 mb-4 ">
+                                                <div data-mdb-input-init class="form-outline">
+                                                    <input type="password" id="password" name="password" class="form-control form-control-lg" />
+                                                    <label class="form-label" for="password">Password</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-4 ">
+                                                <div data-mdb-input-init class="form-outline">
+                                                    <input type="password" id="cpassword" name="cpassword" class="form-control form-control-lg" />
+                                                    <label class="form-label" for="cpassword">Confirm Password</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4 ">
-                                            <div data-mdb-input-init class="form-outline">
-                                                <input type="password" id="password" name="password" class="form-control form-control-lg" />
-                                                <label class="form-label" for="password">Password</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-4 ">
-                                            <div data-mdb-input-init class="form-outline">
-                                                <input type="password" id="cpassword" name="cpassword" class="form-control form-control-lg" />
-                                                <label class="form-label" for="cpassword">Confirm Password</label>
-                                            </div>
+                                    <label for="role">Role:</label>
+                                    <select id="role" name="role" class="form-control">
+                                    <option value="employee">Employee</option>
+                                    <option value="admin">Admin</option>
+                                    </select> 
+                                        <div class="mt-4 pt-2">
+                                            <input data-mdb-ripple-init class="btn btn-primary btn-lg" type="submit" name="submit" value="Submit" />
                                         </div>
                                     </div>
-                                <label for="role">Role:</label>
-                                <select id="role" name="role" class="form-control">
-                                <option value="employee">Employee</option>
-                                <option value="admin">Admin</option>
-                                </select>
-                
-
-            
-                                    
-                                    <div class="mt-4 pt-2">
-                                        <input data-mdb-ripple-init class="btn btn-primary btn-lg" type="submit" name="submit" value="Submit" />
-                                    </div>
-                                    
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
-
-        </form>
+                </section>
+            </form>
+        </div>
     </div>
-    </div>
-
-
 </body>
 </html>
 
