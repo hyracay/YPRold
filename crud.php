@@ -84,7 +84,7 @@ if (isset($_SESSION['role'])) {
                         Name: <input type="text" name="lname" placeholder="Last Name" required>
                         <input type="text" name="fname" placeholder="First Name" required>
                         <input type="text" name="mname" placeholder="Middle Name" required>
-                        <input type="text" name="suffix" placeholder="Suffix" required>
+                        <input type="text" name="suffix" placeholder="Suffix" >
                     </td>
                 </tr>
                 <tr>
@@ -189,12 +189,10 @@ if (isset($_SESSION['role'])) {
                                     Level<br>
                                     <input type="radio" name="educational_background" value="College Graduate" required> College
                                     Graduate<br>
-                                    <input type="radio" name="educational_background" value="Master's Level" required> Master's
-                                    Level<br>
-                                    <input type="radio" name="educational_background" value="Master's Graduate" required>
-                                    Master's Graduate<br>
-                                    <input type="radio" name="educational_background" value="Doctrate Level" required> Doctrate
-                                    Level<br>
+                                    <input type="radio" name="educational_background" value="Master Level" required> Master's Level<br>
+                                    <input type="radio" name="educational_background" value="Master Graduate" required> Master's Graduate<br>
+                                    <input type="radio" name="educational_background" value="Doctrate Level" required> Doctrate Level<br>
+
                                 </td>
                                 <td style="border: 1px solid;">
                                     Registered SK Voter:<br>
