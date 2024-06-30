@@ -25,7 +25,7 @@
            Logged in as: <?php echo $_SESSION['email']; ?></p>
         <a href = "viewprofile.php">Profiles</a>
         <a href="crud.php">Create Profile</a>
-        <a href="records.php">SK Reports</a>
+        <a href="records.php">Records</a>
         <a href="calendar.php">Calendar</a>
         <a href="accounts.php">Accounts</a>
         <a href="homepage.php">Back</a>

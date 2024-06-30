@@ -100,77 +100,51 @@ while($row = mysqli_fetch_assoc($result_sk)){
         <img src="src/avatar.png" alt="Avatar">
         <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!" . "<br>"; ?>
            Logged in as: <?php echo $_SESSION['email']; ?></p>
-       
         <a href="viewprofile.php">Profiles</a>
-
-        <a href="records.php">Records</a>
-        <?php
-        // Display links based on user's role
-        if ($role == 'admin') {
-            echo '<a href="createacc.php">Create Accounts</a>';
-        } elseif ($role == 'employee') {
-            // For employees, you can customize what to display or leave it empty
-            // Here, we do nothing to omit displaying "Create Accounts"
-        } else {
-            // Handle unexpected roles (optional)
-            echo "Unknown role.";
-        }
-        ?>
         <a href="crud.php">Create Profile</a>
+        <a href="records.php">SK Reports</a>
+        <a href="calendar.php">Calendar</a>
         <?php
          if ($role == 'admin') {
             echo '<a href="accounts.php">Accounts</a>';
          }
         ?>
-        <a href="calendar.php">Calendar</a>
+        <?php
+        // Display links based on user's role
+        if ($role == 'admin') {
+            echo '<a href="createacc.php">Create Accounts</a>';
+        } elseif ($role == 'employee') {
+        } else {
+            echo "Unknown role.";
+        }
+        ?>
         <a href="logout.php">Logout</a>
     </div>
          
     <div class="content">
-        <div class="welcome-heading">
-            <h3>Welcome to the Homepage</h3>
-        </div>
-
-        <table>
-            <tr>
-                <td>
-                    <div class="chart">
-                        <div id="civil_status"></div>
-                    </div>
-                </td>
-                <td>
-                    <div class="chart">
-                        <div id="chart_age"></div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="chart">
-                        <div id="chart_edu"></div>
-                    </div>
-                </td>
-                <td>
-                    <div class="chart">
-                        <div id="youth_classification"></div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="chart">
-                        <div id="work_status"></div>
-                    </div>
-                </td>
-                <td>
-                    <div class="chart">
-                        <div id="register_sk_voter"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-
+    <div class="welcome-heading">
+        <h1>DEMOGRAPHIC INSIGHTS</h1>
     </div>
+    <div class="chart">
+        <div id="civil_status"></div>
+    </div>
+    <div class="chart">
+        <div id="chart_age"></div>
+    </div>
+    <div class="chart">
+        <div id="chart_edu"></div>
+    </div>
+    <div class="chart">
+        <div id="youth_classification"></div>
+    </div>
+    <div class="chart">
+        <div id="work_status"></div>
+    </div>
+    <div class="chart">
+        <div id="register_sk_voter"></div>
+    </div>
+</div>
+
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
