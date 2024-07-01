@@ -1,6 +1,6 @@
 <?php
 session_start();
-$conn = mysqli_connect("localhost", "root", "", "wis");
+include('conne.php');
 
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['report'])) {
 }
 
 // Handle delete action
-if (isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['file'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['file'])) {
     $file_to_delete = $_POST['file'];
 
     // Delete from database
@@ -58,9 +58,9 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['fil
     if ($stmt_delete->execute()) {
         // Delete from filesystem
         if (unlink($file_to_delete)) {
-            echo "File deleted successfully.";
+            echo "success"; // Signal success to the AJAX call
         } else {
-            echo "Error deleting file.";
+            echo "Error deleting file from filesystem.";
         }
     } else {
         echo "Error deleting file from database.";
@@ -85,6 +85,16 @@ while ($row = $result->fetch_assoc()) {
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script>
+        function displayFileName() {
+            const fileInput = document.getElementById('fileInput');
+            const fileNameSpan = document.getElementById('fileNameSpan');
+            if (fileInput.files.length > 0) {
+                fileNameSpan.textContent = fileInput.files[0].name;
+            } else {
+                fileNameSpan.textContent = 'No file selected';
+            }
+        }
+
         function deleteFile(filename) {
             if (confirm('Are you sure you want to delete this file?')) {
                 var xhr = new XMLHttpRequest();
@@ -92,10 +102,14 @@ while ($row = $result->fetch_assoc()) {
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.onload = function() {
                     if (xhr.status === 200) {
-                        // Reload the page or update the UI as needed
-                        location.reload(); // Example: Reload the page after deletion
+                        // Check the response from records.php
+                        if (xhr.responseText === 'success') {
+                            location.reload(); // Reload the page after deletion
+                        } else {
+                            alert('Error deleting file: ' + xhr.responseText);
+                        }
                     } else {
-                        alert('Error deleting file.');
+                        alert('Request failed. Please try again later.');
                     }
                 };
                 xhr.send('action=delete&file=' + encodeURIComponent(filename));
@@ -104,23 +118,123 @@ while ($row = $result->fetch_assoc()) {
     </script>
 
     <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
         .chart {
-            width: 20%;
+            width: calc(50% - 20px); /* Adjust based on your layout */
+            margin-bottom: 20px;
+            display: inline-block;
+            vertical-align: top;
         }
+
+        /* Reports section */
         .reports-section {
-            margin: 10px;
+            margin: 20px 0;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
         }
+
         .reports-table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
         }
+
         .reports-table th, .reports-table td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 10px;
+            text-align: left;
         }
+
         .reports-table th {
             background-color: #f2f2f2;
-            text-align: left;
+            color: #333;
+        }
+
+        .reports-table td {
+            background-color: #fff;
+            color: #666;
+        }
+
+        .reports-table a, .reports-table button {
+            text-decoration: none;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .reports-table a:hover, .reports-table button:hover {
+            opacity: 0.8;
+        }
+
+        /* Button specific styles */
+        .reports-table a.btn-download {
+            background-color: #699aba;
+            color: #fff;
+        }
+
+        .reports-table button.btn-delete {
+            background-color: #f37a1f;
+            color: #fff;
+        }
+
+        /* File input and upload button */
+        .upload-form {
+            margin-bottom: 20px;
+        }
+
+        .upload-form input[type=file] {
+            display: none;
+        }
+
+        .upload-form label.choose-file {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #699aba;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-form label.choose-file:hover {
+            background-color: #0056b3;
+        }
+
+        .upload-form button[type=submit] {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #699aba;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-form button[type=submit]:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -151,29 +265,14 @@ while ($row = $result->fetch_assoc()) {
 
     <div class="content">
         <h1>SK Reports</h1>
-        <div class="chart">
-            <div id="civil_status"></div>
-        </div>
-        <div class="chart">
-            <div id="chart_age"></div>
-        </div>
-        <div class="chart">
-            <div id="chart_edu"></div>
-        </div>
-        <div class="chart">
-            <div id="youth_classification"></div>
-        </div>
-        <div class="chart">
-            <div id="work_status"></div>
-        </div>
-        <div class="chart">
-            <div id="register_sk_voter"></div>
-        </div>
+ 
 
         <div class="reports-section">
             <h2>Upload Report</h2>
-            <form action="records.php" method="post" enctype="multipart/form-data">
-                <input type="file" name="report" required>
+            <form class="upload-form" action="records.php" method="post" enctype="multipart/form-data">
+                <input type="file" name="report" id="fileInput" onchange="displayFileName()" required>
+                <label for="fileInput" class="choose-file">Choose File</label>
+                <span id="fileNameSpan">No file selected</span>
                 <button type="submit">Upload</button>
             </form>
             
@@ -189,8 +288,8 @@ while ($row = $result->fetch_assoc()) {
                     <td><?php echo htmlspecialchars(basename($report['filename'])); ?></td>
                     <td><?php echo date('Y-m-d H:i:s', strtotime($report['upload_date'])); ?></td>
                     <td>
-                        <a href="download.php?file=<?php echo urlencode($report['filename']); ?>" target="_blank">Download</a>
-                        <button onclick="deleteFile('<?php echo htmlspecialchars($report['filename']); ?>')">Delete</button>
+                        <a href="download.php?file=<?php echo urlencode($report['filename']); ?>" class="btn-download" target="_blank">Download</a>
+                        <button onclick="deleteFile('<?php echo htmlspecialchars($report['filename']); ?>')" class="btn-delete">Delete</button>
                     </td>
                 </tr>
                 <?php endforeach; ?>
