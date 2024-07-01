@@ -135,7 +135,7 @@ while($row = mysqli_fetch_assoc($result_sk)){
     </div>
          
     <div class="content">
-        <h1>demographic insights</h1>
+        <h1>Demographic Insights</h1>
         <div class="row">
             <div class="chart">
                 <div id="civil_status"></div>
