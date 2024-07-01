@@ -58,9 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     if ($stmt_delete->execute()) {
         // Delete from filesystem
         if (unlink($file_to_delete)) {
-            echo "success"; // Signal success to the AJAX call
+            header("location:records.php");
         } else {
-            echo "Error deleting file from filesystem.";
+            echo "Error deleting file.";
         }
     } else {
         echo "Error deleting file from database.";
@@ -85,34 +85,36 @@ while ($row = $result->fetch_assoc()) {
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script>
-        function displayFileName() {
-            const fileInput = document.getElementById('fileInput');
-            const fileNameSpan = document.getElementById('fileNameSpan');
-            if (fileInput.files.length > 0) {
-                fileNameSpan.textContent = fileInput.files[0].name;
-            } else {
-                fileNameSpan.textContent = 'No file selected';
+        function deleteFile(filename) {
+            if (confirm('Are you sure you want to delete this file?')) {
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = ''; // Post to the same page
+
+                var inputAction = document.createElement('input');
+                inputAction.type = 'hidden';
+                inputAction.name = 'action';
+                inputAction.value = 'delete';
+                form.appendChild(inputAction);
+
+                var inputFile = document.createElement('input');
+                inputFile.type = 'hidden';
+                inputFile.name = 'file';
+                inputFile.value = filename;
+                form.appendChild(inputFile);
+
+                document.body.appendChild(form);
+                form.submit();
             }
         }
 
-        function deleteFile(filename) {
-            if (confirm('Are you sure you want to delete this file?')) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'records.php', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        // Check the response from records.php
-                        if (xhr.responseText === 'success') {
-                            location.reload(); // Reload the page after deletion
-                        } else {
-                            alert('Error deleting file: ' + xhr.responseText);
-                        }
-                    } else {
-                        alert('Request failed. Please try again later.');
-                    }
-                };
-                xhr.send('action=delete&file=' + encodeURIComponent(filename));
+        function displayFileName() {
+            var fileInput = document.getElementById('fileInput');
+            var fileNameSpan = document.getElementById('fileNameSpan');
+            if (fileInput.files.length > 0) {
+                fileNameSpan.textContent = fileInput.files[0].name;
+            } else {
+                fileNameSpan.textContent = "No file selected";
             }
         }
     </script>
@@ -289,7 +291,7 @@ while ($row = $result->fetch_assoc()) {
                     <td><?php echo date('Y-m-d H:i:s', strtotime($report['upload_date'])); ?></td>
                     <td>
                         <a href="download.php?file=<?php echo urlencode($report['filename']); ?>" class="btn-download" target="_blank">Download</a>
-                        <button onclick="deleteFile('<?php echo htmlspecialchars($report['filename']); ?>')" class="btn-delete">Delete</button>
+                        <a href="javascript:void(0);" onclick="deleteFile('<?php echo htmlspecialchars($report['filename']); ?>')"><button>Delete</button></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
