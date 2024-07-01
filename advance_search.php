@@ -31,11 +31,12 @@ if (isset($_SESSION['role'])) {
            Logged in as: <?php echo $_SESSION['email']; ?></p>
        
         <a href="homepage.php">Back</a>
-        <a href="records.php">SK Reports</a>
-        <?php if ($role == 'admin') { echo '<a href="createacc.php">Create Accounts</a>'; } ?>
         <a href="crud.php">Create Profile</a>
-        <?php if ($role == 'admin') { echo '<a href="accounts.php">Accounts</a>'; } ?>
+        <?php if ($role == 'admin') { echo '<a href="createacc.php">Create Accounts</a>'; } ?>
+        <a href="records.php">SK Reports</a>
         <a href="calendar.php">Calendar</a>
+        <?php if ($role == 'admin') { echo '<a href="accounts.php">Accounts</a>'; } ?>
+        
         <a href="logout.php">Logout</a>
     </div>
 

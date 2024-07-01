@@ -81,15 +81,17 @@ if (isset($_POST['update'])) {
         <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!<br>"; ?>
            Logged in as: <?php echo $_SESSION['email']; ?></p>
         <a href="viewprofile.php">Profiles</a>
-        <a href="records.php">Records</a>
+        <a href="crud.php">Create Profile</a>
+        <a href="records.php">SK Reports</a>
+        <a href="calendar.php">Calendar</a>
+   
+        
+        <a href="homepage.php">Back</a>
         <?php
         if ($role == 'admin') {
             echo '<a href="createacc.php">Create Accounts</a>';
         } 
         ?>
-        <a href="crud.php">Create Profile</a>
-        <a href="homepage.php">Back</a>
-        <a href="calendar.php">Calendar</a>
         <a href="logout.php">Logout</a>
     </div>
 

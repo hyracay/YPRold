@@ -98,6 +98,8 @@ if (isset($_POST['update'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>EDIT PROFILE</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
+    <link rel="stylesheet" type="text/css" href="src/temp.css">
+    <link rel="stylesheet" type="text/css" href="src/update.css">
 </head>
 <body>
     <div class="sidebar">
@@ -106,14 +108,10 @@ if (isset($_POST['update'])) {
            Logged in as: <?php echo $_SESSION['email']; ?></p>
 
         <a href="homepage.php">Back</a>
-        <?php
-        // Display links based on user's role
-        if ($role == 'admin') {
-            echo '<a href="createacc.php">Create Accounts</a>';
-    
-        } 
-        ?>
-         <a href="crud.php">Create Profile</a>
+        <a href="crud.php">Create Profile</a>
+
+         <a href="records.php">SK Reports</a>
+         <a href="calendar.php">Calendar</a>
          <?php
         // Display links based on user's role
         if ($role == 'admin') {
@@ -121,8 +119,16 @@ if (isset($_POST['update'])) {
     
         } 
         ?>
-        <a href="calendar.php">Calendar</a>
+       
+        <?php
+        // Display links based on user's role
+        if ($role == 'admin') {
+            echo '<a href="createacc.php">Create Accounts</a>';
+    
+        } 
+        ?>
         <a href="logout.php">Logout</a>
+        
     </div>
 
     <div class="content">
@@ -138,7 +144,7 @@ if (isset($_POST['update'])) {
                         Name: <input type="text" name="lname" placeholder="Last Name" value="<?php echo $profile['lname']; ?>" required>
                               <input type="text" name="fname" placeholder="First Name" value="<?php echo $profile['fname']; ?>" required>
                               <input type="text" name="mname" placeholder="Middle Name" value="<?php echo $profile['mname']; ?>" required>
-                              <input type="text" name="suffix" placeholder="Suffix" value="<?php echo $profile['suffix']; ?>" required>
+                              <input type="text" name="suffix" placeholder="Suffix" value="<?php echo $profile['suffix']; ?>" >
                     </td>
                 </tr>
                 <tr>

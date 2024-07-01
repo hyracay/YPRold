@@ -58,7 +58,7 @@ if (isset($_SESSION['role'])) {
 
     <div class="content">
         <h1>Create new youth Profile</h1>
-        <form method="POST" action="crud.php">
+        <form method="POST" action="crud.php" autocomplete="off">
             <table>
                 <tr>
                     <td>I. Profile</td>

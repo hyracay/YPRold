@@ -36,7 +36,7 @@
     <div class="content">
         <h1>Create a user account</h1>
         <div class="table-container">
-            <form method="POST" action="createacc.php">
+            <form method="POST" action="createacc.php" autocomplete="off">
                 <section class="vh-100 -custom">
                     <div class="container py-5 h-100">
                         <div class="row justify-content-center align-items-center h-100">
@@ -45,13 +45,13 @@
                                     <div class="card-body p-4 p-md-5">
                                         <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registration Form</h3>
                                         <div class="row">
-                                            <div class="col-md-6 mb-4">
+                                            <div class="col-md-11 mb-4">
                                                 <div data-mdb-input-init class="form-outline">
                                                 <input type="text" id="firstName" name="fname" class="form-control form-control-lg" />
                                                 <label class="form-label" for="firstName">First Name</label>
                                             </div>
                                             </div>
-                                            <div class="col-md-6 mb-4">
+                                            <div class="col-md-11 mb-4">
                                                 <div data-mdb-input-init class="form-outline">
                                                     <input type="text" id="lastName" name="lname" class="form-control form-control-lg" />
                                                     <label class="form-label" for="lastName">Last Name</label>
@@ -59,20 +59,20 @@
                                             </div>
                                         </div>
                                             <div class="row">
-                                            <div class="col-md-15 mb-4 pb-2">
+                                            <div class="col-md-11 mb-4 pb-2">
                                                 <div data-mdb-input-init class="form-outline">
                                                     <input type="email" id="email" name="email" class="form-control form-control-lg" />
                                                     <label class="form-label" for="email">Email</label>
                                                 </div>
                                             </div>
                                         <div class="row">
-                                            <div class="col-md-6 mb-4 ">
+                                            <div class="col-md-11 mb-4 ">
                                                 <div data-mdb-input-init class="form-outline">
                                                     <input type="password" id="password" name="password" class="form-control form-control-lg" />
                                                     <label class="form-label" for="password">Password</label>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 mb-4 ">
+                                            <div class="col-md-11 mb-4 ">
                                                 <div data-mdb-input-init class="form-outline">
                                                     <input type="password" id="cpassword" name="cpassword" class="form-control form-control-lg" />
                                                     <label class="form-label" for="cpassword">Confirm Password</label>
