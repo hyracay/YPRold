@@ -59,7 +59,7 @@
                                             </div>
                                         </div>
                                             <div class="row">
-                                            <div class="col-md-15 mb-4 pb-2">
+                                            <div class="col-md-6 mb-4 pb-2">
                                                 <div data-mdb-input-init class="form-outline">
                                                     <input type="email" id="email" name="email" class="form-control form-control-lg" />
                                                     <label class="form-label" for="email">Email</label>

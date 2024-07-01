@@ -114,8 +114,8 @@ $excluded_email = 'admin@ph';
                                 <td><?= $email; ?></td>
                                 <td><?= $role; ?></td>
                                 <td>
-                                    <a href="update.php?id=<?= $id; ?>" class="btn btn-primary">Update</a>
-                                    <a href="delete.php?id=<?= $id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this profile?');">Delete</a>
+                                    <a href="update_acc.php?id=<?= $id; ?>" class="btn btn-primary">Update</a>
+                                    <a href="delete_acc.php?id=<?= $id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this profile?');">Delete</a>
                                 </td>
                                 <td><input type="checkbox" name="selectedProfiles[]" value="<?= $id; ?>"></td>
                             </tr>
