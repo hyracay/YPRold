@@ -87,7 +87,7 @@ $excluded_email = 'admin@ph';
         if ($sql_result && mysqli_num_rows($sql_result) > 0) {
             ?>
             <div class="section">
-                <form id="profilesForm" method="POST" action="delete_multiple.php">
+                <form id="profilesForm" method="POST" action="delete_multiple_acc.php">
                     <table style="margin: auto; border: 1px solid black;">
                         <tr>
                             <th>Name</th>
