@@ -287,7 +287,7 @@ while ($row = $result->fetch_assoc()) {
                 </tr>
                 <?php foreach ($reports as $report): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars(basename($report['filename'])); ?></td>
+                    <td><a href="#" type="button" onclick="window.open('<?= $report['filename']; ?>', '_blank')"><?php echo htmlspecialchars(basename($report['filename'])); ?></a></td>
                     <td><?php echo date('Y-m-d H:i:s', strtotime($report['upload_date'])); ?></td>
                     <td>
                         <a href="download.php?file=<?php echo urlencode($report['filename']); ?>" class="btn-download" target="_blank">Download</a>

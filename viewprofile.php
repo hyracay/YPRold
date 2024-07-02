@@ -120,9 +120,9 @@ if (isset($_SESSION['role'])) {
                     $searchQuery = "";
                     if (isset($_GET['search'])) {
                         $searchQuery = $_GET['search'];
-                        $sql = "SELECT * FROM profiles WHERE fname LIKE '%$searchQuery%' OR lname LIKE '%$searchQuery%' OR mname LIKE '%$searchQuery%' OR id LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%'";
+                        $sql = "SELECT * FROM profiles WHERE fname LIKE '%$searchQuery%' OR lname LIKE '%$searchQuery%' OR mname LIKE '%$searchQuery%' OR id LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' ORDER BY id DESC";
                     } else {
-                        $sql = "SELECT * FROM profiles";
+                        $sql = "SELECT * FROM profiles ORDER BY id DESC";
                     }
                     $result = mysqli_query($conn, $sql);
 
