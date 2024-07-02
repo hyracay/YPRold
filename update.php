@@ -90,7 +90,6 @@ if (isset($_POST['update'])) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -109,24 +108,14 @@ if (isset($_POST['update'])) {
 
         <a href="homepage.php">Back</a>
         <a href="crud.php">Create Profile</a>
-
-         <a href="records.php">SK Reports</a>
-         <a href="calendar.php">Calendar</a>
-         <?php
-        // Display links based on user's role
-        if ($role == 'admin') {
-            echo '<a href="accounts.php">Accounts</a>';
-    
-        } 
-        ?>
+        <a href="records.php">SK Reports</a>
+        <a href="calendar.php">Calendar</a>
+        
+        <?php if ($role == 'admin'): ?>
+            <a href="accounts.php">Accounts</a>
+            <a href="createacc.php">Create Accounts</a>
+        <?php endif; ?>
        
-        <?php
-        // Display links based on user's role
-        if ($role == 'admin') {
-            echo '<a href="createacc.php">Create Accounts</a>';
-    
-        } 
-        ?>
         <a href="logout.php">Logout</a>
         
     </div>
@@ -166,9 +155,10 @@ if (isset($_POST['update'])) {
                                     <input type="radio" name="sex" value="Female" <?php if ($profile['sex'] == 'Female') echo 'checked'; ?> required>Female
                                 </td>
                                 <td>
-                                    Age: <input type="text" name="age" placeholder="Age" value="<?php echo $profile['age']; ?>">
+                                    Birth Date: <input type="date" id="birth_date" name="birth_date" placeholder="Year/Month/Date" value="<?php echo $profile['birth_date']; ?>" onchange="calculateAge()" required>
+                                    Age: <input type="text" id="age" name="age" placeholder="Age" value="<?php echo $profile['age']; ?>">
                                     Email Address: <input type="email" name="email" placeholder="Email Address" value="<?php echo $profile['email']; ?>" required><br><br>
-                                    Birth Date: <input type="date" name="birth_date" placeholder="Year/Month/Date" value="<?php echo $profile['birth_date']; ?>" required>
+                                    
                                     Contact Number: <input type="text" name="contactnumber" placeholder="Contact Number" value="<?php echo $profile['contactnumber']; ?>" required>
                                 </td>
                             </tr>
@@ -184,17 +174,17 @@ if (isset($_POST['update'])) {
                             <tr>
                                 <td style="border: 1px solid;">
                                     Civil Status:<br>
-                                    <input type="radio" name="civil_status" value="Single" <?php if ($profile['civil_status'] == 'Single') echo 'checked'; ?> required> Single<br>
-                                    <input type="radio" name="civil_status" value="Married" <?php if ($profile['civil_status'] == 'Married') echo 'checked'; ?> required> Married<br>
-                                    <input type="radio" name="civil_status" value="Divorced" <?php if ($profile['civil_status'] == 'Divorced') echo 'checked'; ?> required> Divorced<br>
-                                    <input type="radio" name="civil_status" value="Widowed" <?php if ($profile['civil_status'] == 'Widowed') echo 'checked'; ?> required> Widowed<br>
+                                    <input type="radio" name="civil_status" value="Single" <?php if ($profile['civil_status'] == 'Single') echo 'checked'; ?> required>Single<br>
+                                    <input type="radio" name="civil_status" value="Married" <?php if ($profile['civil_status'] == 'Married') echo 'checked'; ?> required>Married<br>
+                                    <input type="radio" name="civil_status" value="Divorced" <?php if ($profile['civil_status'] == 'Divorced') echo 'checked'; ?> required>Divorced<br>
+                                    <input type="radio" name="civil_status" value="Widowed" <?php if ($profile['civil_status'] == 'Widowed') echo 'checked'; ?> required>Widowed<br>
                                 </td>
                                 <td style="border: 1px solid;">
                                     Youth Classification:<br>
-                                    <input type="radio" name="youth_classification" value="In Youth School" <?php if ($profile['youth_classification'] == 'In Youth School') echo 'checked'; ?> required> In Youth School<br>
-                                    <input type="radio" name="youth_classification" value="Out of School Youth" <?php if ($profile['youth_classification'] == 'Out of School Youth') echo 'checked'; ?> required> Out of School Youth<br>
-                                    <input type="radio" name="youth_classification" value="Working Youth" <?php if ($profile['youth_classification'] == 'Working Youth') echo 'checked'; ?> required> Working Youth<br>
-                                    <input type="radio" name="youth_classification" value="Person with Disability (PWD)" <?php if ($profile['youth_classification'] == 'Person with Disability (PWD)') echo 'checked'; ?> required> Person with Disability (PWD)<br>
+                                    <input type="radio" name="youth_classification" value="In Youth School" <?php if ($profile['youth_classification'] == 'In Youth School') echo 'checked'; ?> required>In Youth School<br>
+                                    <input type="radio" name="youth_classification" value="Out of School Youth" <?php if ($profile['youth_classification'] == 'Out of School Youth') echo 'checked'; ?> required>Out of School Youth<br>
+                                    <input type="radio" name="youth_classification" value="Working Youth" <?php if ($profile['youth_classification'] == 'Working Youth') echo 'checked'; ?> required>Working Youth<br>
+                                    <input type="radio" name="youth_classification" value="Person with Disability (PWD)" <?php if ($profile['youth_classification'] == 'Person with Disability (PWD)') echo 'checked'; ?> required>Person with Disability (PWD)<br>
                                 </td>
                             </tr>
                         </table>
@@ -206,16 +196,16 @@ if (isset($_POST['update'])) {
                             <tr>
                                 <td style="border: 1px solid;">
                                     Your Age Group:<br>
-                                    <input type="radio" name="age_group" value="Child Youth" <?php if ($profile['age_group'] == 'Child Youth') echo 'checked'; ?> required> Child Youth (15-17 yrs. old)<br>
-                                    <input type="radio" name="age_group" value="Core Youth" <?php if ($profile['age_group'] == 'Core Youth') echo 'checked'; ?> required> Core Youth (18-24 yrs. old)<br>
-                                    <input type="radio" name="age_group" value="Young adult" <?php if ($profile['age_group'] == 'Young adult') echo 'checked'; ?> required> Young adult (25-30 yrs. old)<br>
+                                    <input type="radio" name="age_group" value="Child Youth" <?php if ($profile['age_group'] == 'Child Youth') echo 'checked'; ?> required>Child Youth (15-17 yrs. old)<br>
+                                    <input type="radio" name="age_group" value="Core Youth" <?php if ($profile['age_group'] == 'Core Youth') echo 'checked'; ?> required>Core Youth (18-24 yrs. old)<br>
+                                    <input type="radio" name="age_group" value="Young Adult" <?php if ($profile['age_group'] == 'Young Adult') echo 'checked'; ?> required>Young Adult (25-30 yrs. old)<br>
                                 </td>
                                 <td style="border: 1px solid;">
                                     Work Status:<br>
-                                    <input type="radio" name="work_status" value="Employed" <?php if ($profile['work_status'] == 'Employed') echo 'checked'; ?> required> Employed<br>
-                                    <input type="radio" name="work_status" value="Unemployed" <?php if ($profile['work_status'] == 'Unemployed') echo 'checked'; ?> required> Unemployed<br>
-                                    <input type="radio" name="work_status" value="Self-Employed" <?php if ($profile['work_status'] == 'Self-Employed') echo 'checked'; ?> required> Self-Employed<br>
-                                    <input type="radio" name="work_status" value="Currently looking for job" <?php if ($profile['work_status'] == 'Currently looking for job') echo 'checked'; ?> required> Currently looking for job<br>
+                                    <input type="radio" name="work_status" value="Employed" <?php if ($profile['work_status'] == 'Employed') echo 'checked'; ?> required>Employed<br>
+                                    <input type="radio" name="work_status" value="Unemployed" <?php if ($profile['work_status'] == 'Unemployed') echo 'checked'; ?> required>Unemployed<br>
+                                    <input type="radio" name="work_status" value="Self-Employed" <?php if ($profile['work_status'] == 'Self-Employed') echo 'checked'; ?> required>Self-Employed<br>
+                                    <input type="radio" name="work_status" value="Currently looking for job" <?php if ($profile['work_status'] == 'Currently looking for job') echo 'checked'; ?> required>Currently looking for job<br>
                                 </td>
                             </tr>
                         </table>
@@ -227,21 +217,21 @@ if (isset($_POST['update'])) {
                             <tr>
                                 <td style="border: 1px solid;">
                                     Educational Background:<br>
-                                    <input type="radio" name="educational_background" value="Elementary Level" <?php if ($profile['educational_background'] == 'Elementary Level') echo 'checked'; ?> required> Elementary Level<br>
-                                    <input type="radio" name="educational_background" value="Elementary Graduate" <?php if ($profile['educational_background'] == 'Elementary Graduate') echo 'checked'; ?> required> Elementary Graduate<br>
-                                    <input type="radio" name="educational_background" value="High School Level" <?php if ($profile['educational_background'] == 'High School Level') echo 'checked'; ?> required> High School Level<br>
-                                    <input type="radio" name="educational_background" value="High School Graduate" <?php if ($profile['educational_background'] == 'High School Graduate') echo 'checked'; ?> required> High School Graduate<br>
-                                    <input type="radio" name="educational_background" value="Vocational Graduate" <?php if ($profile['educational_background'] == 'Vocational Graduate') echo 'checked'; ?> required> Vocational Graduate<br>
-                                    <input type="radio" name="educational_background" value="College Level" <?php if ($profile['educational_background'] == 'College Level') echo 'checked'; ?> required> College Level<br>
-                                    <input type="radio" name="educational_background" value="College Graduate" <?php if ($profile['educational_background'] == 'College Graduate') echo 'checked'; ?> required> College Graduate<br>
-                                    <input type="radio" name="educational_background" value="Master Level" <?php if ($profile['educational_background'] == 'Master Level') echo 'checked'; ?> required> Master's Level<br>
-                                    <input type="radio" name="educational_background" value="Master Graduate" <?php if ($profile['educational_background'] == 'Master Graduate') echo 'checked'; ?> required> Master's Graduate<br>
-                                    <input type="radio" name="educational_background" value="Doctorate Level" <?php if ($profile['educational_background'] == 'Doctorate Level') echo 'checked'; ?> required> Doctorate Level<br>
+                                    <input type="radio" name="educational_background" value="Elementary Level" <?php if ($profile['educational_background'] == 'Elementary Level') echo 'checked'; ?> required>Elementary Level<br>
+                                    <input type="radio" name="educational_background" value="Elementary Graduate" <?php if ($profile['educational_background'] == 'Elementary Graduate') echo 'checked'; ?> required>Elementary Graduate<br>
+                                    <input type="radio" name="educational_background" value="High School Level" <?php if ($profile['educational_background'] == 'High School Level') echo 'checked'; ?> required>High School Level<br>
+                                    <input type="radio" name="educational_background" value="High School Graduate" <?php if ($profile['educational_background'] == 'High School Graduate') echo 'checked'; ?> required>High School Graduate<br>
+                                    <input type="radio" name="educational_background" value="Vocational Graduate" <?php if ($profile['educational_background'] == 'Vocational Graduate') echo 'checked'; ?> required>Vocational Graduate<br>
+                                    <input type="radio" name="educational_background" value="College Level" <?php if ($profile['educational_background'] == 'College Level') echo 'checked'; ?> required>College Level<br>
+                                    <input type="radio" name="educational_background" value="College Graduate" <?php if ($profile['educational_background'] == 'College Graduate') echo 'checked'; ?> required>College Graduate<br>
+                                    <input type="radio" name="educational_background" value="Master Level" <?php if ($profile['educational_background'] == 'Master Level') echo 'checked'; ?> required>Master's Level<br>
+                                    <input type="radio" name="educational_background" value="Master Graduate" <?php if ($profile['educational_background'] == 'Master Graduate') echo 'checked'; ?> required>Master's Graduate<br>
+                                    <input type="radio" name="educational_background" value="Doctorate Level" <?php if ($profile['educational_background'] == 'Doctorate Level') echo 'checked'; ?> required>Doctorate Level<br>
                                 </td>
                                 <td style="border: 1px solid;">
                                     Registered SK Voter:<br>
-                                    <input type="radio" name="register_sk_voter" value="Registered" <?php if ($profile['register_sk_voter'] == 'Registered') echo 'checked'; ?> required> YES<br>
-                                    <input type="radio" name="register_sk_voter" value="Not Registered" <?php if ($profile['register_sk_voter'] == 'Not Registered') echo 'checked'; ?> required> NO<br>
+                                    <input type="radio" name="register_sk_voter" value="Registered" <?php if ($profile['register_sk_voter'] == 'Registered') echo 'checked'; ?> required>YES<br>
+                                    <input type="radio" name="register_sk_voter" value="Not Registered" <?php if ($profile['register_sk_voter'] == 'Not Registered') echo 'checked'; ?> required>NO<br>
                                 </td>
                             </tr>
                         </table>
@@ -255,5 +245,41 @@ if (isset($_POST['update'])) {
             </table>
         </form>
     </div>
+
+    <script>
+        // Calculate age and set age group based on birth date
+        function calculateAge() {
+            var birthDate = new Date(document.getElementById("birth_date").value);
+            var today = new Date();
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var monthDiff = today.getMonth() - birthDate.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            document.getElementById("age").value = age;
+
+            // Set age group based on age
+            var ageGroup = '';
+            if (age >= 15 && age <= 17) {
+                ageGroup = 'Child Youth';
+            } else if (age >= 18 && age <= 24) {
+                ageGroup = 'Core Youth';
+            } else if (age >= 25 && age <= 30) {
+                ageGroup = 'Young Adult';
+            }
+
+            // Check the appropriate radio button for age_group
+            var radios = document.getElementsByName('age_group');
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].value === ageGroup) {
+                    radios[i].checked = true;
+                }
+            }
+        }
+    </script>
 </body>
 </html>
+
+

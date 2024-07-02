@@ -90,10 +90,44 @@ if (isset($_SESSION['role'])) {
                                     <input type="radio" name="sex" value="Female" required>Female
                                 </td>
                                 <td>
-                                    Age:<input type="text" name="age" placeholder="Age">
+                                Birth Date:<input type="date" name="birth_date" id="birth_date" placeholder="Year/Month/Date" required onchange="calculateAge()">
+                                    Age:<input type="text" name="age" id="age" placeholder="Age" readonly>
                                     Email Address:<input type="email" name="email" placeholder="Email Address" required><br><br>
-                                    Birth Date:<input type="date" name="birth_date" placeholder="Year/Month/Date" required>
+                                   
                                     Contact Number:<input type="text" name="contactnumber" placeholder="Contact Number" required>
+
+                                    <script>
+                                    function calculateAge() {
+                                    var birthDate = new Date(document.getElementById("birth_date").value);
+                                    var today = new Date();
+                                    var age = today.getFullYear() - birthDate.getFullYear();
+                                    var monthDiff = today.getMonth() - birthDate.getMonth();
+
+                                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                                    age--;
+                                    }
+
+                                    document.getElementById("age").value = age;
+
+                                    // Set age group based on age
+                                    var ageGroup = '';
+                                    if (age >= 15 && age <= 17) {
+                                    ageGroup = 'Child Youth';
+                                    } else if (age >= 18 && age <= 24) {
+                                    ageGroup = 'Core Youth';
+                                    } else if (age >= 25 && age <= 30) {
+                                    ageGroup = 'Young Adult';
+                                    }
+
+                                    // Check the appropriate radio button for age_group
+                                    var radios = document.getElementsByName('age_group');
+                                    for (var i = 0; i < radios.length; i++) {
+                                    if (radios[i].value === ageGroup) {
+                                    radios[i].checked = true;
+                                    }
+                                    }
+                                    }
+                                </script>
                                 </td>
                             </tr>
                         </table>
@@ -132,12 +166,10 @@ if (isset($_SESSION['role'])) {
                             <tr>
                                 <td style="border: 1px solid;">
                                     Your Age Group:<br>
-                                    <input type="radio" name="age_group" value="Child Youth" required> Child Youth(15-17 yrs.
-                                    old)<br>
-                                    <input type="radio" name="age_group" value="Core Youth" required> Core Youth(18-24 yrs.
-                                    old)<br>
-                                    <input type="radio" name="age_group" value="Young adult" required> Young Adult(25-30
-                                    yrs.old)<br>
+                        <input type="radio" name="age_group" value="Child Youth" required> Child Youth (15-17 yrs. old)<br>
+                        <input type="radio" name="age_group" value="Core Youth" required> Core Youth (18-24 yrs. old)<br>
+                        <input type="radio" name="age_group" value="Young Adult" required> Young Adult (25-30 yrs.old)<br>
+
                                 </td>
                                 <td style="border: 1px solid;">
                                     Work Status:<br>
