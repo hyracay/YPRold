@@ -85,7 +85,7 @@ if (isset($_SESSION['role'])) {
                         <table>
                             <tr><br>
                                 <td style="border: 1px solid;">
-                                    Sex Assigned at Birth: <br>
+                                    Sex : <br>
                                     <input type="radio" name="sex" value="Male" required>Male<br>
                                     <input type="radio" name="sex" value="Female" required>Female
                                 </td>
@@ -115,13 +115,12 @@ if (isset($_SESSION['role'])) {
                                 </td>
                                 <td style="border: 1px solid;">
                                     Youth Classification:<br>
-                                    <input type="radio" name="youth_classification" value="In Youth School" required> In School Youth<br>
-                                    <input type="radio" name="youth_classification" value="Out of School Youth" required> Out Of
+                                    <input type="radio" name="youth_classification" required> In School Youth<br>
+                                    <input type="radio" name="youth_classification" required> Out Of
                                     School Youth<br>
-                                    <input type="radio" name="youth_classification" value="Working Youth" required> Working
+                                    <input type="radio" name="youth_classification" required> Working
                                     Youth<br>
-                                    <input type="radio" name="youth_classification"
-                                        value="Person with Disability (PWD)" required> Person With Disability (PWD)<br>
+                                    <input type="radio" name="youth_classification" required> Person With Disability (PWD)<br>
                                 </td>
                             </tr>
                         </table>

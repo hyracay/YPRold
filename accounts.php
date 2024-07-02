@@ -82,7 +82,7 @@ $excluded_email = 'admin@ph';
     <div class="content">
         <h1>User Accounts</h1>
         <?php
-        $sql_fetch = "SELECT * FROM account WHERE email != '$current_user_email' AND email != '$excluded_email'";
+        $sql_fetch = "SELECT * FROM account WHERE email != '$current_user_email' AND email != '$excluded_email' AND role != 'admin'";
         $sql_result = mysqli_query($conn, $sql_fetch);
         if ($sql_result && mysqli_num_rows($sql_result) > 0) {
             ?>

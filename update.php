@@ -161,7 +161,7 @@ if (isset($_POST['update'])) {
                         <table>
                             <tr><br>
                                 <td style="border: 1px solid;">
-                                    Sex Assigned at Birth: <br>
+                                    Sex : <br>
                                     <input type="radio" name="sex" value="Male" <?php if ($profile['sex'] == 'Male') echo 'checked'; ?> required>Male<br>
                                     <input type="radio" name="sex" value="Female" <?php if ($profile['sex'] == 'Female') echo 'checked'; ?> required>Female
                                 </td>
