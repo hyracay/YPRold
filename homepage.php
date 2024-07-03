@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 include("conne.php");
@@ -67,6 +66,25 @@ $data_sk= array();
 while($row = mysqli_fetch_assoc($result_sk)){
     $data_sk[]=$row;
 }
+
+// Query to fetch age group data with specified categories
+$data_age = "SELECT 
+    CASE
+        WHEN age >= 15 AND age <= 17 THEN 'Child Youth (15-17 Yrs. Old)'
+        WHEN age >= 18 AND age <= 24 THEN 'Core Youth (18-24 Yrs. Old)'
+        WHEN age >= 25 AND age <= 30 THEN 'Young Adult (25-30 Yrs. Old)'
+        ELSE 'Unknown'
+    END as age_group,
+    COUNT(*) as count 
+FROM profiles 
+GROUP BY age_group";
+$result_age = mysqli_query($conn, $data_age);
+
+$data_age = array();
+while ($row = mysqli_fetch_assoc($result_age)) {
+    $data_age[] = $row;
+}
+
 
 
 
@@ -211,47 +229,47 @@ while($row = mysqli_fetch_assoc($result_sk)){
         });
 
         Highcharts.chart('chart_age', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: 'Age Group Distribution'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.y}</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Age Group Distribution'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y}</b>'
+        },
+        accessibility: {
+            point: {
+                valueSuffix: '%'
+            }
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.y}'
+                },
+                showInLegend: true
+            }
+        },
+        series: [{
+            name: 'Age Group',
+            colorByPoint: true,
+            data: [
+                <?php
+                foreach ($data_age as $row) {
+                    echo "{ name: '" . $row['age_group'] . "', y: " . $row['count'] . " },";
                 }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.y}'
-                    },
-                    showInLegend: true
-                }
-            },
-            series: [{
-                name: 'Age Group',
-                colorByPoint: true,
-                data: [
-                    <?php
-                    foreach ($data_age as $row) {
-                        echo "{ name: '" . $row['age_group'] . "', y: " . $row['count'] . " },";
-                        
-                    }
-                    ?>
-                ]
-            }]
-        });
+                ?>
+            ]
+        }]
+    });
+});
         Highcharts.chart('chart_edu', {
             chart: {
                 plotBackgroundColor: null,
@@ -420,7 +438,6 @@ while($row = mysqli_fetch_assoc($result_sk)){
                 ]
             }]
         });
-    });
     </script>
 </body>
 </html>

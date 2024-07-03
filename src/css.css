@@ -159,3 +159,21 @@ h1 {
 .input-group .btn {
  z-index: 0;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center !important;
+    margin-top: 16px;
+}
+
+a.page-link {
+    background-color: #699aba;
+    color: black;
+}
+
+.page-item.active .page-link {
+    color: #fff;
+    background-color: #f37a1f;
+    border-color: #f37a1f;
+    z-index: 0;
+}

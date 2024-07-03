@@ -117,14 +117,36 @@ if (isset($_SESSION['role'])) {
 
                     <?php
                     // Fetch all rows from the profiles table, filtering by search query if provided
-                    $searchQuery = "";
+                    // Constants for pagination
+
+                    $recordsPerPage = 6;
+                    $currentPage = isset($_GET['page']) ? $_GET['page'] : 1; // Current page, default to 1
+
+                    $offset = ($currentPage - 1) * $recordsPerPage;
+
                     if (isset($_GET['search'])) {
                         $searchQuery = $_GET['search'];
-                        $sql = "SELECT * FROM profiles WHERE fname LIKE '%$searchQuery%' OR lname LIKE '%$searchQuery%' OR mname LIKE '%$searchQuery%' OR id LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' ORDER BY id DESC";
+                        $sql = "SELECT * FROM profiles 
+                                WHERE fname LIKE '%$searchQuery%' OR lname LIKE '%$searchQuery%' OR mname LIKE '%$searchQuery%' OR id LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' 
+                                ORDER BY id DESC 
+                                LIMIT $recordsPerPage OFFSET $offset";
                     } else {
-                        $sql = "SELECT * FROM profiles ORDER BY id DESC";
+                        $sql = "SELECT * FROM profiles 
+                                ORDER BY id DESC 
+                                LIMIT $recordsPerPage OFFSET $offset";
                     }
+
                     $result = mysqli_query($conn, $sql);
+
+                    // Fetch total count of records
+                    $totalCountSql = "SELECT COUNT(*) AS total FROM profiles";
+                    $totalCountResult = mysqli_query($conn, $totalCountSql);
+                    $totalCountRow = mysqli_fetch_assoc($totalCountResult);
+                    $totalCount = $totalCountRow['total'];
+
+                    $totalPages = ceil($totalCount / $recordsPerPage);
+
+                    
 
                     if ($result && mysqli_num_rows($result) > 0) {
                         $results = [];
@@ -182,11 +204,26 @@ if (isset($_SESSION['role'])) {
                                     ?>
                                 </table>
                             </form>
-                        </div>
+                    <div class="pagination">  
                     <?php
+                        echo '<nav aria-label="Page navigation example">';
+                        echo '<ul class="pagination justify-content-center">';
+                        $disabledPrev = ($currentPage == 1) ? "disabled" : "";
+                        echo '<li class="page-item ' . $disabledPrev . '"><a class="page-link" href="?page=' . ($currentPage - 1) . '">Previous</a></li>';
+    
+                        for ($i = 1; $i <= $totalPages; $i++) {
+                            $activeClass = ($currentPage == $i) ? "active" : "";
+                            echo '<li class="page-item ' . $activeClass . '"><a class="page-link" href="?page=' . $i . '">' . $i . '</a></li>';
+                        }
+    
+                        $disabledNext = ($currentPage == $totalPages || $totalPages == 0) ? "disabled" : "";
+                        echo '<li class="page-item ' . $disabledNext . '"><a class="page-link" href="?page=' . ($currentPage + 1) . '">Next</a></li>';
+                        echo '</ul>';
+                        echo '</nav>';
                     }
                     ?>
-    </div>
+                    </div>  
+        </div>
     <div id="myModal" class="modal">
         <!-- Modal content -->
         <div class="modalContent">
@@ -208,23 +245,23 @@ if (isset($_SESSION['role'])) {
                 const selectedProfile = results.find(res => res.id == this.getAttribute('data-id'));
                 let fullName = `${selectedProfile.fname} ${selectedProfile.mname} ${selectedProfile.lname}`;
                 modalInside.innerHTML =
-                    `<div>Full name: ${fullName}</div>
-                     <div>Address: ${selectedProfile.region} ${selectedProfile.province} ${selectedProfile.municipality} ${selectedProfile.barangay} ${selectedProfile.purok}</div>
-                     <div>Sex: ${selectedProfile.sex}</div>
-                     <div>Age: ${selectedProfile.age}</div>
-                     <div>Birth Date: ${selectedProfile.birth_date}</div>
-                     <div style="text-transform: none">Email: ${selectedProfile.email}</div>
-                     <div>Contact Number: ${selectedProfile.contactnumber}</div>
-                     <div>Civil Status: ${selectedProfile.civil_status}</div>
-                     <div>Age Group: ${selectedProfile.age_group}</div>
-                     <div>Educational Background: ${selectedProfile.educational_background}</div>`;
+                    `<div class="details">Full name: ${fullName}</div>
+                     <div class="details">Address: ${selectedProfile.region} ${selectedProfile.province} ${selectedProfile.municipality} ${selectedProfile.barangay} ${selectedProfile.purok}</div>
+                     <div class="details">Sex: ${selectedProfile.sex}</div>
+                     <div class="details">Age: ${selectedProfile.age}</div>
+                     <div class="details">Birth Date: ${selectedProfile.birth_date}</div>
+                     <div class="details">Email: ${selectedProfile.email}</div>
+                     <div class="details">Contact Number: ${selectedProfile.contactnumber}</div>
+                     <div class="details">Civil Status: ${selectedProfile.civil_status}</div>
+                     <div class="details">Age Group: ${selectedProfile.age_group}</div>
+                     <div class="details">Educational Background: ${selectedProfile.educational_background}</div>`;
                      <?php
                         if ($role == 'admin') {
-                            echo 'modalInside.innerHTML += `<div>Youth Classification: ${selectedProfile.youth_classification}</div>`;';
+                            echo 'modalInside.innerHTML += `<div class="details">Youth Classification: ${selectedProfile.youth_classification}</div>`;';
                         }
                      ?>
-                     modalInside.innerHTML += `<div>Work Status: ${selectedProfile.work_status}</div>
-                     <div>Registered SK Voter: ${selectedProfile.register_sk_voter}</div>`;
+                     modalInside.innerHTML += `<div class="details">Work Status: ${selectedProfile.work_status}</div>
+                     <div class="details">Registered SK Voter: ${selectedProfile.register_sk_voter}</div>`;
             });
         }
 

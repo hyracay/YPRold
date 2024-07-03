@@ -74,6 +74,61 @@ if (isset($_POST['update'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Update Account</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            max-width: 800px;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+            height: 500px; 
+            display: table; 
+        }
+
+        table td {
+            padding: 10px;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button[type="submit"] {
+            background-color: #1d5f85;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        p.error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar">

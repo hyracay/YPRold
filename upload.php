@@ -61,8 +61,13 @@ if (isset($_POST['upload'])) {
                 $age_group = $row[17];
                 $work_status = $row[18];
                 $educational_background = $row[19];
-                $register_sk_voter = $row[20] == 'true' ? 1 : 0;
-
+                $register_sk_voter_raw = $row[20]; // Assuming $row[20] contains 'Registered' or 'Not Registered'
+                if ($register_sk_voter_raw == 'Registered') {
+                    $register_sk_voter = 'YES';
+                } else {
+                    $register_sk_voter = 'NO';
+                }
+                
                 $stmt->execute();
             }
 

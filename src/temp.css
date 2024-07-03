@@ -32,6 +32,7 @@ padding: 15px;
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding: 20px;
 }
 
 /* Modal content */
@@ -61,6 +62,10 @@ padding: 15px;
 .modal-inside {
     min-height: 100px;
     background-color: #fffcdc;
+}
+
+.details{
+    padding: 10px;
 }
 
 /* Modal styles */

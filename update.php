@@ -99,6 +99,21 @@ if (isset($_POST['update'])) {
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <link rel="stylesheet" type="text/css" href="src/temp.css">
     <link rel="stylesheet" type="text/css" href="src/update.css">
+    <style>
+        button[name="update"] {
+            background-color: #1d5f85;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button[name="update"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar">
@@ -155,8 +170,8 @@ if (isset($_POST['update'])) {
                                     <input type="radio" name="sex" value="Female" <?php if ($profile['sex'] == 'Female') echo 'checked'; ?> required>Female
                                 </td>
                                 <td>
-                                    Birth Date: <input type="date" id="birth_date" name="birth_date" placeholder="Year/Month/Date" value="<?php echo $profile['birth_date']; ?>" onchange="calculateAge()" required>
-                                    Age: <input type="text" id="age" name="age" placeholder="Age" value="<?php echo $profile['age']; ?>">
+                                    Birth Date: <input type="date" id="birth_date" style="width: 15%" name="birth_date" placeholder="Year/Month/Date" value="<?php echo $profile['birth_date']; ?>" onchange="calculateAge()" required>
+                                    Age: <input type="text" id="age" name="age" placeholder="Age" value="<?php echo $profile['age']; ?>"readonly>
                                     Email Address: <input type="email" name="email" placeholder="Email Address" value="<?php echo $profile['email']; ?>" required><br><br>
                                     
                                     Contact Number: <input type="text" name="contactnumber" placeholder="Contact Number" value="<?php echo $profile['contactnumber']; ?>" required>
@@ -194,11 +209,11 @@ if (isset($_POST['update'])) {
                     <td>
                         <table>
                             <tr>
-                                <td style="border: 1px solid;">
+                                <td style="border: 1px solid;" hidden>
                                     Your Age Group:<br>
-                                    <input type="radio" name="age_group" value="Child Youth" <?php if ($profile['age_group'] == 'Child Youth') echo 'checked'; ?> required>Child Youth (15-17 yrs. old)<br>
-                                    <input type="radio" name="age_group" value="Core Youth" <?php if ($profile['age_group'] == 'Core Youth') echo 'checked'; ?> required>Core Youth (18-24 yrs. old)<br>
-                                    <input type="radio" name="age_group" value="Young Adult" <?php if ($profile['age_group'] == 'Young Adult') echo 'checked'; ?> required>Young Adult (25-30 yrs. old)<br>
+                                    <input type="radio" name="age_group" value="Child Youth" <?php if ($profile['age_group'] == 'Child Youth') echo 'checked'; ?> hidden>Child Youth (15-17 yrs. old)<br>
+                                    <input type="radio" name="age_group" value="Core Youth" <?php if ($profile['age_group'] == 'Core Youth') echo 'checked'; ?> hidden>Core Youth (18-24 yrs. old)<br>
+                                    <input type="radio" name="age_group" value="Young Adult" <?php if ($profile['age_group'] == 'Young Adult') echo 'checked'; ?> hidden>Young Adult (25-30 yrs. old)<br>
                                 </td>
                                 <td style="border: 1px solid;">
                                     Work Status:<br>
@@ -281,5 +296,3 @@ if (isset($_POST['update'])) {
     </script>
 </body>
 </html>
-
-

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include ("conne.php");
+include("conne.php");
 
 if (!isset($_SESSION['email'])) {
     header("location: index.php");
@@ -35,14 +35,14 @@ if (isset($_SESSION['role'])) {
         <img src="src/avatar.png" alt="Avatar">
         <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!" . "<br>"; ?>
             Logged in as: <?php echo $_SESSION['email']; ?></p>
-            <a href="viewprofile.php">Profiles</a>
+        <a href="viewprofile.php">Profiles</a>
         <a href="homepage.php">Back</a>
         <a href="records.php">SK Reports</a>
         <a href="calendar.php">Calendar</a>
         <?php
-         if ($role == 'admin') {
+        if ($role == 'admin') {
             echo '<a href="accounts.php">Accounts</a>';
-         }
+        }
         ?>
         <?php
         if ($role == 'admin') {
@@ -82,15 +82,16 @@ if (isset($_SESSION['role'])) {
                 </tr>
                 <tr>
                     <td>
-                        <table>
+                    <table>
                             <tr><br>
-                                <td style="border: 1px solid;">
-                                    Sex : <br>
+                               
+                                
+                               <td> Sex : <br>
                                     <input type="radio" name="sex" value="Male" required>Male<br>
-                                    <input type="radio" name="sex" value="Female" required>Female
-                                </td>
-                                <td>
-                                Birth Date:<input type="date" name="birth_date" id="birth_date" placeholder="Year/Month/Date" required onchange="calculateAge()">
+                                    <input type="radio" name="sex" value="Female" required>Female<br>
+                               </td>
+                                    
+                                Birth Date:<input type="date" name="birth_date" style="width: 15%" id="birth_date" placeholder="Year/Month/Date" required onchange="calculateAge()"><br>
                                     Age:<input type="text" name="age" id="age" placeholder="Age" readonly>
                                     Email Address:<input type="email" name="email" placeholder="Email Address" required><br><br>
                                    
@@ -149,12 +150,10 @@ if (isset($_SESSION['role'])) {
                                 </td>
                                 <td style="border: 1px solid;">
                                     Youth Classification:<br>
-                                    <input type="radio" name="youth_classification" required> In School Youth<br>
-                                    <input type="radio" name="youth_classification" required> Out Of
-                                    School Youth<br>
-                                    <input type="radio" name="youth_classification" required> Working
-                                    Youth<br>
-                                    <input type="radio" name="youth_classification" required> Person With Disability (PWD)<br>
+                                    <input type="radio" name="youth_classification" value="In School Youth" required> In School Youth<br>
+                                    <input type="radio" name="youth_classification" value="Out Of School Youth" required> Out Of School Youth<br>
+                                    <input type="radio" name="youth_classification" value="Working Youth" required> Working Youth<br>
+                                    <input type="radio" name="youth_classification" value="Person With Disability (PWD)" required> Person With Disability (PWD)<br>
                                 </td>
                             </tr>
                         </table>
@@ -164,11 +163,11 @@ if (isset($_SESSION['role'])) {
                     <td>
                         <table>
                             <tr>
-                                <td style="border: 1px solid;">
+                                <td style="border: 1px solid;" hidden>
                                     Your Age Group:<br>
-                        <input type="radio" name="age_group" value="Child Youth" required> Child Youth (15-17 yrs. old)<br>
-                        <input type="radio" name="age_group" value="Core Youth" required> Core Youth (18-24 yrs. old)<br>
-                        <input type="radio" name="age_group" value="Young Adult" required> Young Adult (25-30 yrs.old)<br>
+                                    <input type="radio" name="age_group" value="Child Youth" hidden> Child Youth (15-17 yrs. old)<br>
+                                    <input type="radio" name="age_group" value="Core Youth" hidden> Core Youth (18-24 yrs. old)<br>
+                                    <input type="radio" name="age_group" value="Young Adult" hidden> Young Adult (25-30 yrs.old)<br>
 
                                 </td>
                                 <td style="border: 1px solid;">
@@ -176,8 +175,7 @@ if (isset($_SESSION['role'])) {
                                     <input type="radio" name="work_status" value="Employed" required> Employed<br>
                                     <input type="radio" name="work_status" value="Unemployed" required> Unemployed<br>
                                     <input type="radio" name="work_status" value="Self-Employed" required> Self-Employed<br>
-                                    <input type="radio" name="work_status" value="Currently looking for job" required> Currently
-                                    Looking For Job<br>
+                                    <input type="radio" name="work_status" value="Currently looking for job" required> Currently Looking For Job<br>
                                 </td>
                             </tr>
                         </table>
@@ -288,7 +286,7 @@ if (isset($_POST['submit'])) {
     $birth_date = $_POST['birth_date'];
     $contactnumber = $_POST['contactnumber'];
     $civil_status = $_POST['civil_status'];
-    $youth_classification = $_POST['youth_classification'];
+    $youth_classification = $_POST['youth_classification'];  // Correctly fetch the selected youth classification
     $age_group = $_POST['age_group'];
     $work_status = $_POST['work_status'];
     $educational_background = $_POST['educational_background'];
