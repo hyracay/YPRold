@@ -65,7 +65,8 @@ if (isset($_SESSION['role'])) {
                 </tr>
                 <tr>
                     <td>
-                        Name: <input type="text" name="lname" placeholder="Last Name" required>
+                        Name: 
+                        <input type="text" name="lname" placeholder="Last Name" required>
                         <input type="text" name="fname" placeholder="First Name" required>
                         <input type="text" name="mname" placeholder="Middle Name" required>
                         <input type="text" name="suffix" placeholder="Suffix">
@@ -73,7 +74,8 @@ if (isset($_SESSION['role'])) {
                 </tr>
                 <tr>
                     <td><br>
-                        Location: <input type="text" name="region" placeholder="Region" required>
+                        Location: 
+                        <input type="text" name="region" placeholder="Region" required>
                         <input type="text" name="province" placeholder="Province" required>
                         <input type="text" name="municipality" placeholder="Municipality" required>
                         <input type="text" name="barangay" placeholder="Barangay" required>
@@ -84,50 +86,47 @@ if (isset($_SESSION['role'])) {
                     <td>
                     <table>
                             <tr><br>
-                               
-                                
                                <td> Sex : <br>
                                     <input type="radio" name="sex" value="Male" required>Male<br>
                                     <input type="radio" name="sex" value="Female" required>Female<br>
                                </td>
                                     
                                 Birth Date:<input type="date" name="birth_date" style="width: 15%" id="birth_date" placeholder="Year/Month/Date" required onchange="calculateAge()"><br>
-                                    Age:<input type="text" name="age" id="age" placeholder="Age" readonly>
-                                    Email Address:<input type="email" name="email" placeholder="Email Address" required><br><br>
-                                   
-                                    Contact Number:<input type="text" name="contactnumber" placeholder="Contact Number" required>
+                                Age:<input type="text" name="age" id="age" placeholder="Age" readonly>
+                                Email Address:<input type="email" name="email" placeholder="Email Address"><br><br>
+                                Contact Number:<input type="text" name="contactnumber" placeholder="Contact Number" required>
 
-                                    <script>
-                                    function calculateAge() {
-                                    var birthDate = new Date(document.getElementById("birth_date").value);
-                                    var today = new Date();
-                                    var age = today.getFullYear() - birthDate.getFullYear();
-                                    var monthDiff = today.getMonth() - birthDate.getMonth();
+                                <script>
+                                function calculateAge() {
+                                var birthDate = new Date(document.getElementById("birth_date").value);
+                                var today = new Date();
+                                var age = today.getFullYear() - birthDate.getFullYear();
+                                var monthDiff = today.getMonth() - birthDate.getMonth();
 
-                                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                                    age--;
-                                    }
+                                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                                age--;
+                                }
 
-                                    document.getElementById("age").value = age;
+                                document.getElementById("age").value = age;
 
-                                    // Set age group based on age
-                                    var ageGroup = '';
-                                    if (age >= 15 && age <= 17) {
-                                    ageGroup = 'Child Youth';
-                                    } else if (age >= 18 && age <= 24) {
-                                    ageGroup = 'Core Youth';
-                                    } else if (age >= 25 && age <= 30) {
-                                    ageGroup = 'Young Adult';
-                                    }
+                                // Set age group based on age
+                                var ageGroup = '';
+                                if (age >= 15 && age <= 17) {
+                                ageGroup = 'Child Youth';
+                                } else if (age >= 18 && age <= 24) {
+                                ageGroup = 'Core Youth';
+                                } else if (age >= 25 && age <= 30) {
+                                ageGroup = 'Young Adult';
+                                }
 
-                                    // Check the appropriate radio button for age_group
-                                    var radios = document.getElementsByName('age_group');
-                                    for (var i = 0; i < radios.length; i++) {
-                                    if (radios[i].value === ageGroup) {
-                                    radios[i].checked = true;
-                                    }
-                                    }
-                                    }
+                                // Check the appropriate radio button for age_group
+                                var radios = document.getElementsByName('age_group');
+                                for (var i = 0; i < radios.length; i++) {
+                                if (radios[i].value === ageGroup) {
+                                radios[i].checked = true;
+                                }
+                                }
+                                }
                                 </script>
                                 </td>
                             </tr>
@@ -141,14 +140,14 @@ if (isset($_SESSION['role'])) {
                     <td>
                         <table>
                             <tr>
-                                <td style="border: 1px solid;">
+                                <td>
                                     Civil Status:<br>
                                     <input type="radio" name="civil_status" value="Single" required> Single<br>
                                     <input type="radio" name="civil_status" value="Married" required> Married<br>
                                     <input type="radio" name="civil_status" value="Divorced" required> Divorced<br>
                                     <input type="radio" name="civil_status" value="Widowed" required> Widowed<br>
                                 </td>
-                                <td style="border: 1px solid;">
+                                <td>
                                     Youth Classification:<br>
                                     <input type="radio" name="youth_classification" value="In School Youth" required> In School Youth<br>
                                     <input type="radio" name="youth_classification" value="Out Of School Youth" required> Out Of School Youth<br>
@@ -163,14 +162,14 @@ if (isset($_SESSION['role'])) {
                     <td>
                         <table>
                             <tr>
-                                <td style="border: 1px solid;" hidden>
+                                <td hidden>
                                     Your Age Group:<br>
                                     <input type="radio" name="age_group" value="Child Youth" hidden> Child Youth (15-17 yrs. old)<br>
                                     <input type="radio" name="age_group" value="Core Youth" hidden> Core Youth (18-24 yrs. old)<br>
                                     <input type="radio" name="age_group" value="Young Adult" hidden> Young Adult (25-30 yrs.old)<br>
 
                                 </td>
-                                <td style="border: 1px solid;">
+                                <td>
                                     Work Status:<br>
                                     <input type="radio" name="work_status" value="Employed" required> Employed<br>
                                     <input type="radio" name="work_status" value="Unemployed" required> Unemployed<br>
@@ -185,7 +184,7 @@ if (isset($_SESSION['role'])) {
                     <td>
                         <table>
                             <tr>
-                                <td style="border: 1px solid;">
+                                <td>
                                     Educational Background:<br>
                                     <input type="radio" name="educational_background" value="Elementary Level" required>
                                     Elementary Level<br>
@@ -208,7 +207,7 @@ if (isset($_SESSION['role'])) {
                                     <input type="radio" name="educational_background" value="Doctorate Level" required> Doctorate
                                     Level<br>
                                 </td>
-                                <td style="border: 1px solid;">
+                                <td>
                                     Registered SK Voter:<br>
                                     <input type="radio" name="register_sk_voter" value="Registered" required> YES<br>
                                     <input type="radio" name="register_sk_voter" value="Not Registered" required> NO<br>

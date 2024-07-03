@@ -155,11 +155,10 @@ if (isset($_SESSION['role'])) {
                             <form id="profilesForm" method="POST" action="delete_multiple.php">
                                 <table>
                                     <tr>
-                                        <th colspan="1">Name</th>
-                                        <th></th>
+                                        <th>Name</th>
                                         <th>Email</th>
                                         <th>Actions</th>
-                                        <th>
+                                        <th >
                                             <button type="submit" class="btn btn-danger btn-delete"
                                                 onclick="return confirm('Are you sure you want to delete the selected profiles?');">
                                                 Delete Selected
@@ -178,9 +177,6 @@ if (isset($_SESSION['role'])) {
                                         $fullName = $fname . ' ' . $mname . ' ' . $lname;
                                         ?>
                                         <tr>
-                                            <td>
-                                                <img width="50px" height="50px" src="src/avatar.png" alt="">
-                                            </td>
                                             <td>
                                                 <a href="" class="profileNameLink" type="button"
                                                     data-id="<?= $id; ?>"><?= $fullName; ?></a>
