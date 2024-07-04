@@ -192,9 +192,10 @@ if (isset($_GET['event_id'])) {
 
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
+            let today = new Date().toISOString().slice(0, 10);
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                initialDate: '2024-06-07',
+                initialDate: today,
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
