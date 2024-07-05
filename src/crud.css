@@ -33,7 +33,7 @@ table {
 
 table td {
     padding: 10px;
-    vertical-align: top;
+    vertical-align: center;
 }
 
 input[type="text"],
@@ -41,13 +41,13 @@ input[type="email"],
 input[type="date"],
 input[type="file"],
 input[type="radio"] {
-    margin: 5px 0;
+    margin: 1px 0;
 }
 
 input[type="text"],
 input[type="email"],
 input[type="date"] {
-    width: calc(100% - 10px);
+    width: calc(32% - 10px);
     padding: 8px;
     border: 1px solid #ccc;
 }

@@ -65,71 +65,71 @@ if (isset($_SESSION['role'])) {
                 </tr>
                 <tr>
                     <td>
-                        Name: 
+                        Name:<br>
                         <input type="text" name="lname" placeholder="Last Name" required>
-                        <input type="text" name="fname" placeholder="First Name" required>
+                        <input type="text" name="fname" placeholder="First Name" required><br>
                         <input type="text" name="mname" placeholder="Middle Name" required>
                         <input type="text" name="suffix" placeholder="Suffix">
                     </td>
                 </tr>
                 <tr>
                     <td><br>
-                        Location: 
-                        <input type="text" name="region" placeholder="Region" required>
-                        <input type="text" name="province" placeholder="Province" required>
-                        <input type="text" name="municipality" placeholder="Municipality" required>
-                        <input type="text" name="barangay" placeholder="Barangay" required>
+                        Location:<br>
+                        <input type="text" name="region" placeholder="Region" value="CAR" required>
+                        <input type="text" name="province" placeholder="Province" value="BEN" required>
+                        <input type="text" name="municipality" placeholder="Municipality" value="La Trinidad" required><br>
+                        <input type="text" name="barangay" placeholder="Barangay" value="Tawang" required>
                         <input type="text" name="purok" placeholder="Purok/Zone" required>
                     </td>
                 </tr>
                 <tr>
                     <td>
                     <table>
-                            <tr><br>
-                               <td> Sex : <br>
-                                    <input type="radio" name="sex" value="Male" required>Male<br>
-                                    <input type="radio" name="sex" value="Female" required>Female<br>
-                               </td>
-                                    
-                                Birth Date:<input type="date" name="birth_date" style="width: 15%" id="birth_date" placeholder="Year/Month/Date" required onchange="calculateAge()"><br>
-                                Age:<input type="text" name="age" id="age" placeholder="Age" readonly>
-                                Email Address:<input type="email" name="email" placeholder="Email Address"><br><br>
-                                Contact Number:<input type="text" name="contactnumber" placeholder="Contact Number" required>
+                            <td>Sex:<br>
+                                <input type="radio" name="sex" value="Male" required>Male<br>
+                                <input type="radio" name="sex" value="Female" required>Female<br>
+                            </td>
+                            <td>
+                            Birth Date:<input type="date" name="birth_date" style="width: 20%" id="birth_date" placeholder="Year/Month/Date" required onchange="calculateAge()">
+                            </td>
+                            <td>
+                            Age:<input type="text" name="age" style="width: 20%" id="age" placeholder="Age" readonly><br>
+                            </td>
+                            Email Address:<input type="email" name="email" placeholder="Email Address"><br>
+                            Contact Number:<input type="text" name="contactnumber" placeholder="Contact Number" required>
+                            <script>
+                            function calculateAge() {
+                            var birthDate = new Date(document.getElementById("birth_date").value);
+                            var today = new Date();
+                            var age = today.getFullYear() - birthDate.getFullYear();
+                            var monthDiff = today.getMonth() - birthDate.getMonth();
 
-                                <script>
-                                function calculateAge() {
-                                var birthDate = new Date(document.getElementById("birth_date").value);
-                                var today = new Date();
-                                var age = today.getFullYear() - birthDate.getFullYear();
-                                var monthDiff = today.getMonth() - birthDate.getMonth();
+                            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                            age--;
+                            }
 
-                                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                                age--;
-                                }
+                            document.getElementById("age").value = age;
 
-                                document.getElementById("age").value = age;
+                            // Set age group based on age
+                            var ageGroup = '';
+                            if (age >= 15 && age <= 17) {
+                            ageGroup = 'Child Youth';
+                            } else if (age >= 18 && age <= 24) {
+                            ageGroup = 'Core Youth';
+                            } else if (age >= 25 && age <= 30) {
+                            ageGroup = 'Young Adult';
+                            }
 
-                                // Set age group based on age
-                                var ageGroup = '';
-                                if (age >= 15 && age <= 17) {
-                                ageGroup = 'Child Youth';
-                                } else if (age >= 18 && age <= 24) {
-                                ageGroup = 'Core Youth';
-                                } else if (age >= 25 && age <= 30) {
-                                ageGroup = 'Young Adult';
-                                }
-
-                                // Check the appropriate radio button for age_group
-                                var radios = document.getElementsByName('age_group');
-                                for (var i = 0; i < radios.length; i++) {
-                                if (radios[i].value === ageGroup) {
-                                radios[i].checked = true;
-                                }
-                                }
-                                }
-                                </script>
-                                </td>
-                            </tr>
+                            // Check the appropriate radio button for age_group
+                            var radios = document.getElementsByName('age_group');
+                            for (var i = 0; i < radios.length; i++) {
+                            if (radios[i].value === ageGroup) {
+                            radios[i].checked = true;
+                            }
+                            }
+                            }
+                            </script>
+                            </td>
                         </table>
                     </td>
                 </tr>
@@ -154,21 +154,6 @@ if (isset($_SESSION['role'])) {
                                     <input type="radio" name="youth_classification" value="Working Youth" required> Working Youth<br>
                                     <input type="radio" name="youth_classification" value="Person With Disability (PWD)" required> Person With Disability (PWD)<br>
                                 </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <table>
-                            <tr>
-                                <td hidden>
-                                    Your Age Group:<br>
-                                    <input type="radio" name="age_group" value="Child Youth" hidden> Child Youth (15-17 yrs. old)<br>
-                                    <input type="radio" name="age_group" value="Core Youth" hidden> Core Youth (18-24 yrs. old)<br>
-                                    <input type="radio" name="age_group" value="Young Adult" hidden> Young Adult (25-30 yrs.old)<br>
-
-                                </td>
                                 <td>
                                     Work Status:<br>
                                     <input type="radio" name="work_status" value="Employed" required> Employed<br>
@@ -184,28 +169,32 @@ if (isset($_SESSION['role'])) {
                     <td>
                         <table>
                             <tr>
+                                <td hidden>
+                                    Age Group:<br>
+                                    <input type="radio" name="age_group" value="Child Youth" hidden> Child Youth (15-17 yrs. old)<br>
+                                    <input type="radio" name="age_group" value="Core Youth" hidden> Core Youth (18-24 yrs. old)<br>
+                                    <input type="radio" name="age_group" value="Young Adult" hidden> Young Adult (25-30 yrs.old)<br>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
                                 <td>
                                     Educational Background:<br>
-                                    <input type="radio" name="educational_background" value="Elementary Level" required>
-                                    Elementary Level<br>
-                                    <input type="radio" name="educational_background" value="Elementary Graduate" required>
-                                    Elementary Graduate<br>
-                                    <input type="radio" name="educational_background" value="High School Level" required> High
-                                    School Level<br>
-                                    <input type="radio" name="educational_background" value="High School Graduate" required> High
-                                    School Graduate<br>
-                                    <input type="radio" name="educational_background" value="Vocational Graduate" required>
-                                    Vocational Graduate<br>
-                                    <input type="radio" name="educational_background" value="College Level" required> College
-                                    Level<br>
-                                    <input type="radio" name="educational_background" value="College Graduate" required> College
-                                    Graduate<br>
-                                    <input type="radio" name="educational_background" value="Master Level" required> Master's
-                                    Level<br>
-                                    <input type="radio" name="educational_background" value="Master Graduate" required>
-                                    Master's Graduate<br>
-                                    <input type="radio" name="educational_background" value="Doctorate Level" required> Doctorate
-                                    Level<br>
+                                    <input type="radio" name="educational_background" value="Elementary Level" required> Elementary Level&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="educational_background" value="Elementary Graduate" required> Elementary Graduate<br>
+                                    <input type="radio" name="educational_background" value="High School Level" required> High School Level&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="educational_background" value="High School Graduate" required> High School Graduate<br>
+                                    <input type="radio" name="educational_background" value="Vocational Graduate" required> Vocational Graduate&nbsp;
+                                    <input type="radio" name="educational_background" value="College Level" required> College Level<br>
+                                    <input type="radio" name="educational_background" value="College Graduate" required> College Graduate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="educational_background" value="Master Level" required> Master's Level<br>
+                                    <input type="radio" name="educational_background" value="Master Graduate" required> Master's Graduate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="educational_background" value="Doctorate Level" required> Doctorate Level<br>
                                 </td>
                                 <td>
                                     Registered SK Voter:<br>

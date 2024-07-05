@@ -102,13 +102,14 @@ if (isset($_SESSION['role'])) {
                                                     } ?>"
                                                     class="form-control" placeholder="Enter name:">
                                                 <button type="submit" class="btn btn-primary">Search</button>
-                                                <button type="submit" style="margin-left:100px">
-                                                <a href="advance_search.php" style="text-decoration: none; color: #fff; float: right">Advance Search</a>
+                                                <div class="col-md-2">
+                                                    <button style="margin-left: 129px; width: max-content; border-radius: 0" class="btn btn-primary"><a style="text-decoration: none; color: #fff;"type="button" href="advance_search.php">Advance Search</a></button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="col-md-2">
-                                        <button id="exportBtn">Export</button>
+                                        <button id="exportBtn" style="margin-left:144%">Export</button>
                                     </div>
                                 </div>
                             </div>
@@ -157,12 +158,14 @@ if (isset($_SESSION['role'])) {
                                     <tr>
                                         <th>Name</th>
                                         <th>Email</th>
-                                        <th>Actions</th>
-                                        <th >
-                                            <button type="submit" class="btn btn-danger btn-delete"
-                                                onclick="return confirm('Are you sure you want to delete the selected profiles?');">
-                                                Delete Selected
-                                            </button>
+                                        <th><center>Actions</center></th>
+                                        <th>
+                                            <center>
+                                                <button style="border-radius: 0" type="submit" class="btn btn-danger btn-delete"
+                                                    onclick="return confirm('Are you sure you want to delete the selected profiles?');">
+                                                    Delete Selected
+                                                </button>
+                                            </center>
                                         </th>
                                     </tr>
 
@@ -178,21 +181,25 @@ if (isset($_SESSION['role'])) {
                                         ?>
                                         <tr>
                                             <td>
-                                                <a href="" class="profileNameLink" type="button"
+                                                <a style="text-transform:capitalize"href="" class="profileNameLink" type="button"
                                                     data-id="<?= $id; ?>"><?= $fullName; ?></a>
                                             </td>
                                             <td>
-                                                <p ><?= $email; ?></p>
+                                                <p style="text-transform:lowercase"><?= $email; ?></p>
                                             </td>
                                             <td>
+                                                <center>
                                                 <a href="update.php?id=<?= $id; ?>"
                                                     class="btn btn-primary">Update</a>
                                                 <a href="delete.php?id=<?= $id; ?>" class="btn btn-danger"
                                                     onclick="return confirm('Are you sure you want to delete this profile?');">Delete</a>
-                                            </td>
+                                                </center>
+                                                </td>
                                             <td>
-                                                <input type="checkbox" name="selectedProfiles[]"
-                                                    value="<?= $id; ?>">
+                                                <center>
+                                                    <input type="checkbox" name="selectedProfiles[]"
+                                                        value="<?= $id; ?>">
+                                                </center>
                                             </td>
                                         </tr>
                                     <?php

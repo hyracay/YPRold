@@ -150,9 +150,10 @@ h2 {
 
 .login-btn {
   background-color: #f37a1f;
-  width: 100%;
+  width: 102%;
   border: none;
   height: 54px;
+  border-radius: 3px;
 }
 
 h1 {

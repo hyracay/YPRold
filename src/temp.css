@@ -2,8 +2,12 @@
     box-sizing: unset;
 }
 
+p {
+    margin-bottom: 0;
+}
+
 table, td, th {  
-border: 1px solid #ddd;
+border-bottom: 1px solid #ddd;
 text-align: left;
 }
 
@@ -155,3 +159,11 @@ h1 {
     font-family: Helvetica;
     font-weight: 700;
   }
+
+.card-body {
+    padding: 1rem 1rem 0rem 1rem;
+}
+
+a {
+    color: #699aba;
+}
