@@ -110,7 +110,7 @@ if (isset($_POST['update'])) {
         }
 
         button[type="submit"] {
-            background-color: #1d5f85;
+            background-color: #699aba;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -120,7 +120,8 @@ if (isset($_POST['update'])) {
         }
 
         button[type="submit"]:hover {
-            background-color: #0056b3;
+            background-color: #f37a1f;
+            transition-duration: 0.4s;
         }
 
         p.error {

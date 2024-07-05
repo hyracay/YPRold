@@ -88,16 +88,16 @@ $excluded_email = 'admin@ph';
             ?>
             <div class="section">
                 <form id="profilesForm" method="POST" action="delete_multiple_acc.php">
-                    <table style="margin: auto; border: 1px solid black;">
+                    <table style="margin: auto;">
                         <tr>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Role</th>
-                            <th>Actions</th>
-                            <th>
-                                <button type="submit" class="btn btn-danger btn-delete" onclick="return confirm('Are you sure you want to delete the selected profiles?');">
+                            <th><center>Actions</center></th>
+                            <th><center>
+                                <button type="submit" style="border-radius:0"class="btn btn-danger btn-delete" onclick="return confirm('Are you sure you want to delete the selected profiles?');">
                                     Delete Selected
-                                </button>
+                                </center></button>
                             </th>
                         </tr>
                         <?php
@@ -111,13 +111,13 @@ $excluded_email = 'admin@ph';
                             ?>
                             <tr>
                                 <td><?= $fullName; ?></td>
-                                <td><?= $email; ?></td>
+                                <td style="text-transform:lowercase"><?= $email; ?></td>
                                 <td><?= $role; ?></td>
-                                <td>
+                                <td><center>
                                     <a href="update_acc.php?id=<?= $id; ?>" class="btn btn-primary">Update</a>
                                     <a href="delete_acc.php?id=<?= $id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this profile?');">Delete</a>
-                                </td>
-                                <td><input type="checkbox" name="selectedProfiles[]" value="<?= $id; ?>"></td>
+                                </center></td>
+                                <td><center><input type="checkbox" name="selectedProfiles[]" value="<?= $id; ?>"></center></td>
                             </tr>
                         <?php } ?>
                     </table>
