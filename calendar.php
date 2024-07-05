@@ -107,7 +107,6 @@ if (isset($_GET['event_id'])) {
     </div>
 
     <div class="content">
-        <h1>Event Calendar</h1>
         <button id="addEventBtn" class="btn btn-primary">Add Event</button>
         <div id='calendar'></div>
     </div>
