@@ -1,10 +1,7 @@
 <?php
 include("conne.php");
-
 if (isset($_POST['upload'])) {
-    // Check if a file is uploaded
     if (isset($_FILES['csvFile']) && $_FILES['csvFile']['error'] == 0) {
-        // Get the file details
         $fileTmpPath = $_FILES['csvFile']['tmp_name'];
         $fileName = $_FILES['csvFile']['name'];
         $fileSize = $_FILES['csvFile']['size'];
@@ -12,34 +9,27 @@ if (isset($_POST['upload'])) {
         $fileNameCmps = explode(".", $fileName);
         $fileExtension = strtolower(end($fileNameCmps));
 
-        // Check if the file is a CSV
         if ($fileExtension == 'csv') {
-            // Check the connection
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
             }
 
-            // Open the uploaded CSV file
             $file = fopen($fileTmpPath, 'r');
 
             if ($file === FALSE) {
                 die("Error opening file.");
             }
 
-            // Skip the first line (header)
             fgetcsv($file);
 
-            // Prepare the SQL statement
             $stmt = $conn->prepare("INSERT INTO profiles (lname, fname, mname, suffix, region, province, municipality, barangay, purok, sex, age, email, birth_date, contactnumber, civil_status, youth_classification, age_group, work_status, educational_background, register_sk_voter) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             if ($stmt === FALSE) {
                 die("Error preparing statement: " . $conn->error);
             }
 
-            // Bind parameters
-            $stmt->bind_param('ssssssssssissssssssi', $lname, $fname, $mname, $suffix, $region, $province, $municipality, $barangay, $purok, $sex, $age, $email, $birth_date, $contactnumber, $civil_status, $youth_classification, $age_group, $work_status, $educational_background, $register_sk_voter);
+            $stmt->bind_param('ssssssssssisssssssss', $lname, $fname, $mname, $suffix, $region, $province, $municipality, $barangay, $purok, $sex, $age, $email, $birth_date, $contactnumber, $civil_status, $youth_classification, $age_group, $work_status, $educational_background, $register_sk_voter);
 
-            // Read and insert the data
             while (($row = fgetcsv($file, 1000, ",")) !== FALSE) {
                 $id = $row[0];
                 $lname = $row[1];
@@ -61,21 +51,19 @@ if (isset($_POST['upload'])) {
                 $age_group = $row[17];
                 $work_status = $row[18];
                 $educational_background = $row[19];
-                $register_sk_voter_raw = $row[20]; // Assuming $row[20] contains 'Registered' or 'Not Registered'
+                $register_sk_voter_raw = $row[20];
                 if ($register_sk_voter_raw == 'Registered') {
-                    $register_sk_voter = 'YES';
+                    $register_sk_voter = 'Registered';
                 } else {
-                    $register_sk_voter = 'NO';
+                    $register_sk_voter = 'Not Registered';
                 }
                 
                 $stmt->execute();
             }
 
-            // Close the statement and the connection
             $stmt->close();
             $conn->close();
 
-            // Close the file
             fclose($file);
             header("location: crud.php");
             exit();
