@@ -431,7 +431,7 @@ while ($row = mysqli_fetch_assoc($result_age)) {
                 data: [
                     <?php
                     foreach ($data_sk as $row) {
-                        $display = $row['register_sk_voter'] == 0 ? 'Not Registered' : 'Registered';
+                        $display = $row['register_sk_voter'] == 'Registered' ? 'Registered' : 'Not Registered';
                         echo "{ name: '" . $display . "', y: " . $row['count'] . " },";
                         
                     }
