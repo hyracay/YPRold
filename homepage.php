@@ -99,6 +99,7 @@ while ($row = mysqli_fetch_assoc($result_age)) {
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
     
+    
     <style>
         .content {
             text-align: center;

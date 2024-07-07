@@ -55,6 +55,9 @@ if (isset($_POST['update'])) {
     $work_status = $_POST['work_status'];
     $educational_background = $_POST['educational_background'];
     $register_sk_voter = $_POST['register_sk_voter'];
+    $voted_last_election = isset($_POST['voted_last_election']) ? $_POST['voted_last_election'] : '';
+    $attended_kk = isset($_POST['attended_kk']) ? $_POST['attended_kk'] : '';
+    $times_attended_kk = isset($_POST['times_attended_kk']) ? $_POST['times_attended_kk'] : '';
 
     // Prepare SQL statement
     $update = "UPDATE profiles SET 
@@ -77,19 +80,24 @@ if (isset($_POST['update'])) {
             age_group = '$age_group',
             work_status = '$work_status',
             educational_background = '$educational_background',
-            register_sk_voter = '$register_sk_voter'
+            register_sk_voter = '$register_sk_voter',
+            voted_last_election = '$voted_last_election',
+            attended_kk = '$attended_kk',
+            times_attended_kk = '$times_attended_kk'
         WHERE id = $id";
 
     $result = mysqli_query($conn, $update);
 
     if ($result) {
-       header("location: viewprofile.php");
-       echo " <script> alert('Record updated successfully'); </script>";
+        header("location: viewprofile.php");
+        echo "<script>alert('Record updated successfully');</script>";
     } else {
-        echo " <script> alert('Error'); </script>";
+        echo "<script>alert('Error');</script>";
     }
 }
 ?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -250,6 +258,32 @@ if (isset($_POST['update'])) {
                                 </td>
                             </tr>
                         </table>
+                     
+<table>
+
+    <tr>
+        <td>
+            Voted Last Election:
+            <input type="radio" name="voted_last_election" value="Yes" <?php if ($profile['voted_last_election'] == 'Yes') echo 'checked'; ?>> Yes
+            <input type="radio" name="voted_last_election" value="No" <?php if ($profile['voted_last_election'] == 'No') echo 'checked'; ?>> No
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Attended KK:
+            <input type="radio" name="attended_kk" value="Yes" <?php if ($profile['attended_kk'] == 'Yes') echo 'checked'; ?>> Yes
+            <input type="radio" name="attended_kk" value="No" <?php if ($profile['attended_kk'] == 'No') echo 'checked'; ?>> No
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Times Attended KK:
+            <input type="text" name="times_attended_kk" value="<?php echo $profile['times_attended_kk']; ?>">
+        </td>
+    </tr>
+    
+</table>
+
                     </td>
                 </tr>
                 <tr>

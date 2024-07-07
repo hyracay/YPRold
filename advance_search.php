@@ -95,7 +95,7 @@ body {
                 <img src="src/avatar.png" alt="Avatar" class="img rounded-circle">
                 <p>Hello <?php echo $_SESSION['fname'] . " " . $_SESSION['lname'] . "!<br>"; ?>
                 Logged in as: <?php echo $_SESSION['email']; ?></p>
-                <a href="homepage.php">Back</a>
+                <a href="viewprofile.php">Back</a>
                 <a href="crud.php">Create Profile</a>
                 <?php if ($role == 'admin') { echo '<a href="createacc.php">Create Accounts</a>'; } ?>
                 <a href="records.php">SK Reports</a>

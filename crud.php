@@ -25,6 +25,7 @@ if (isset($_SESSION['role'])) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CREATE YOUTH PROFILE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <link rel="stylesheet" type="text/css" href="src/temp.css">
     <link rel="stylesheet" type="text/css" href="src/crud.css">
@@ -86,8 +87,8 @@ if (isset($_SESSION['role'])) {
                     <td>
                     <table>
                             <td>Sex:<br>
-                                <input type="radio" name="sex" value="Male" required>Male<br>
-                                <input type="radio" name="sex" value="Female" required>Female<br>
+                                <input type="radio" name="sex" value="Male" required> Male<br>
+                                <input type="radio" name="sex" value="Female" required> Female<br>
                             </td>
                             <td>
                             Birth Date:<input type="date" name="birth_date" style="width: 20%" id="birth_date" placeholder="Year/Month/Date" required onchange="calculateAge()">
@@ -185,24 +186,40 @@ if (isset($_SESSION['role'])) {
                             <tr>
                                 <td>
                                     Educational Background:<br>
-                                    <input type="radio" name="educational_background" value="Elementary Level" required> Elementary Level&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="educational_background" value="Elementary Level" required> Elementary Level<br>
                                     <input type="radio" name="educational_background" value="Elementary Graduate" required> Elementary Graduate<br>
-                                    <input type="radio" name="educational_background" value="High School Level" required> High School Level&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="educational_background" value="High School Level" required> High School Level<br>
                                     <input type="radio" name="educational_background" value="High School Graduate" required> High School Graduate<br>
-                                    <input type="radio" name="educational_background" value="Vocational Graduate" required> Vocational Graduate&nbsp;
+                                    <input type="radio" name="educational_background" value="Vocational Graduate" required> Vocational Graduate<br>
                                     <input type="radio" name="educational_background" value="College Level" required> College Level<br>
-                                    <input type="radio" name="educational_background" value="College Graduate" required> College Graduate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="educational_background" value="College Graduate" required> College Graduate<br>
                                     <input type="radio" name="educational_background" value="Master Level" required> Master's Level<br>
-                                    <input type="radio" name="educational_background" value="Master Graduate" required> Master's Graduate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="educational_background" value="Master Graduate" required> Master's Graduate<br>
                                     <input type="radio" name="educational_background" value="Doctorate Level" required> Doctorate Level<br>
                                 </td>
+                            </tr>
+                            <tr>
                                 <td>
-                                    Registered SK Voter:<br>
-                                    <input type="radio" name="register_sk_voter" value="Registered" required> YES<br>
-                                    <input type="radio" name="register_sk_voter" value="Not Registered" required> NO<br>
-
+                                Registered SK Voter:<br>
+                                <input type="radio" name="register_sk_voter" value="Registered" required> Yes<br>
+                                <input type="radio" name="register_sk_voter" value="Not Registered" required> No<br>
+                                </td>
+                                <td>
+                                Voted Last Election:<br>
+                                <input type="radio" name="voted_last_election" value="Yes" required> Yes<br>
+                                <input type="radio" name="voted_last_election" value="No" required> No<br>
+                                </td>
+                                <td>
+                                Attended a KK Assembly (Katipunang ng Kabataan):<br>
+                                <input type="radio" name="attended_kk" value="Yes" required> Yes<br>
+                                <input type="radio" name="attended_kk" value="No" required> No<br>
+                                </td>
+                                <td>
+                                Times Attended KK:<br>
+                                <input type="number" name="times_attended_kk" placeholder="Number of times">
                                 </td>
                             </tr>
+                            <tr>
                         </table>
                     </td>
                 </tr>
@@ -279,16 +296,19 @@ if (isset($_POST['submit'])) {
     $work_status = $_POST['work_status'];
     $educational_background = $_POST['educational_background'];
     $register_sk_voter = $_POST['register_sk_voter'];
+    $voted_last_election = $_POST['voted_last_election'];
+    $attended_kk = $_POST['attended_kk'];
+    $times_attended_kk = $_POST['times_attended_kk'];
 
     // Prepare SQL statement
     $insert = "INSERT INTO profiles 
             (lname, fname, mname, suffix, region, province, municipality, barangay, purok,
              sex, age, email, birth_date, contactnumber, civil_status, youth_classification,
-             age_group, work_status, educational_background, register_sk_voter)
+             age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk)
             VALUES 
             ('$lname', '$fname', '$mname', '$suffix', '$region', '$province', '$municipality', '$barangay', '$purok',
              '$sex', '$age', '$email', '$birth_date', '$contactnumber', '$civil_status', '$youth_classification',
-             '$age_group', '$work_status', '$educational_background', '$register_sk_voter')";
+             '$age_group', '$work_status', '$educational_background', '$register_sk_voter', '$voted_last_election', '$attended_kk', '$times_attended_kk')";
 
     $result = mysqli_query($conn, $insert);
 

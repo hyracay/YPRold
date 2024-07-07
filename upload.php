@@ -22,13 +22,13 @@ if (isset($_POST['upload'])) {
 
             fgetcsv($file);
 
-            $stmt = $conn->prepare("INSERT INTO profiles (lname, fname, mname, suffix, region, province, municipality, barangay, purok, sex, age, email, birth_date, contactnumber, civil_status, youth_classification, age_group, work_status, educational_background, register_sk_voter) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO profiles (lname, fname, mname, suffix, region, province, municipality, barangay, purok, sex, age, email, birth_date, contactnumber, civil_status, youth_classification, age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             if ($stmt === FALSE) {
                 die("Error preparing statement: " . $conn->error);
             }
 
-            $stmt->bind_param('ssssssssssisssssssss', $lname, $fname, $mname, $suffix, $region, $province, $municipality, $barangay, $purok, $sex, $age, $email, $birth_date, $contactnumber, $civil_status, $youth_classification, $age_group, $work_status, $educational_background, $register_sk_voter);
+            $stmt->bind_param('ssssssssssisssssssssssi', $lname, $fname, $mname, $suffix, $region, $province, $municipality, $barangay, $purok, $sex, $age, $email, $birth_date, $contactnumber, $civil_status, $youth_classification, $age_group, $work_status, $educational_background, $register_sk_voter, $voted_last_election, $attended_kk, $times_attended_kk);
 
             while (($row = fgetcsv($file, 1000, ",")) !== FALSE) {
                 $id = $row[0];
@@ -57,6 +57,9 @@ if (isset($_POST['upload'])) {
                 } else {
                     $register_sk_voter = 'Not Registered';
                 }
+                $voted_last_election = $row[21];
+                $attended_kk = $row[22];
+                $times_attended_kk = $row[23];
                 
                 $stmt->execute();
             }

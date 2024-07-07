@@ -25,6 +25,7 @@ if (isset($_SESSION['role'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>VIEW PROFILES</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="src/temp.css">
     <link rel="stylesheet" type="text/css" href="src/css.css">
 
@@ -264,7 +265,10 @@ if (isset($_SESSION['role'])) {
                         }
                      ?>
                      modalInside.innerHTML += `<div class="details">Work Status: ${selectedProfile.work_status}</div>
-                     <div class="details">Registered SK Voter: ${selectedProfile.register_sk_voter}</div>`;
+                     <div class="details">Registered SK Voter: ${selectedProfile.register_sk_voter}</div>
+                     <div class="details">Voted Last Election: ${selectedProfile.voted_last_election}</div>
+                     <div class="details">Attended a KK Assembly: ${selectedProfile.attended_kk}</div>
+                     <div class="details">Times Attended: ${selectedProfile.times_attended_kk}</div>`;
             });
         }
 
