@@ -1,136 +1,297 @@
 <?php
-    session_start();
-    include("conne.php");
+session_start();
+include("conne.php");
 
-    if (!isset($_SESSION['email'])) {
-        header("location: index.php");
-        exit(); // Ensure that no further code is executed after the redirection
-    }
-?>
+if (!isset($_SESSION['email'])) {
+    header("location: index.php");
+    exit();
+}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CREATE USER ACCOUNT</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="src/newcss.css">
-    <link rel="stylesheet" type="text/css" href="src/css.css">
-</head>
-<body>
-    
-    <div class="sidebar">
-        <img src="src/avatar.png" alt="Avatar">
-        <p><?php echo "Hello ".$_SESSION['fname'] . " " . $_SESSION['lname'] ."!". "<br>"; ?>
-           Logged in as: <?php echo $_SESSION['email']; ?></p>
-        <a href = "viewprofile.php">Profiles</a>
-        <a href="crud.php">Create Profile</a>
-        <a href="records.php">SK Reports</a>
-        <a href="calendar.php">Calendar</a>
-        <a href="accounts.php">Accounts</a>
-        <a href="homepage.php">Back</a>
-        <a href="logout.php">Logout</a>
-    </div>
+$FirstName = $LastName = $email = $password = $cpassword = ""; 
+$show_alert = false; 
+$form_submitted = false; 
 
-    <div class="content">
-        <h1>Create a user account</h1>
-        <div class="table-container">
-            <form method="POST" action="createacc.php" autocomplete="off">
-                <section class="vh-100 -custom">
-                    <div class="container py-5 h-100">
-                        <div class="row justify-content-center align-items-center h-100">
-                            <div class="col-12 col-lg-9 col-xl-7">
-                                <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
-                                    <div class="card-body p-4 p-md-5">
-                                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registration Form</h3>
-                                        <div class="row">
-                                            <div class="col-md-11 mb-4">
-                                                <div data-mdb-input-init class="form-outline">
-                                                <input type="text" id="firstName" name="fname" class="form-control form-control-lg" />
-                                                <label class="form-label" for="firstName">First Name</label>
-                                            </div>
-                                            </div>
-                                            <div class="col-md-11 mb-4">
-                                                <div data-mdb-input-init class="form-outline">
-                                                    <input type="text" id="lastName" name="lname" class="form-control form-control-lg" />
-                                                    <label class="form-label" for="lastName">Last Name</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                            <div class="row">
-                                            <div class="col-md-11 mb-4 pb-2">
-                                                <div data-mdb-input-init class="form-outline">
-                                                    <input type="email" id="email" name="email" class="form-control form-control-lg" />
-                                                    <label class="form-label" for="email">Email</label>
-                                                </div>
-                                            </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mb-4 ">
-                                                <div data-mdb-input-init class="form-outline">
-                                                    <input type="password" id="password" name="password" class="form-control form-control-lg" />
-                                                    <label class="form-label" for="password">Password</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-11 mb-4 ">
-                                                <div data-mdb-input-init class="form-outline">
-                                                    <input type="password" id="cpassword" name="cpassword" class="form-control form-control-lg" />
-                                                    <label class="form-label" for="cpassword">Confirm Password</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <label for="role">Role:</label>
-                                    <select id="role" name="role" class="form-control">
-                                    <option value="employee">Employee</option>
-                                    <option value="admin">Admin</option>
-                                    </select> 
-                                        <div class="mt-4 pt-2">
-                                            <input data-mdb-ripple-init class="btn btn-primary btn-lg" type="submit" name="submit" value="Submit" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </form>
-        </div>
-    </div>
-</body>
-</html>
-
-<?php
-if(isset($_POST['submit'])){
-    // Retrieve other form data
+if (isset($_POST['submit'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
     $cpassword = $_POST['cpassword'];
     $FirstName = $_POST['fname'];
     $LastName = $_POST['lname'];
     $role = $_POST['role']; 
-    // Check if email already exists (your existing code)
-    $check_query = "SELECT * FROM account WHERE email = '$email' ";
+
+    $check_query = "SELECT * FROM account WHERE email = '$email'";
     $check_result = mysqli_query($conn, $check_query);
 
     if (mysqli_num_rows($check_result) > 0) {
         echo "<script>alert('Email already exists');</script>";
-        exit();
-    }
+    } else if ($password != $cpassword) {
+        $show_alert = true;
+    } else {
+        $password = md5($password); 
 
-    if ($password == $cpassword){
-        $password = md5($password); // Consider using more secure hashing methods like bcrypt
-        // Insert user into database with role
         $sql_insert = "INSERT INTO account(email, password, FirstName, LastName, role) 
                        VALUES('$email','$password', '$FirstName', '$LastName', '$role')";
         $result_insert = mysqli_query($conn, $sql_insert);
+
         if ($result_insert) {
-            echo "<script>alert('User Successfully Registered.');</script>";
+            $form_submitted = true;
+            echo "<script>
+                    alert('User Successfully Registered.');
+                    window.location.href = window.location.href; // Refresh the page
+                  </script>";
         } else {
             echo "<script>alert('Error registering user.');</script>";
         }
-    } else {
-        echo "<script>alert('Passwords do not match.');</script>";
     }
 }
-
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="src/css.css">
+         
+    <title>Registration Form</title> 
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: "Helvetica", Arial, sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            max-width: 100%;
+            width: 78%;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 0 30px;
+        }
+
+        .container .forms {
+            display: flex;
+            align-items: center;
+            height: auto;
+            width: 100%;
+            transition: height 0.2s ease;
+        }
+
+        .container .form {
+            width: 100%;
+            padding: 30px;
+            background-color: #fff;
+            transition: margin-left 0.18s ease;
+        }
+
+        .container .form .title {
+            position: relative;
+            font-size: 27px;
+            font-weight: 600;
+        }
+
+        .form .title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 30px;
+            background-color: #4070f4;
+            border-radius: 25px;
+        }
+
+        .form .input-field {
+            position: relative;
+            height: 50px;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .input-field input,
+        .input-field select {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            padding: 0 35px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            border-bottom: 2px solid #ccc;
+            border-top: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .input-field input:is(:focus, :valid),
+        .input-field select:is(:focus, :valid) {
+            border-bottom-color: #4070f4;
+        }
+
+        .input-field i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 23px;
+            transition: all 0.2s ease;
+        }
+
+        .input-field input:is(:focus, :valid) ~ i,
+        .input-field select:is(:focus, :valid) ~ i {
+            color: #4070f4;
+        }
+
+        .input-field i.icon {
+            left: 0;
+        }
+
+        .input-field i.showHidePw {
+            right: 0;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .form .button {
+            margin-top: 35px;
+        }
+
+        .form .button input {
+            border: none;
+            color: black;
+            font-size: 17px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            border-radius: 6px;
+            background-color: #a4b6c2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button input:hover {
+            background-color: #f37a1f;
+            color: white;
+        }
+
+        .alert {
+            margin-top: 20px;
+            color: red;
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="sidebar">
+        <img src="src/avatar.png" alt="Avatar">
+        <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!" . "<br>"; ?>
+           Logged in as: <?php echo $_SESSION['email']; ?></p>
+        <a href="viewprofile.php">Profiles</a>
+        <a href="crud.php">Create Profile</a>
+        <a href="records.php">Records</a>
+        <a href="calendar.php">Calendar</a>
+        <a href="accounts.php">Accounts</a>
+        <a href="homepage.php">Back</a>
+        <a href="logout.php">Logout</a>
+    </div>
+    
+    <div class="container">
+        <div class="forms">
+            <div class="form register">
+                <span class="title">Registration</span>
+
+                <form id="registration-form" method="POST" action="createacc.php" autocomplete="off">
+                    <?php if (isset($_POST['submit']) && $password != $cpassword): ?>
+                        <div class="alert alert-danger" role="alert">Passwords do not match.</div>
+                    <?php endif; ?>
+                    <div class="input-field">
+                        <input type="text" name="fname" placeholder="Enter your name" required value="<?php echo htmlspecialchars($FirstName); ?>">
+                        <i class="uil uil-user"></i>
+                    </div>
+                    <div class="input-field">
+                        <input type="text" name="lname" placeholder="Enter your last name" required value="<?php echo htmlspecialchars($LastName); ?>">
+                        <i class="uil uil-user"></i>
+                    </div>
+                    <div class="input-field">
+                        <input type="email" name="email" placeholder="Enter your email" required value="<?php echo htmlspecialchars($email); ?>">
+                        <i class="uil uil-envelope icon"></i>
+                    </div>
+                    <div class="input-field">
+                        <input type="password" name="password" class="password" placeholder="Create a password" required>
+                        <i class="uil uil-lock icon"></i>
+                    </div>
+                    <div class="input-field">
+                        <input type="password" name="cpassword" class="password" placeholder="Confirm a password" required>
+                        <i class="uil uil-lock icon"></i>
+                        <i class="uil uil-eye-slash showHidePw"></i>
+                    </div>
+                    <div class="input-field">
+                        <label for="role"></label>
+                        <select id="role" name="role" class="form-control" required>
+                            <option value="" disabled selected>Select Role</option>
+                            <option value="employee" <?php if (isset($_POST['role']) && $_POST['role'] == 'employee') echo 'selected'; ?>>User</option>
+                            <option value="admin" <?php if (isset($_POST['role']) && $_POST['role'] == 'admin') echo 'selected'; ?>>Admin</option>
+                        </select>
+                        <i class="uil uil-user"></i>
+                    </div>
+
+                    <div class="input-field button">
+                        <input type="submit" name="submit" value="Register">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (<?php echo json_encode($form_submitted); ?>) {
+                document.getElementById('registration-form').reset();
+            }
+        });
+
+        // Password show/hide functionality
+        const pwShowHide = document.querySelectorAll('.showHidePw');
+        const pwFields = document.querySelectorAll('.password');
+
+        pwShowHide.forEach(eyeIcon => {
+            eyeIcon.addEventListener('click', () => {
+                pwFields.forEach(pwField => {
+                    if (pwField.type === 'password') {
+                        pwField.type = 'text';
+                        pwShowHide.forEach(icon => {
+                            icon.classList.replace('uil-eye-slash', 'uil-eye');
+                        });
+                    } else {
+                        pwField.type = 'password';
+                        pwShowHide.forEach(icon => {
+                            icon.classList.replace('uil-eye', 'uil-eye-slash');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script src="script.js"></script> 
+</body>
+</html>

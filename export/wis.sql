@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 01, 2024 at 02:14 AM
+-- Generation Time: Jul 08, 2024 at 02:42 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -41,11 +41,9 @@ CREATE TABLE `account` (
 --
 
 INSERT INTO `account` (`id`, `email`, `password`, `FirstName`, `LastName`, `role`) VALUES
-(2, 'admin@ph', '202cb962ac59075b964b07152d234b70', 'admin', 'ph', 'admin'),
-(3, 'user1@ph', '202cb962ac59075b964b07152d234b70', 'user1', 'userv1', 'employee'),
-(6, 'user6@ph', '202cb962ac59075b964b07152d234b70', 'Lawrence', 'Jimenez', 'employee'),
-(9, 'user3@ph', '202cb962ac59075b964b07152d234b70', 'sample', 'sample', 'employee'),
-(11, 'admin2@ph', '202cb962ac59075b964b07152d234b70', 'Lawrence', 'Jimenez', 'admin');
+(12, 'administrator@ph', '12e6d7a3698aa5679898da6a447a4afc', 'Admin', 'PH', 'admin'),
+(13, 'user1@ph', 'ee11cbb19052e40b07aac0ca060c23ee', 'user1', 'Ph', 'employee'),
+(14, 'adminv2@ph', '3d0ea76141ee0facc4d19e3de51b5777', 'admin', 'v2', 'admin');
 
 -- --------------------------------------------------------
 
@@ -61,13 +59,6 @@ CREATE TABLE `events` (
   `end_date` datetime DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `events`
---
-
-INSERT INTO `events` (`event_id`, `title`, `description`, `start_date`, `end_date`, `url`) VALUES
-(1, '2024 Barangay Fiesta', 'fiesta kinemerut', '2024-06-25 08:00:00', '2024-06-28 23:59:59', 'https://google.com');
 
 -- --------------------------------------------------------
 
@@ -96,8 +87,18 @@ CREATE TABLE `profiles` (
   `age_group` varchar(50) DEFAULT NULL,
   `work_status` varchar(50) DEFAULT NULL,
   `educational_background` varchar(50) DEFAULT NULL,
-  `register_sk_voter` varchar(50) DEFAULT NULL
+  `register_sk_voter` varchar(50) DEFAULT NULL,
+  `voted_last_election` varchar(3) NOT NULL,
+  `attended_kk` varchar(3) NOT NULL,
+  `times_attended_kk` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `profiles`
+--
+
+INSERT INTO `profiles` (`id`, `lname`, `fname`, `mname`, `suffix`, `region`, `province`, `municipality`, `barangay`, `purok`, `sex`, `age`, `email`, `birth_date`, `contactnumber`, `civil_status`, `youth_classification`, `age_group`, `work_status`, `educational_background`, `register_sk_voter`, `voted_last_election`, `attended_kk`, `times_attended_kk`) VALUES
+(12, 'Gatarin', 'Rhoeder', 'Waking', '', 'CAR', 'BEN', 'La Trinidad', 'Tawang', 'Camp7', 'Male', 20, 'gtr@ph', '2004-05-09', '52151251', 'Single', 'In School Youth', 'Core Youth', 'Unemployed', 'College Level', 'Not Registered', 'No', 'No', 0);
 
 -- --------------------------------------------------------
 
@@ -110,13 +111,6 @@ CREATE TABLE `reports` (
   `filename` varchar(255) NOT NULL,
   `upload_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `reports`
---
-
-INSERT INTO `reports` (`id`, `filename`, `upload_date`) VALUES
-(2, 'reports/Document.docx', '2024-06-30 09:59:09');
 
 --
 -- Indexes for dumped tables
@@ -154,7 +148,7 @@ ALTER TABLE `reports`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `id` int(250) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(250) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -166,13 +160,13 @@ ALTER TABLE `events`
 -- AUTO_INCREMENT for table `profiles`
 --
 ALTER TABLE `profiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `reports`
 --
 ALTER TABLE `reports`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

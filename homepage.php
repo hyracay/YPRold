@@ -98,8 +98,9 @@ while ($row = mysqli_fetch_assoc($result_age)) {
     <title>HOMEPAGE</title>
     <link rel="stylesheet" type="text/css" href="src/css.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
-    
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
     <style>
         .content {
             text-align: center;
@@ -128,6 +129,7 @@ while ($row = mysqli_fetch_assoc($result_age)) {
     </style>
 </head>
 <body>
+    
     <div class="sidebar">
         <img src="src/avatar.png" alt="Avatar">
         <p><?php echo "Hello " . $_SESSION['fname'] . " " . $_SESSION['lname'] . "!" . "<br>"; ?>
@@ -152,7 +154,6 @@ while ($row = mysqli_fetch_assoc($result_age)) {
         ?>
         <a href="logout.php">Logout</a>
     </div>
-         
     <div class="content">
         <h1>Demographic Insights</h1>
         <div class="row">
@@ -181,6 +182,8 @@ while ($row = mysqli_fetch_assoc($result_age)) {
                 <div id="register_sk_voter"></div>
             </div>
         </div>
+        <button id="downloadPdf">Download Charts as PDF</button>
+    </div>
 
 
     <script>
@@ -441,5 +444,82 @@ while ($row = mysqli_fetch_assoc($result_age)) {
             }]
         });
     </script>
+   <script>
+    document.getElementById('downloadPdf').addEventListener('click', function () {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        const chartsConfig = [
+            { id: 'civil_status', width: 90, height: 60 },
+            { id: 'chart_age', width: 90, height: 80 }, // Perfect circle
+            { id: 'chart_edu', width: 90, height: 60 },
+            { id: 'youth_classification', width: 90, height: 80 }, // Perfect circle
+            { id: 'work_status', width: 90, height: 60 },
+            { id: 'register_sk_voter', width: 90, height: 80 } // Perfect circle
+        ];
+
+        const margin = 10; // Margin from the edges of the page
+        const xSpacing = 30; // Horizontal space between charts
+        const ySpacing = 2; // Vertical space between charts
+
+        // Function to capture and add charts to PDF
+        const captureChart = async (chartConfig, xPos, yPos) => {
+            const chartElement = document.getElementById(chartConfig.id);
+            if (chartElement) {
+                const canvas = await html2canvas(chartElement);
+                const imgData = canvas.toDataURL('image/png');
+                pdf.addImage(imgData, 'PNG', xPos, yPos, chartConfig.width, chartConfig.height);
+            }
+        };
+
+        // Function to handle page layout
+        const generateChartsPage = async (startIndex, endIndex) => {
+            let xPos = margin;
+            let yPos = margin;
+            for (let i = startIndex; i < endIndex; i++) {
+                await captureChart(chartsConfig[i], xPos, yPos);
+                xPos += chartsConfig[i].width + xSpacing - chartWidthAdjustment(chartsConfig[i]); // Adjust spacing based on width
+                if (xPos + chartsConfig[i].width > 210 - margin) { // Move to next row if it exceeds the page width
+                    xPos = margin;
+                    yPos += chartsConfig[i].height + ySpacing - chartHeightAdjustment(chartsConfig[i]); // Adjust spacing based on height
+                }
+                if (yPos + chartsConfig[i].height > 297 - margin) { // Move to next page if it exceeds the page height
+                    if (i + 1 < endIndex) {
+                        pdf.addPage();
+                        xPos = margin;
+                        yPos = margin;
+                    }
+                }
+            }
+        };
+
+        // Generate pages
+        (async () => {
+            for (let i = 0; i < chartsConfig.length; i += chartsConfig.length) {
+                const endIndex = Math.min(i + chartsConfig.length, chartsConfig.length);
+                await generateChartsPage(i, endIndex);
+                if (endIndex < chartsConfig.length) {
+                    pdf.addPage();
+                }
+            }
+            pdf.save('charts.pdf');
+        })().catch(error => {
+            console.error('Error generating PDF:', error);
+        });
+
+        function chartWidthAdjustment(chartConfig) {
+            // If the chart's width is different, adjust spacing accordingly
+            return (chartConfig.width !== chartConfig.height) ? (chartConfig.width - chartConfig.height) / 1 : 0;
+        }
+
+        function chartHeightAdjustment(chartConfig) {
+            // If the chart's height is different, adjust spacing accordingly
+            return (chartConfig.height !== chartConfig.width) ? (chartConfig.height - chartConfig.width) / 1 : 0;
+        }
+    });
+</script>
+
+
+
 </body>
 </html>

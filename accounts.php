@@ -19,7 +19,7 @@ if (isset($_SESSION['role'])) {
 $current_user_email = $_SESSION['email'];
 
 // Define excluded email (or any other criteria)
-$excluded_email = 'admin@ph';
+$excluded_email = 'administrator@ph';
 ?>
 
 <!DOCTYPE html>

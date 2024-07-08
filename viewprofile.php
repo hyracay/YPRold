@@ -121,7 +121,7 @@ if (isset($_SESSION['role'])) {
                     // Fetch all rows from the profiles table, filtering by search query if provided
                     // Constants for pagination
 
-                    $recordsPerPage = 6;
+                    $recordsPerPage = 20;
                     $currentPage = isset($_GET['page']) ? $_GET['page'] : 1; // Current page, default to 1
 
                     $offset = ($currentPage - 1) * $recordsPerPage;
