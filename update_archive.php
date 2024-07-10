@@ -18,11 +18,11 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
     // Retrieve existing profile data
-    $query = "SELECT * FROM profiles WHERE id = '$id'";
+    $query = "SELECT * FROM profiles_archive WHERE id = '$id'";
     $result = mysqli_query($conn, $query);
 
     if ($result && mysqli_num_rows($result) > 0) {
-        $profile = mysqli_fetch_assoc($result);
+        $profile = mysqli_fetch_array($result);
     } else {
         echo "No profile found with the specified ID.";
         exit();
@@ -62,7 +62,7 @@ if (isset($_POST['update'])) {
     $times_attended_kk = isset($_POST['times_attended_kk']) ? $_POST['times_attended_kk'] : '';
 
     // Prepare SQL statement
-    $update = "UPDATE profiles SET 
+    $update = "UPDATE profiles_archive SET 
             lname = '$lname',
             fname = '$fname',
             mname = '$mname',
@@ -93,7 +93,7 @@ if (isset($_POST['update'])) {
     $result = mysqli_query($conn, $update);
 
     if ($result) {
-        header("location: viewprofile.php");
+        header("location: archive.php");
         echo "<script>alert('Record updated successfully');</script>";
     } else {
         echo "<script>alert('Error');</script>";
@@ -155,7 +155,7 @@ function calculateAge($birth_year, $birth_month, $birth_day) {
 
     <div class="content">
         <h3>Update Profile</h3>
-        <form method="POST" action="update.php?id=<?php echo $id; ?>">
+        <form method="POST" action="update_archive.php?id=<?php echo $id; ?>">
             <input type="hidden" name="id" value="<?php echo $profile['id']; ?>">
             <table>
                 <tr>

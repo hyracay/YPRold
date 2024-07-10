@@ -11,11 +11,9 @@ if (!isset($_SESSION['email'])) {
 if (isset($_SESSION['role'])) {
     $role = $_SESSION['role'];
 } else {
-    // Handle case where role is not set (e.g., redirect or error message)
     echo "Role information not found. Please contact administrator.";
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +54,6 @@ if (isset($_SESSION['role'])) {
         <a href="logout.php">Logout</a>
     </div>
 
-
     <div class="content">
         <h1>Create new youth Profile</h1>
         <form method="POST" action="crud.php" autocomplete="off">
@@ -85,51 +82,79 @@ if (isset($_SESSION['role'])) {
                 </tr>
                 <tr>
                     <td>
-                    <table>
+                        <table>
                             <td>Sex:<br>
                                 <input type="radio" name="sex" value="Male" required> Male<br>
                                 <input type="radio" name="sex" value="Female" required> Female<br>
                             </td>
                             <td>
-                            Birth Date:<input type="date" name="birth_date" style="width: 20%" id="birth_date" placeholder="Year/Month/Date" required onchange="calculateAge()">
+                                Birth Date:<br>
+                                <select name="birth_month" required onchange="calculateAge()">
+                                    <option value="">Month</option>
+                                    <?php for ($m = 1; $m <= 12; ++$m) { ?>
+                                        <option value="<?php echo $m; ?>"><?php echo date('F', mktime(0, 0, 0, $m, 1)); ?></option>
+                                    <?php } ?>
+                                </select>
+                                <select name="birth_day" required onchange="calculateAge()">
+                                    <option value="">Day</option>
+                                    <?php for ($d = 1; $d <= 31; ++$d) { ?>
+                                        <option value="<?php echo $d; ?>"><?php echo $d; ?></option>
+                                    <?php } ?>
+                                </select>
+                                <input type="number" name="birth_year" placeholder="Year" required oninput="calculateAge()">
                             </td>
                             <td>
-                            Age:<input type="text" name="age" style="width: 20%" id="age" placeholder="Age" readonly><br>
+                                Age:<input type="text" name="age" style="width: 20%" id="age" placeholder="Age" readonly><br>
                             </td>
                             Email Address:<input type="email" name="email" placeholder="Email Address"><br>
                             Contact Number:<input type="text" name="contactnumber" placeholder="Contact Number" required>
                             <script>
-                            function calculateAge() {
-                            var birthDate = new Date(document.getElementById("birth_date").value);
-                            var today = new Date();
-                            var age = today.getFullYear() - birthDate.getFullYear();
-                            var monthDiff = today.getMonth() - birthDate.getMonth();
+    function calculateAge() {
+        var birthMonth = document.getElementsByName("birth_month")[0].value;
+        var birthDay = document.getElementsByName("birth_day")[0].value;
+        var birthYear = document.getElementsByName("birth_year")[0].value;
 
-                            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                            age--;
-                            }
+        if (birthMonth && birthDay && birthYear) {
+            // Create a date string in the format accepted by Date constructor
+            var birthDateString = birthYear + '-' + birthMonth + '-' + birthDay;
+            var birthDate = new Date(birthDateString);
 
-                            document.getElementById("age").value = age;
+            // Adjust for Manila time zone (GMT+8)
+            var manilaOffset = 8 * 60; // Offset in minutes
+            birthDate.setMinutes(birthDate.getMinutes() + manilaOffset);
 
-                            // Set age group based on age
-                            var ageGroup = '';
-                            if (age >= 15 && age <= 17) {
-                            ageGroup = 'Child Youth';
-                            } else if (age >= 18 && age <= 24) {
-                            ageGroup = 'Core Youth';
-                            } else if (age >= 25 && age <= 30) {
-                            ageGroup = 'Young Adult';
-                            }
+            // Now proceed with age calculation as before
+            var today = new Date();
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var monthDiff = today.getMonth() - birthDate.getMonth();
 
-                            // Check the appropriate radio button for age_group
-                            var radios = document.getElementsByName('age_group');
-                            for (var i = 0; i < radios.length; i++) {
-                            if (radios[i].value === ageGroup) {
-                            radios[i].checked = true;
-                            }
-                            }
-                            }
-                            </script>
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            document.getElementById("age").value = age;
+
+            // Set age group based on age
+            var ageGroup = '';
+            if (age >= 15 && age <= 17) {
+                ageGroup = 'Child Youth';
+            } else if (age >= 18 && age <= 24) {
+                ageGroup = 'Core Youth';
+            } else if (age >= 25 && age <= 30) {
+                ageGroup = 'Young Adult';
+            }
+
+            // Check the appropriate radio button for age_group
+            var radios = document.getElementsByName('age_group');
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].value === ageGroup) {
+                    radios[i].checked = true;
+                }
+            }
+        }
+    }
+</script>
+
                             </td>
                         </table>
                     </td>
@@ -157,6 +182,7 @@ if (isset($_SESSION['role'])) {
                                 </td>
                                 <td>
                                     Work Status:<br>
+                                    <input type="radio" name="work_status" value="Student" required> Student<br>
                                     <input type="radio" name="work_status" value="Employed" required> Employed<br>
                                     <input type="radio" name="work_status" value="Unemployed" required> Unemployed<br>
                                     <input type="radio" name="work_status" value="Self-Employed" required> Self-Employed<br>
@@ -174,16 +200,13 @@ if (isset($_SESSION['role'])) {
                                     Age Group:<br>
                                     <input type="radio" name="age_group" value="Child Youth" hidden> Child Youth (15-17 yrs. old)<br>
                                     <input type="radio" name="age_group" value="Core Youth" hidden> Core Youth (18-24 yrs. old)<br>
-                                    <input type="radio" name="age_group" value="Young Adult" hidden> Young Adult (25-30 yrs.old)<br>
+                                    <input type="radio" name="age_group" value="Young Adult" hidden> Young Adult (25-30 yrs. old)<br>
                                 </td>
                             </tr>
                         </table>
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <table>
-                            <tr>
                                 <td>
                                     Educational Background:<br>
                                     <input type="radio" name="educational_background" value="Elementary Level" required> Elementary Level<br>
@@ -197,33 +220,47 @@ if (isset($_SESSION['role'])) {
                                     <input type="radio" name="educational_background" value="Master Graduate" required> Master's Graduate<br>
                                     <input type="radio" name="educational_background" value="Doctorate Level" required> Doctorate Level<br>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                Registered SK Voter:<br>
-                                <input type="radio" name="register_sk_voter" value="Registered" required> Yes<br>
-                                <input type="radio" name="register_sk_voter" value="Not Registered" required> No<br>
-                                </td>
-                                <td>
-                                Voted Last Election:<br>
-                                <input type="radio" name="voted_last_election" value="Yes" required> Yes<br>
-                                <input type="radio" name="voted_last_election" value="No" required> No<br>
-                                </td>
-                                <td>
-                                Attended a KK Assembly (Katipunang ng Kabataan):<br>
-                                <input type="radio" name="attended_kk" value="Yes" required> Yes<br>
-                                <input type="radio" name="attended_kk" value="No" required> No<br>
-                                </td>
-                                <td>
-                                Times Attended KK:<br>
-                                <input type="number" name="times_attended_kk" placeholder="Number of times">
-                                </td>
-                            </tr>
-                            <tr>
-                        </table>
+                </tr>
+                <tr>
+                    <td>
+                        Registered SK Voter:<br>
+                        <input type="radio" name="register_sk_voter" value="Registered" required> Yes<br>
+                        <input type="radio" name="register_sk_voter" value="Not Registered" required> No<br>
                     </td>
                 </tr>
                 <tr>
+                    <td>
+                        Voted Last Election:<br>
+                        <input type="radio" name="voted_last_election" value="Yes" required> Yes<br>
+                        <input type="radio" name="voted_last_election" value="No" required> No<br>
+                    </td>
+                </tr>
+                <tr>
+                <td>
+                  Attended Linggo ng Kabataan (KK) Activities:<br>
+                  <input type="radio" name="attended_kk" value="Yes" required onclick="showHideTimesAttended()"> Yes<br>
+                 <input type="radio" name="attended_kk" value="No" required onclick="showHideTimesAttended()"> No<br>
+                 <div id="times_attended_kk_div" style="display: none;">
+                 Times attended KK:<br>
+                 <input type="text" name="times_attended_kk" placeholder="How many times?">
+    </div>
+</td>
+
+<script>
+    function showHideTimesAttended() {
+        var attendedKK = document.querySelector('input[name="attended_kk"]:checked').value;
+        var timesAttendedKKDiv = document.getElementById('times_attended_kk_div');
+
+        if (attendedKK === 'Yes') {
+            timesAttendedKKDiv.style.display = 'block';
+        } else {
+            timesAttendedKKDiv.style.display = 'none';
+        }
+    }
+</script>
+
+          </tr>
+          <tr>
                     <td>
                         <button name="submit">Submit</button>
                         <button id="importBtn">Import</button>
@@ -275,6 +312,9 @@ if (isset($_SESSION['role'])) {
 
 <?php
 if (isset($_POST['submit'])) {
+    date_default_timezone_set('Asia/Manila');
+    $date_created = date('m/d/y');
+
     // Retrieve form data
     $lname = $_POST['lname'];
     $fname = $_POST['fname'];
@@ -288,10 +328,12 @@ if (isset($_POST['submit'])) {
     $sex = $_POST['sex'];
     $age = $_POST['age'];
     $email = $_POST['email'];
-    $birth_date = $_POST['birth_date'];
+    $birth_month = $_POST['birth_month'];
+    $birth_day = $_POST['birth_day'];
+    $birth_year = $_POST['birth_year'];
     $contactnumber = $_POST['contactnumber'];
     $civil_status = $_POST['civil_status'];
-    $youth_classification = $_POST['youth_classification'];  // Correctly fetch the selected youth classification
+    $youth_classification = $_POST['youth_classification'];
     $age_group = $_POST['age_group'];
     $work_status = $_POST['work_status'];
     $educational_background = $_POST['educational_background'];
@@ -300,20 +342,33 @@ if (isset($_POST['submit'])) {
     $attended_kk = $_POST['attended_kk'];
     $times_attended_kk = $_POST['times_attended_kk'];
 
-    // Prepare SQL statement
-    $insert = "INSERT INTO profiles 
-            (lname, fname, mname, suffix, region, province, municipality, barangay, purok,
-             sex, age, email, birth_date, contactnumber, civil_status, youth_classification,
-             age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk)
-            VALUES 
-            ('$lname', '$fname', '$mname', '$suffix', '$region', '$province', '$municipality', '$barangay', '$purok',
-             '$sex', '$age', '$email', '$birth_date', '$contactnumber', '$civil_status', '$youth_classification',
-             '$age_group', '$work_status', '$educational_background', '$register_sk_voter', '$voted_last_election', '$attended_kk', '$times_attended_kk')";
+    // Prepare SQL statement for profiles
+    $insert_profiles = "INSERT INTO profiles 
+        (lname, fname, mname, suffix, region, province, municipality, barangay, purok,
+        sex, age, email, birth_month, birth_day, birth_year, contactnumber, civil_status, youth_classification,
+        age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk, date_created)
+        VALUES 
+        ('$lname', '$fname', '$mname', '$suffix', '$region', '$province', '$municipality', '$barangay', '$purok',
+        '$sex', '$age', '$email', '$birth_month', '$birth_day', '$birth_year', '$contactnumber', '$civil_status', '$youth_classification',
+        '$age_group', '$work_status', '$educational_background', '$register_sk_voter', '$voted_last_election', '$attended_kk', '$times_attended_kk', '$date_created')";
 
-    $result = mysqli_query($conn, $insert);
+    // Prepare SQL statement for profiles_backup
+    $insert_profiles_backup = "INSERT INTO profiles_backup 
+        (lname, fname, mname, suffix, region, province, municipality, barangay, purok,
+        sex, age, email, birth_month, birth_day, birth_year, contactnumber, civil_status, youth_classification,
+        age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk, date_created)
+        VALUES 
+        ('$lname', '$fname', '$mname', '$suffix', '$region', '$province', '$municipality', '$barangay', '$purok',
+        '$sex', '$age', '$email', '$birth_month', '$birth_day', '$birth_year', '$contactnumber', '$civil_status', '$youth_classification',
+        '$age_group', '$work_status', '$educational_background', '$register_sk_voter', '$voted_last_election', '$attended_kk', '$times_attended_kk', '$date_created')";
 
-    if (!$result) {
-        echo "Error: " . $insert . "<br>" . mysqli_error($conn);
+    $result_profiles = mysqli_query($conn, $insert_profiles);
+    $result_profiles_backup = mysqli_query($conn, $insert_profiles_backup);
+
+    if (!$result_profiles) {
+        echo "Error: " . $insert_profiles . "<br>" . mysqli_error($conn);
+    } elseif (!$result_profiles_backup) {
+        echo "Error: " . $insert_profiles_backup . "<br>" . mysqli_error($conn);
     }
 }
 ?>

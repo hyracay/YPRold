@@ -22,13 +22,13 @@ if (isset($_POST['upload'])) {
 
             fgetcsv($file);
 
-            $stmt = $conn->prepare("INSERT INTO profiles (lname, fname, mname, suffix, region, province, municipality, barangay, purok, sex, age, email, birth_date, contactnumber, civil_status, youth_classification, age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO profiles (lname, fname, mname, suffix, region, province, municipality, barangay, purok, sex, age, email, birth_month, birth_day, birth_year, contactnumber, civil_status, youth_classification, age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk, date_created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             if ($stmt === FALSE) {
                 die("Error preparing statement: " . $conn->error);
             }
 
-            $stmt->bind_param('ssssssssssisssssssssssi', $lname, $fname, $mname, $suffix, $region, $province, $municipality, $barangay, $purok, $sex, $age, $email, $birth_date, $contactnumber, $civil_status, $youth_classification, $age_group, $work_status, $educational_background, $register_sk_voter, $voted_last_election, $attended_kk, $times_attended_kk);
+            $stmt->bind_param('ssssssssssisssssssssssssis', $lname, $fname, $mname, $suffix, $region, $province, $municipality, $barangay, $purok, $sex, $age, $email, $birth_month, $birth_day, $birth_year, $contactnumber, $civil_status, $youth_classification, $age_group, $work_status, $educational_background, $register_sk_voter, $voted_last_election, $attended_kk, $times_attended_kk, $date_created);
 
             while (($row = fgetcsv($file, 1000, ",")) !== FALSE) {
                 $id = $row[0];
@@ -44,22 +44,25 @@ if (isset($_POST['upload'])) {
                 $sex = $row[10];
                 $age = $row[11];
                 $email = $row[12];
-                $birth_date = $row[13];
-                $contactnumber = $row[14];
-                $civil_status = $row[15];
-                $youth_classification = $row[16];
-                $age_group = $row[17];
-                $work_status = $row[18];
-                $educational_background = $row[19];
-                $register_sk_voter_raw = $row[20];
+                $birth_month = $row[13];
+                $birth_day = $row[14];
+                $birth_year = $row[15];
+                $contactnumber = $row[16];
+                $civil_status = $row[17];
+                $youth_classification = $row[18];
+                $age_group = $row[19];
+                $work_status = $row[20];
+                $educational_background = $row[21];
+                $register_sk_voter_raw = $row[22];
                 if ($register_sk_voter_raw == 'Registered') {
                     $register_sk_voter = 'Registered';
                 } else {
                     $register_sk_voter = 'Not Registered';
                 }
-                $voted_last_election = $row[21];
-                $attended_kk = $row[22];
-                $times_attended_kk = $row[23];
+                $voted_last_election = $row[23];
+                $attended_kk = $row[24];
+                $times_attended_kk = $row[25];
+                $date_created = $row[26];
                 
                 $stmt->execute();
             }

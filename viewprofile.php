@@ -15,6 +15,32 @@ if (isset($_SESSION['role'])) {
     echo "Role information not found. Please contact administrator.";
     exit();
 }
+
+// Function to calculate age based on birthdate
+function calculateAge($birth_year, $birth_month, $birth_day) {
+    date_default_timezone_set('Asia/Manila');
+    $birthDate = date_create("$birth_year-$birth_month-$birth_day");
+    $today = new DateTime();
+    $age = date_diff($birthDate, $today)->y;
+    return $age;
+}
+
+function updateAgeOnBirthday($conn) {
+    // Get today's month and day in 'MM-DD' format
+    $today = date('m-d');
+    $sql = "UPDATE profiles 
+            SET age = TIMESTAMPDIFF(YEAR, 
+                                   CONCAT(birth_year,'-',birth_month,'-',birth_day), 
+                                   CURDATE()) 
+            WHERE DATE_FORMAT(CONVERT_TZ(STR_TO_DATE(CONCAT(birth_year,'-',birth_month,'-',birth_day), '%Y-%m-%d'), '+00:00', '+08:00'), '%m-%d') = ?";
+    
+    // Execute the query
+    if (!mysqli_query($conn, $sql)) {
+        // Handle error if query execution fails
+        echo "Error updating age: " . mysqli_error($conn);
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -43,10 +69,12 @@ if (isset($_SESSION['role'])) {
             top: 4px;
             cursor: pointer;
         }
+
         input[type="checkbox"]:checked {
             background-color: #FF0000;
             border-color: #FF0000;
         }
+
         input[type="checkbox"]:checked::before {
             content: '\2713';
             display: block;
@@ -68,9 +96,9 @@ if (isset($_SESSION['role'])) {
         <a href="records.php">SK Reports</a>
         <a href="calendar.php">Calendar</a>
         <?php
-         if ($role == 'admin') {
+        if ($role == 'admin') {
             echo '<a href="accounts.php">Accounts</a>';
-         }
+        }
         ?>
         <?php
         // Display links based on user's role
@@ -96,15 +124,13 @@ if (isset($_SESSION['role'])) {
                                 <div class="row">
                                     <div class="col-md-7">
                                         <form action="" method="GET">
-                                        <div class="input-group mb-3">
-                                                <input type="text" name="search"
-                                                    value="<?php if (isset($_GET['search'])) {
-                                                        echo $_GET['search'];
-                                                    } ?>"
-                                                    class="form-control" placeholder="Enter name:">
+                                            <div class="input-group mb-3">
+                                                <input type="text" name="search" value="<?php if (isset($_GET['search'])) {
+                                                                                        echo $_GET['search'];
+                                                                                    } ?>" class="form-control" placeholder="Enter name:">
                                                 <button type="submit" class="btn btn-primary">Search</button>
                                                 <div class="col-md-2">
-                                                    <button style="margin-left: 129px; width: max-content; border-radius: 0" class="btn btn-primary"><a style="text-decoration: none; color: #fff;"type="button" href="advance_search.php">Advance Search</a></button>
+                                                    <button style="margin-left: 129px; width: max-content; border-radius: 0" class="btn btn-primary"><a style="text-decoration: none; color: #fff;" type="button" href="advance_search.php">Advance Search</a></button>
                                                 </div>
                                             </div>
                                         </form>
@@ -118,22 +144,28 @@ if (isset($_SESSION['role'])) {
                     </div>
 
                     <?php
-                    // Fetch all rows from the profiles table, filtering by search query if provided
                     // Constants for pagination
-
                     $recordsPerPage = 20;
                     $currentPage = isset($_GET['page']) ? $_GET['page'] : 1; // Current page, default to 1
-
                     $offset = ($currentPage - 1) * $recordsPerPage;
 
+                    // Build SQL query with age calculation
                     if (isset($_GET['search'])) {
                         $searchQuery = $_GET['search'];
-                        $sql = "SELECT * FROM profiles 
+                        $sql = "SELECT *, 
+                                       TIMESTAMPDIFF(YEAR, 
+                                                     CONVERT_TZ(STR_TO_DATE(CONCAT(birth_year,'-',birth_month,'-',birth_day), '%Y-%m-%d'), '+00:00', '+08:00'), 
+                                                     CURDATE()) AS age 
+                                FROM profiles 
                                 WHERE fname LIKE '%$searchQuery%' OR lname LIKE '%$searchQuery%' OR mname LIKE '%$searchQuery%' OR id LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' 
                                 ORDER BY id DESC 
                                 LIMIT $recordsPerPage OFFSET $offset";
                     } else {
-                        $sql = "SELECT * FROM profiles 
+                        $sql = "SELECT *, 
+                                       TIMESTAMPDIFF(YEAR, 
+                                                     CONVERT_TZ(STR_TO_DATE(CONCAT(birth_year,'-',birth_month,'-',birth_day), '%Y-%m-%d'), '+00:00', '+08:00'), 
+                                                     CURDATE()) AS age 
+                                FROM profiles 
                                 ORDER BY id DESC 
                                 LIMIT $recordsPerPage OFFSET $offset";
                     }
@@ -148,8 +180,6 @@ if (isset($_SESSION['role'])) {
 
                     $totalPages = ceil($totalCount / $recordsPerPage);
 
-                    
-
                     if ($result && mysqli_num_rows($result) > 0) {
                         $results = [];
                         ?>
@@ -162,8 +192,7 @@ if (isset($_SESSION['role'])) {
                                         <th><center>Actions</center></th>
                                         <th>
                                             <center>
-                                                <button style="border-radius: 0" type="submit" class="btn btn-danger btn-delete"
-                                                    onclick="return confirm('Are you sure you want to delete the selected profiles?');">
+                                                <button style="border-radius: 0" type="submit" class="btn btn-danger btn-delete" onclick="return confirm('Are you sure you want to delete the selected profiles?');">
                                                     Delete Selected
                                                 </button>
                                             </center>
@@ -179,27 +208,24 @@ if (isset($_SESSION['role'])) {
                                         $mname = $row['mname'];
                                         $email = $row['email'];
                                         $fullName = $fname . ' ' . $mname . ' ' . $lname;
+                                        $age = calculateAge($row['birth_year'], $row['birth_month'], $row['birth_day']);
                                         ?>
                                         <tr>
                                             <td>
-                                                <a style="text-transform:capitalize"href="" class="profileNameLink" type="button"
-                                                    data-id="<?= $id; ?>"><?= $fullName; ?></a>
+                                                <a style="text-transform:capitalize" href="" class="profileNameLink" data-id="<?= $id; ?>"><?= $fullName; ?></a>
                                             </td>
                                             <td>
                                                 <p style="text-transform:lowercase"><?= $email; ?></p>
                                             </td>
                                             <td>
                                                 <center>
-                                                <a href="update.php?id=<?= $id; ?>"
-                                                    class="btn btn-primary">Update</a>
-                                                <a href="delete.php?id=<?= $id; ?>" class="btn btn-danger"
-                                                    onclick="return confirm('Are you sure you want to delete this profile?');">Delete</a>
+                                                    <a href="update.php?id=<?= $id; ?>" class="btn btn-primary">Update</a>
+                                                    <a href="delete.php?id=<?= $id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this profile?');">Delete</a>
                                                 </center>
-                                                </td>
+                                            </td>
                                             <td>
                                                 <center>
-                                                    <input type="checkbox" name="selectedProfiles[]"
-                                                        value="<?= $id; ?>">
+                                                    <input type="checkbox" name="selectedProfiles[]" value="<?= $id; ?>">
                                                 </center>
                                             </td>
                                         </tr>
@@ -208,26 +234,33 @@ if (isset($_SESSION['role'])) {
                                     ?>
                                 </table>
                             </form>
-                    <div class="pagination">  
+                            <div class="pagination">
+                                <?php
+                                echo '<nav aria-label="Page navigation example">';
+                                echo '<ul class="pagination justify-content-center">';
+                                $disabledPrev = ($currentPage == 1) ? "disabled" : "";
+                                echo '<li class="page-item ' . $disabledPrev . '"><a class="page-link" href="?page=' . ($currentPage - 1) . '">Previous</a></li>';
+
+                                for ($i = 1; $i <= $totalPages; $i++) {
+                                    $activeClass = ($currentPage == $i) ? "active" : "";
+                                    echo '<li class="page-item ' . $activeClass . '"><a class="page-link" href="?page=' . $i . '">' . $i . '</a></li>';
+                                }
+
+                                $disabledNext = ($currentPage == $totalPages || $totalPages == 0) ? "disabled" : "";
+                                echo '<li class="page-item ' . $disabledNext . '"><a class="page-link" href="?page=' . ($currentPage + 1) . '">Next</a></li>';
+                                echo '</ul>';
+                                echo '</nav>';
+                                ?>
+                            </div>
+                        </div>
                     <?php
-                        echo '<nav aria-label="Page navigation example">';
-                        echo '<ul class="pagination justify-content-center">';
-                        $disabledPrev = ($currentPage == 1) ? "disabled" : "";
-                        echo '<li class="page-item ' . $disabledPrev . '"><a class="page-link" href="?page=' . ($currentPage - 1) . '">Previous</a></li>';
-    
-                        for ($i = 1; $i <= $totalPages; $i++) {
-                            $activeClass = ($currentPage == $i) ? "active" : "";
-                            echo '<li class="page-item ' . $activeClass . '"><a class="page-link" href="?page=' . $i . '">' . $i . '</a></li>';
-                        }
-    
-                        $disabledNext = ($currentPage == $totalPages || $totalPages == 0) ? "disabled" : "";
-                        echo '<li class="page-item ' . $disabledNext . '"><a class="page-link" href="?page=' . ($currentPage + 1) . '">Next</a></li>';
-                        echo '</ul>';
-                        echo '</nav>';
                     }
                     ?>
-                    </div>  
+                </div>
+            </div>
         </div>
+    </div>
+
     <div id="myModal" class="modal">
         <!-- Modal content -->
         <div class="modalContent">
@@ -250,25 +283,25 @@ if (isset($_SESSION['role'])) {
                 let fullName = `${selectedProfile.fname} ${selectedProfile.mname} ${selectedProfile.lname}`;
                 modalInside.innerHTML =
                     `<div class="details">Full name: ${fullName}</div>
-                     <div class="details">Address: ${selectedProfile.region} ${selectedProfile.province} ${selectedProfile.municipality} ${selectedProfile.barangay} ${selectedProfile.purok}</div>
-                     <div class="details">Sex: ${selectedProfile.sex}</div>
-                     <div class="details">Age: ${selectedProfile.age}</div>
-                     <div class="details">Birth Date: ${selectedProfile.birth_date}</div>
-                     <div class="details">Email: ${selectedProfile.email}</div>
-                     <div class="details">Contact Number: ${selectedProfile.contactnumber}</div>
-                     <div class="details">Civil Status: ${selectedProfile.civil_status}</div>
-                     <div class="details">Age Group: ${selectedProfile.age_group}</div>
-                     <div class="details">Educational Background: ${selectedProfile.educational_background}</div>`;
-                     <?php
-                        if ($role == 'admin') {
-                            echo 'modalInside.innerHTML += `<div class="details">Youth Classification: ${selectedProfile.youth_classification}</div>`;';
-                        }
-                     ?>
-                     modalInside.innerHTML += `<div class="details">Work Status: ${selectedProfile.work_status}</div>
-                     <div class="details">Registered SK Voter: ${selectedProfile.register_sk_voter}</div>
-                     <div class="details">Voted Last Election: ${selectedProfile.voted_last_election}</div>
-                     <div class="details">Attended a KK Assembly: ${selectedProfile.attended_kk}</div>
-                     <div class="details">Times Attended: ${selectedProfile.times_attended_kk}</div>`;
+                 <div class="details">Address: ${selectedProfile.region} ${selectedProfile.province} ${selectedProfile.municipality} ${selectedProfile.barangay} ${selectedProfile.purok}</div>
+                 <div class="details">Sex: ${selectedProfile.sex}</div>
+                 <div class="details">Age: ${selectedProfile.age}</div>
+                 <div class="details">Birth Date: ${selectedProfile.birth_month}-${selectedProfile.birth_day}-${selectedProfile.birth_year}</div>
+                 <div class="details">Email: ${selectedProfile.email}</div>
+                 <div class="details">Contact Number: ${selectedProfile.contactnumber}</div>
+                 <div class="details">Civil Status: ${selectedProfile.civil_status}</div>
+                 <div class="details">Age Group: ${selectedProfile.age_group}</div>
+                 <div class="details">Educational Background: ${selectedProfile.educational_background}</div>`;
+                <?php
+                if ($role == 'admin') {
+                    echo 'modalInside.innerHTML += `<div class="details">Youth Classification: ${selectedProfile.youth_classification}</div>`;';
+                }
+                ?>
+                modalInside.innerHTML += `<div class="details">Work Status: ${selectedProfile.work_status}</div>
+                 <div class="details">Registered SK Voter: ${selectedProfile.register_sk_voter}</div>
+                 <div class="details">Voted Last Election: ${selectedProfile.voted_last_election}</div>
+                 <div class="details">Attended a KK Assembly: ${selectedProfile.attended_kk}</div>
+                 <div class="details">Times Attended: ${selectedProfile.times_attended_kk}</div>`;
             });
         }
 
