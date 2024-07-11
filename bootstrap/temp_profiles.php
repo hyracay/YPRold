@@ -277,13 +277,7 @@ include("../conne.php");
                   </div>
                   <div class="card-body">
                     <!-- new profile modal -->
-                    <div
-                      class="modal fade"
-                      id="addRowModal"
-                      tabindex="-1"
-                      role="dialog"
-                      aria-hidden="true"
-                    >
+                    <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-header border-0">
@@ -303,7 +297,7 @@ include("../conne.php");
 
                           <!-- contents of create profile/ CRUD -->
                           <div class="modal-body">
-                            <form>
+                            <form method="POST">
                               <div class="row">
                                 <div class="col-sm-12">
                                   <div class="form-group form-group-default">
@@ -380,7 +374,7 @@ include("../conne.php");
                                       type="text"
                                       class="form-control"
                                       placeholder="Sitio"
-                                      name="sitio"
+                                      name="purok"
                                       required
                                     />
                                   </div>
@@ -639,16 +633,10 @@ include("../conne.php");
                                     </div>
                                 </div>
                             </div>
-                            </form>
+                            
                           </div>
                           <div class="modal-footer border-0">
-                            <button
-                              type="button"
-                              id="addRowButton"
-                              class="btn btn-primary"
-                            >
-                              Add
-                            </button>
+                            <button type="submit" id="addRowButton" class="btn btn-primary" name="submitAdd">Add</button>
                             <button
                               type="button"
                               class="btn btn-danger"
@@ -660,108 +648,180 @@ include("../conne.php");
                         </div>
                       </div>
                     </div>
+                    </form>
                     <!-- end of modal -->
                      <!-- fetch rows -->
                     <div class="table-responsive">
-                      <table id="add-row" class="display table table-striped table-hover">
-                    <?php
-                    $recordsPerPage = 20;
-                    $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+                    <form id="profilesForm" method="POST" action="temp_delete_multiple.php">
+                    <table id="basic-datatables" class="display table table-striped table-hover dataTable" role="grid" aria-describedby="basic-datatables_info">
+                      <thead>
+                          <tr role="row"> 
+                              <th tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" style="width: 30.516px;">
+                                <center><button type="d" class="btn btn-default"
+                                    onclick="return confirm('Are you sure you want to delete the selected profiles?');">
+                                    <i style="font-size: 17pt" class="fa fa-trash-alt"></i>
+                                </button></center>
+                              </th>
+                              <th class="sorting_asc" tabindex="1" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 541.766px;">Name</th>
+                              <th class="sorting" tabindex="2" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 365.516px;">Email</th>
+                              <th class="sorting" tabindex="3" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 287.266px;">Actions</th>
+                      </thead>
+                      <?php
+                      $recordsPerPage = 20;
+                      $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
 
-                    $offset = ($currentPage - 1) * $recordsPerPage;
+                      $offset = ($currentPage - 1) * $recordsPerPage;
 
-                    if (isset($_GET['search'])) {
-                        $searchQuery = $_GET['search'];
-                        $sql = "SELECT * FROM profiles 
-                                WHERE fname LIKE '%$searchQuery%' OR lname LIKE '%$searchQuery%' OR mname LIKE '%$searchQuery%' OR id LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' 
-                                ORDER BY id DESC 
-                                LIMIT $recordsPerPage OFFSET $offset";
-                    } else {
-                        $sql = "SELECT * FROM profiles 
-                                ORDER BY id DESC 
-                                LIMIT $recordsPerPage OFFSET $offset";
-                    }
+                      if (isset($_GET['search'])) {
+                          $searchQuery = $_GET['search'];
+                          $sql = "SELECT * FROM profiles 
+                                  WHERE fname LIKE '%$searchQuery%' OR lname LIKE '%$searchQuery%' OR mname LIKE '%$searchQuery%' OR id LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' 
+                                  ORDER BY id DESC 
+                                  LIMIT $recordsPerPage OFFSET $offset";
+                      } else {
+                          $sql = "SELECT * FROM profiles 
+                                  ORDER BY id DESC 
+                                  LIMIT $recordsPerPage OFFSET $offset";
+                      }
 
-                    $result = mysqli_query($conn, $sql);
+                      $result = mysqli_query($conn, $sql);
 
-                    $totalCountSql = "SELECT COUNT(*) AS total FROM profiles";
-                    $totalCountResult = mysqli_query($conn, $totalCountSql);
-                    $totalCountRow = mysqli_fetch_assoc($totalCountResult);
-                    $totalCount = $totalCountRow['total'];
-                    $totalPages = ceil($totalCount / $recordsPerPage);
-                    if ($result && mysqli_num_rows($result) > 0) {
-                        $results = [];
-                        ?>
-                        <div class="section">
-                            <form id="profilesForm" method="POST" action="">
-                              
-                                <table>
-                                    <tr>
-                                        <th>
-                                          <button type="submit" class="btn btn-default"
-                                              onclick="return confirm('Are you sure you want to delete the selected profiles?');">
-                                              <i style="font-size: 20pt" class="fa fa-trash"></i>
-                                          </button>
-                                        </th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Actions</th>
-                                    </tr>
+                      $totalCountSql = "SELECT COUNT(*) AS total FROM profiles";
+                      $totalCountResult = mysqli_query($conn, $totalCountSql);
+                      $totalCountRow = mysqli_fetch_assoc($totalCountResult);
+                      $totalCount = $totalCountRow['total'];
+                      $totalPages = ceil($totalCount / $recordsPerPage);
+                      if ($result && mysqli_num_rows($result) > 0) {
+                      $results = [];
+                      ?>
+                        <tbody>
+                          <!-- Modal structure -->
+                          <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h6 class="modal-title fw-bold" id="modal-title-default">User Details</h6>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <p id="modal-body-content">User details go here...</p>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-primary">Save changes</button>
+                                  <button type="button" class="btn btn-link btn-danger text-decoration-none" data-bs-dismiss="modal">Close</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
 
-                                    <!-- gawin na link yung full name -->
-                                    <?php
-                                    while ($row = mysqli_fetch_assoc($result)) {
-                                        $results[] = $row;
-                                        $id = $row['id'];
-                                        $lname = $row['lname'];
-                                        $fname = $row['fname'];
-                                        $mname = $row['mname'];
-                                        $email = $row['email'];
-                                        $fullName = $fname . ' ' . $mname . ' ' . $lname;
-                                        ?>
-                                        <tr>
-                                        <td>
-                                            <center>
-                                                <input type="checkbox" name="selectedProfiles[]"
-                                                    value="<?= $id; ?>">
-                                            </center>
-                                          </td>
-                                            <td>
-                                                <a style="text-transform:capitalize"href="" class="profileNameLink" type="button"
-                                                    data-id="<?= $id; ?>"><?= $fullName; ?></a>
-                                            </td>
-                                            <td>
-                                                <p style="text-transform:lowercase"><?= $email; ?></p>
-                                            </td>
-                                            <td>
-                                                <center>
-                                                <a href="temp_update.php?id=<?= $id; ?>"
-                                                    class="btn btn-primary"><i class="fa fa-edit"></i> Update</a>
-                                                <a href="temp_delete.php?id=<?= $id; ?>" class="btn btn-danger"
-                                                    onclick="return confirm('Are you sure you want to delete this profile?');"><i class="fa fa-trash"></i> Delete</a>
-                                                </center>
-                                                </td>
-                                            
-                                        </tr>
-                                    <?php
-                                    }
-                                    ?>
-                                </table>
+                          <!-- PHP and table code from above -->
+                          <div class="section">
+                            <form id="profilesForm" method="POST" action="temp_profiles.php">
+                              <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+                                <tr>
+                                  <td>
+                                    <center>
+                                      <input type="checkbox" name="selectedProfiles[]" value="<?= $row['id']; ?>">
+                                    </center>
+                                  </td>
+                                  <td>
+                                    <a href="#" class="profileNameLink" 
+                                      data-id="<?= $row['id']; ?>"
+                                      data-fullname="<?= $row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']; ?>"
+                                      data-address="<?= $row['region'] . ' ' . $row['province'] . ' ' . $row['municipality'] . ' ' . $row['barangay'] . ' ' . $row['purok']; ?>"
+                                      data-sex="<?= $row['sex']; ?>"
+                                      data-age="<?= $row['age']; ?>"
+                                      data-birthday="<?= $row['birthday']; ?>"
+                                      data-youth_with_needs="<?= $row['youth_with_needs']; ?>"
+                                      data-email="<?= $row['email']; ?>"
+                                      data-contact_number="<?= $row['contactnumber']; ?>"
+                                      data-civil_status="<?= $row['civil_status']; ?>"
+                                      data-age_group="<?= $row['age_group']; ?>"
+                                      data-educational_background="<?= $row['educational_background']; ?>"
+                                      data-youth_classification="<?= $row['youth_classification']; ?>"
+                                      data-work_status="<?= $row['work_status']; ?>"
+                                      data-national_voter="<?= $row['national_voter']; ?>"
+                                      data-registered_sk_voter="<?= $row['registered_sk_voter']; ?>"
+                                      data-voted_last_election="<?= $row['voted_last_election']; ?>"
+                                      data-times_attended="<?= $row['times_attended_kk']; ?>"
+                                      data-reason="<?= $row['no_why']; ?>"
+                                      data-bs-toggle="modal" data-bs-target="#modal-default"><?= $row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']; ?></a>
+                                  </td>
+                                  <td>
+                                    <p style="text-transform:lowercase"><?= $row['email']; ?></p>
+                                  </td>
+                                  <td>
+                                    <center>
+                                      <a href="temp_update.php?id=<?= $row['id']; ?>" class="btn btn-primary"><i class="fa fa-edit"></i> Update</a>
+                                      <a href="temp_delete.php?id=<?= $row['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this profile?');"><i class="fa fa-trash"></i> Delete</a>
+                                    </center>
+                                  </td>
+                                </tr>
+                              <?php } ?>
                             </form>
-                            <div class="form-button-action">
+                          </div>
+
+                          <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                              document.querySelectorAll('.profileNameLink').forEach(function(link) {
+                                link.addEventListener('click', function() {
+                                  var fullName = this.getAttribute('data-fullname');
+                                  var address = this.getAttribute('data-address');
+                                  var sex = this.getAttribute('data-sex');
+                                  var age = this.getAttribute('data-age');
+                                  var birthday = this.getAttribute('data-birthday');
+                                  var youthWithNeeds = this.getAttribute('data-youth_with_needs');
+                                  var email = this.getAttribute('data-email');
+                                  var contactNumber = this.getAttribute('data-contact_number');
+                                  var civilStatus = this.getAttribute('data-civil_status');
+                                  var ageGroup = this.getAttribute('data-age_group');
+                                  var educationalBackground = this.getAttribute('data-educational_background');
+                                  var youthClassification = this.getAttribute('data-youth_classification');
+                                  var workStatus = this.getAttribute('data-work_status');
+                                  var nationalVoter = this.getAttribute('data-national_voter');
+                                  var registeredSkVoter = this.getAttribute('data-registered_sk_voter');
+                                  var votedLastElection = this.getAttribute('data-voted_last_election');
+                                  var timesAttended = this.getAttribute('data-times_attended');
+                                  var reason = this.getAttribute('data-reason');
+
+                                  var modalContent = `
+                                    <p><strong>Full Name:</strong> ${fullName}</p>
+                                    <p><strong>Address:</strong> ${address}</p>
+                                    <p><strong>Sex:</strong> ${sex}</p>
+                                    <p><strong>Age:</strong> ${age}</p>
+                                    <p><strong>Birthday:</strong> ${birthday}</p>
+                                    <p><strong>Youth with Needs:</strong> ${youthWithNeeds}</p>
+                                    <p><strong>Email:</strong> ${email}</p>
+                                    <p><strong>Contact Number:</strong> ${contactNumber}</p>
+                                    <p><strong>Civil Status:</strong> ${civilStatus}</p>
+                                    <p><strong>Age Group:</strong> ${ageGroup}</p>
+                                    <p><strong>Educational Background:</strong> ${educationalBackground}</p>
+                                    <p><strong>Youth Classification:</strong> ${youthClassification}</p>
+                                    <p><strong>Work Status:</strong> ${workStatus}</p>
+                                    <p><strong>National Voter:</strong> ${nationalVoter}</p>
+                                    <p><strong>Registered SK Voter:</strong> ${registeredSkVoter}</p>
+                                    <p><strong>Voted Last Election:</strong> ${votedLastElection}</p>
+                                    <p><strong>Times Attended:</strong> ${timesAttended}</p>
+                                    <p><strong>Reason:</strong> ${reason}</p>
+                                  `;
+
+                                  document.getElementById('modal-body-content').innerHTML = modalContent;
+                                });
+                              });
+                            });
+                          </script>
+
+
+                            <!-- <div class="form-button-action">
                                 <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task" >
-                                  
                                 </button>
-                                <button
-                                  type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove" >
-                                  
+                                <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove" >
                                 </button>
                               </div>
-                        </thead>
-                        <tbody>
-                        </tbody>
+                    
+                            </div> -->
+                      </tbody>
                       </table>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -841,7 +901,7 @@ include("../conne.php");
 </html>
 
 <?php
-if (isset($_POST['submit'])) {
+if (isset($_POST['submitAdd'])) {
     // Retrieve form data
     $lname = $_POST['lname'];
     $fname = $_POST['fname'];
@@ -852,10 +912,12 @@ if (isset($_POST['submit'])) {
     $municipality = $_POST['municipality'];
     $barangay = $_POST['barangay'];
     $purok = $_POST['purok'];
-    $sex = $_POST['sex'];
     $age = $_POST['age'];
+    $sex = $_POST['sex'];
     $email = $_POST['email'];
-    $birth_date = $_POST['birth_date'];
+    $birth_month = $_POST['birth_month'];
+    $birth_day = $_POST['birth_day'];
+    $birth_year = $_POST['birth_year'];
     $contactnumber = $_POST['contactnumber'];
     $civil_status = $_POST['civil_status'];
     $youth_classification = $_POST['youth_classification'];
@@ -866,22 +928,26 @@ if (isset($_POST['submit'])) {
     $voted_last_election = $_POST['voted_last_election'];
     $attended_kk = $_POST['attended_kk'];
     $times_attended_kk = $_POST['times_attended_kk'];
+    $national_voter = $_POST['national_voter'];
+    $youth_with_needs = $_POST['youth_with_needs'];
+    $no_why = $_POST['no_why'];
+    $date_created = $_POST['date_created'];
 
     $insert = "INSERT INTO profiles 
             (lname, fname, mname, suffix, region, province, municipality, barangay, purok,
-             sex, age, email, birth_date, contactnumber, civil_status, youth_classification,
-             age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk)
+             sex, age, youth_with_needs, email, birth_month, birth_day, birth_year,  contactnumber, civil_status, youth_classification,
+             age_group, work_status, educational_background, register_sk_voter, voted_last_election, national_voter, attended_kk, times_attended_kk, no_why, date_created)
             VALUES 
             ('$lname', '$fname', '$mname', '$suffix', '$region', '$province', '$municipality', '$barangay', '$purok',
-             '$sex', '$age', '$email', '$birth_date', '$contactnumber', '$civil_status', '$youth_classification',
-             '$age_group', '$work_status', '$educational_background', '$register_sk_voter', '$voted_last_election', '$attended_kk', '$times_attended_kk')";
+             '$sex', '$age', '$youth_with_needs', '$email', '$birth_month', '$birth_day', '$birth_year', '$contactnumber', '$civil_status', '$youth_classification',
+             '$age_group', '$work_status', '$educational_background', '$register_sk_voter', '$voted_last_election', '$national_voter', '$attended_kk', '$times_attended_kk', '$no_why', '$date_created')";
 
     $result = mysqli_query($conn, $insert);
 
     if (!$result) {
         echo "Error: " . $insert . "<br>" . mysqli_error($conn);
     }
-}
+  }
 }
                                     
 ?>
