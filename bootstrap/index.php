@@ -42,7 +42,7 @@ if(isset($_POST['login'])){
             <div>
                 <h1><strong>Youth Profiling System</strong></h1>
                 <p>Centralized profile records for the youth of Barangay Tawang</p>
-                <form action="temp_index.php" method="POST">
+                <form action="index.php" method="POST">
                 <div>
                     <input type="email" name="email" class="form-control" placeholder="Email" id="email"required>
                 </div>
