@@ -395,7 +395,7 @@ while($row = mysqli_fetch_assoc($fetch_barangay_result)){
                                                             <center>
                                                             <a href="temp_update_archive.php?id=<?= $row['id']; ?>" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Edit"><i
                                                             class="fa fa-edit"></i></a>
-                                                            <a href="temp_delete.php?id=<?= $row['id']; ?>" class="btn btn-link btn-danger" title="Remove" data-bs-toggle="tooltip"
+                                                            <a href="temp_delete.php?id=<?= $row['id']; ?>" class="btn btn-link btn-danger" title="Delete" data-bs-toggle="tooltip"
                                                                 onclick="return confirm('Are you sure you want to delete this profile?');"><i class="fa fa-times"></i></a>
                                                             </center>
                                                         </td>

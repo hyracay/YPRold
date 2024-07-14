@@ -215,7 +215,7 @@ while($row = mysqli_fetch_assoc($fetch_barangay_result)){
               <nav
                 class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
               </nav>
-              <h2><?php echo $barangay_code; ?>La Trinidad Youth Profiling System</h2>
+              <h2><?php echo $barangay_code; ?> La Trinidad Youth Profiling System</h2>
               <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                 <li class="nav-item topbar-user dropdown hidden-caret">
                   <a
@@ -295,18 +295,18 @@ while($row = mysqli_fetch_assoc($fetch_barangay_result)){
             <div class="section">
             <div class="table-responsive">
                 <form id="profilesForm" method="POST" action="delete_multiple_acc.php">
-                  <table class="table table-hover" id="add-row">
+                  <table class="display table table-striped table-hover dataTable" id="add-row">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th><center>Actions</center></th>
-                            <th><center>
-                                <button type="submit" style="border-radius:0"class="btn btn-danger btn-delete" onclick="return confirm('Are you sure you want to delete the selected profiles?');">
-                                    Delete Selected
-                                </center></button>
-                            </th>
+                          <th>
+                            <center><button type="d" class="btn btn-default" data-bs-toggle="tooltip" title="Delete Selected" onclick="return confirm('Are you sure you want to delete the selected profiles?');">
+                              <i style="font-size: 17pt" class="fa fa-trash-alt"></i>
+                            </button></center>
+                          </th>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Role</th>
+                          <th><center>Actions</center></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -320,14 +320,17 @@ while($row = mysqli_fetch_assoc($fetch_barangay_result)){
                             $fullName = $fname . ' ' . $lname;
                             ?>
                             <tr>
+                                <td><center><input type="checkbox" name="selectedProfiles[]" value="<?= $id; ?>"></center></td>
                                 <td><?= $fullName; ?></td>
                                 <td style="text-transform:lowercase"><?= $email; ?></td>
                                 <td><?= $role; ?></td>
                                 <td><center>
-                                    <a href="temp_update_acc.php?id=<?= $id; ?>" class="btn btn-primary">Update</a>
-                                    <a href="temp_delete_acc.php?id=<?= $id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this profile?');">Delete</a>
+                                  <a href="temp_update.php?id=<?= $row['id']; ?>" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Edit"><i
+                                      class="fa fa-edit"></i></a>
+                                  <a href="temp_delete.php?id=<?= $row['id']; ?>" class="btn btn-link btn-danger" title="Delete" data-bs-toggle="tooltip"
+                                    onclick="return confirm('Are you sure you want to delete this profile?');"><i
+                                      class="fa fa-times"></i></a>
                                 </center></td>
-                                <td><center><input type="checkbox" name="selectedProfiles[]" value="<?= $id; ?>"></center></td>
                             </tr>
                         <?php } ?>
                       </tbody>

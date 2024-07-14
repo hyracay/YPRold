@@ -377,7 +377,7 @@ while($row = mysqli_fetch_assoc($fetch_barangay_result)){
                                             <a href="?action=restore&id=' . $row['id'] . '" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Restore">
                                                 <i class="icon-action-undo"></i>
                                             </a>
-                                            <a href="?action=delete&id=' . $row['id'] . '" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Remove">
+                                            <a href="?action=delete&id=' . $row['id'] . '" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Delete Permanently">
                                                 <i class="fa fa-times"></i>
                                             </a>
                                             </div>
