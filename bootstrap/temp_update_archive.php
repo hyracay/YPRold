@@ -46,6 +46,7 @@ if (isset($_POST['update'])) {
     $province = htmlspecialchars($_POST['province']);
     $municipality = htmlspecialchars($_POST['municipality']);
     $barangay = htmlspecialchars($_POST['barangay']);
+    $sitio = htmlspecialchars($_POST['sitio']);
     $purok = htmlspecialchars($_POST['purok']);
     $sex = $_POST['sex']; // Ensure this is sanitized or validated
     $age = $_POST['age']; // Ensure this is sanitized or validated
@@ -74,6 +75,7 @@ if (isset($_POST['update'])) {
             province = ?,
             municipality = ?,
             barangay = ?,
+            sitio = ?,
             purok = ?,
             sex = ?,
             age = ?,
@@ -94,15 +96,15 @@ if (isset($_POST['update'])) {
         WHERE id = ?";
     
     $stmt = mysqli_prepare($conn, $update);
-    mysqli_stmt_bind_param($stmt, 'ssssssssssisississsssssssi', 
-        $lname, $fname, $mname, $suffix, $region, $province, $municipality, $barangay, $purok, $sex, $age,
+    mysqli_stmt_bind_param($stmt, 'sssssssssssisississsssssssi', 
+        $lname, $fname, $mname, $suffix, $region, $province, $municipality, $barangay, $sitio, $purok, $sex, $age,
         $email, $birth_month, $birth_day, $birth_year, $contactnumber, $civil_status, $youth_classification, $age_group,
         $work_status, $educational_background, $register_sk_voter, $voted_last_election, $attended_kk, $times_attended_kk, $id);
     
     $result = mysqli_stmt_execute($stmt);
 
     if ($result) {
-        header("location: archive.php");
+        header("location: temp_archive.php");
         exit();
     } else {
         echo "Error updating record: " . mysqli_error($conn);
@@ -207,7 +209,7 @@ function calculateAge() {
 
     <div class="content">
         <h3>Update Profile</h3>
-        <form method="POST" action="update_archive.php?id=<?php echo $id; ?>" onsubmit="return validateForm()">
+        <form method="POST" action="temp_update_archive.php?id=<?php echo $id; ?>" onsubmit="return validateForm()">
             <input type="hidden" name="id" value="<?php echo $profile['id']; ?>">
             <table>
                 <tr>
@@ -232,6 +234,7 @@ function calculateAge() {
                 </tr>
                 <tr>
                     <td>
+                        Sitio: <input type="text" name="sitio" placeholder="Sitio" value="<?php echo $profile['sitio']; ?>">
                         Barangay: <input type="text" name="barangay" placeholder="Barangay" value="<?php echo $profile['barangay']; ?>">
                         Purok: <input type="text" name="purok" placeholder="Purok" value="<?php echo $profile['purok']; ?>">
                     </td>
@@ -242,11 +245,7 @@ function calculateAge() {
                         <input type="radio" name="sex" value="Female" <?php if ($profile['sex'] === 'Female') echo 'checked'; ?>> Female
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        Age: <input type="text" name="age" id="age" value="<?php echo $profile['age']; ?>" readonly>
-                    </td>
-                </tr>
+                
                 <tr>
                     <td>Email: <input type="email" name="email" placeholder="Email" value="<?php echo $profile['email']; ?>"></td>
                 </tr>
@@ -266,6 +265,11 @@ function calculateAge() {
                         </select>
                         <input type="number" name="birth_day" placeholder="Day" min="1" max="31" value="<?php echo $profile['birth_day']; ?>" onchange="calculateAge()">
                         <input type="number" name="birth_year" placeholder="Year" min="1900" max="2100" value="<?php echo $profile['birth_year']; ?>" onchange="calculateAge()">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Age: <input type="text" name="age" id="age" value="<?php echo $profile['age']; ?>" readonly>
                     </td>
                 </tr>
                 <tr>
@@ -293,7 +297,7 @@ function calculateAge() {
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td hidden>
                         Age Group:
                         <input type="radio" name="age_group" value="Child Youth" <?php if ($profile['age_group'] === 'Child Youth') echo 'checked'; ?>> Child Youth
                         <input type="radio" name="age_group" value="Core Youth" <?php if ($profile['age_group'] === 'Core Youth') echo 'checked'; ?>> Core Youth

@@ -1,5 +1,18 @@
 <?php
+session_start();
 include("../conne.php");
+
+if (!isset($_SESSION['email'])) {
+  header("location: index.php");
+  exit();
+}
+if (isset($_SESSION['role'])) {
+  $role = $_SESSION['role'];
+} else {
+  echo "Role information not found. Please contact administrator.";
+  exit();
+}
+
 
 $searchQuery = "";
 $sql = "SELECT * FROM events";
@@ -55,6 +68,15 @@ if (isset($_GET['event_id'])) {
     } else {
         echo "Error deleting event: " . mysqli_error($conn);
     }
+}
+
+// for barangay code
+$barangay_code = "";
+$code = $_SESSION['code'];
+$fetch_barangay = "SELECT * FROM barangay WHERE CODE = '$_SESSION[code]'";
+$fetch_barangay_result = mysqli_query($conn, $fetch_barangay);
+while($row = mysqli_fetch_assoc($fetch_barangay_result)){
+  $barangay_code = $row['Brngy'];
 }
 ?>
 
@@ -122,15 +144,22 @@ if (isset($_GET['event_id'])) {
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-secondary">
-              <li class="nav-item">
+
+            <?php
+        // Display links based on user's role
+        if ($role == 'admin' || $role == 'user') {
+            echo '              
+            <li class="nav-item">
                 <a
                   href="temp_homepage.php"
                   aria-expanded="false"
                 >
-                  <i class="fas fa-chart-bar" active></i>
+                  <i class="fas fa-chart-bar"></i>
                   <p>Dashboard</p>
                 </a>
-              </li>
+              </li>';
+        } 
+        ?>
               <li class="nav-section">
                 <span class="sidebar-mini-icon">
                   <i class="fa fa-ellipsis-h"></i>
@@ -138,27 +167,36 @@ if (isset($_GET['event_id'])) {
                 <h4 class="text-section">Components</h4>
               </li>
               <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#tables">
-                  <i class="fas icon-people"></i>
-                  <p>Youth Profiles</p>
-                  <span class="caret"></span>
-                </a>
-                <div class="collapse" id="tables">
-                  <ul class="nav nav-collapse">
-                    <li>
-                      <a href="temp_profiles.php">
-                        <span class="sub-item">Create/View Profiles</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="temp_archive.php">
-                        <span class="sub-item">Archive</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </li>
+              <?php
+                      // Display links based on user's role
+        if ($role == 'user') {
+          echo ' <a data-bs-toggle="collapse" href="#tables">
+                <i class="fas icon-people"></i>
+                <p>Youth Profiles</p>
+                <span class="caret"></span>
+              </a>
+              <div class="collapse" id="tables">
+                <ul class="nav nav-collapse">
+                  <li>
+                    <a href="temp_profiles.php">
+                      <span class="sub-item">Create/View Profiles</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="temp_archive.php">
+                      <span class="sub-item">Archive</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>';
+      } 
+      ?>
               <li class="nav-item">
+               
+              <?php        
+               if ($role == 'admin' || $role == 'superadmin') {
+                echo '
                 <a data-bs-toggle="collapse" href="#forms">
                   <i class="fas icon-user"></i>
                   <p>User Accounts</p>
@@ -172,13 +210,15 @@ if (isset($_GET['event_id'])) {
                       </a>
                     </li>
                     <li>
-                      <a href="temp_createacc.html">
+                      <a href="temp_createacc.php">
                         <span class="sub-item">Create Account</span>
                       </a>
                     </li>
                   </ul>
                 </div>
-              </li>
+              </li>';
+               }
+               ?>
               <li class="nav-item">
                 <a href="calendar.php">
                   <i class="fas icon-calendar"></i>
@@ -186,10 +226,14 @@ if (isset($_GET['event_id'])) {
                 </a>
               </li>
               <li class="nav-item">
-                <a href="temp_recycle.php">
-                  <i class="fas icon-trash"></i>
-                  <p>Recycle Bin</p>
-                </a>
+              <?php
+            if ($role == 'user') {
+              echo '<a href="temp_recycle.php">
+                <i class="fas icon-trash"></i>
+                <p>Recycle Bin</p>
+              </a>';
+            }
+                    ?>
               </li>
             </ul>
           </div>
@@ -222,7 +266,7 @@ if (isset($_GET['event_id'])) {
               <nav
                 class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
               </nav>
-              <h2>La Trinidad Youth Profiling System</h2>
+              <h2><?php echo $barangay_code; ?> La Trinidad Youth Profiling System</h2>
               <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                 <li class="nav-item topbar-user dropdown hidden-caret">
                   <a
@@ -237,8 +281,7 @@ if (isset($_GET['event_id'])) {
                       />
                     </div>
                     <span class="profile-username">
-                      <span class="op-7">Hi,</span>
-                      <span class="fw-bold">username!</span>
+                    <span class="fw-bold"><?php echo $_SESSION['email']; ?></span>
                     </span>
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -253,15 +296,20 @@ if (isset($_GET['event_id'])) {
                             />
                           </div>
                           <div class="u-text">
-                            <h4>Hizrian</h4>
-                            <p class="text-muted">hello@example.com</p>
+                          <h4><?php echo $_SESSION['fname'] . " " . $_SESSION['lname']; ?></h4>
+                          <p class="text-muted"><?php echo $_SESSION['email']; ?></p>
                           </div>
                         </div>
                       </li>
                       <li>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Account Setting</a>
-                        <a class="dropdown-item" href="#">Logout</a>
+                        <?php
+                        if ( $role == 'superadmin') {
+                          echo
+                        '<a class="dropdown-item" href="account_setting.php">Account Setting</a>';
+                        }
+                        ?>
+                        <a class="dropdown-item" href="temp_logout.php">Logout</a>
                       </li>
                     </div>
                   </ul>

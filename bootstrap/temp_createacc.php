@@ -1,43 +1,73 @@
 <?php
+session_start();
 include("../conne.php");
+
+// Redirect to index.php if user is not logged in
+if (!isset($_SESSION['email'])) {
+    header("location: index.php");
+    exit();
+}
 
 $FirstName = $LastName = $email = $password = $cpassword = ""; 
 $show_alert = false; 
 $form_submitted = false; 
 
+if (isset($_SESSION['role'])) {
+  $role = $_SESSION['role'];
+} else {
+  echo "Role information not found. Please contact administrator.";
+  exit();
+}
+
+// Process form submission
 if (isset($_POST['submit'])) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $cpassword = $_POST['cpassword'];
-    $FirstName = $_POST['fname'];
-    $LastName = $_POST['lname'];
-    $role = $_POST['role']; 
+  $email = $_POST['email'];
+  $password = $_POST['password'];
+  $cpassword = $_POST['cpassword'];
+  $FirstName = $_POST['fname'];
+  $LastName = $_POST['lname'];
+  $role = $_POST['role'];
+  $code = $_POST['code'];
 
-    $check_query = "SELECT * FROM account WHERE email = '$email'";
-    $check_result = mysqli_query($conn, $check_query);
+  // Check if email already exists
+  $check_query = "SELECT * FROM account WHERE email = '$email'";
+  $check_result = mysqli_query($conn, $check_query);
 
-    if (mysqli_num_rows($check_result) > 0) {
-        echo "<script>alert('Email already exists');</script>";
-    } else if ($password != $cpassword) {
-        $show_alert = true;
-    } else {
-        $password = md5($password); 
-        $sql_insert = "INSERT INTO account(email, password, FirstName, LastName, role) 
-                       VALUES('$email','$password', '$FirstName', '$LastName', '$role')";
-        $result_insert = mysqli_query($conn, $sql_insert);
+  if (mysqli_num_rows($check_result) > 0) {
+      echo "<script>alert('Email already exists');</script>";
+  } else if ($password != $cpassword) {
+      $show_alert = true;
+  } else {
+      // Hash the password using password_hash
+      $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        if ($result_insert) {
-            $form_submitted = true;
-            echo "<script>
-                    alert('User Successfully Registered.');
-                    window.location.href = window.location.href; // Refresh the page
-                  </script>";
-        } else {
-            echo "<script>alert('Error registering user.');</script>";
-        }
-    }
+      // Insert new user into database
+      $sql_insert = "INSERT INTO account(email, password, FirstName, LastName, role, code) 
+                     VALUES('$email', '$hashed_password', '$FirstName', '$LastName', '$role', '$code')";
+      $result_insert = mysqli_query($conn, $sql_insert);
+
+      if ($result_insert) {
+          $form_submitted = true;
+          echo "<script>
+                  alert('User Successfully Registered.');
+                  window.location.href = 'temp_createacc.php'; // Redirect to registration form
+                </script>";
+      } else {
+          echo "<script>alert('Error registering user.');</script>";
+      }
+  }
+}
+
+// for barangay code
+$barangay_code = "";
+$code = $_SESSION['code'];
+$fetch_barangay = "SELECT * FROM barangay WHERE CODE = '$_SESSION[code]'";
+$fetch_barangay_result = mysqli_query($conn, $fetch_barangay);
+while($row = mysqli_fetch_assoc($fetch_barangay_result)){
+  $barangay_code = $row['Brngy'];
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -122,12 +152,23 @@ if (isset($_POST['submit'])) {
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-secondary">
-              <li class="nav-item">
-                <a href="temp_homepage.php" aria-expanded="false">
+
+ <?php
+        // Display links based on user's role
+        if ($role == 'admin' || $role == 'user') {
+            echo '              
+            <li class="nav-item">
+                <a
+                  href="temp_homepage.php"
+                  aria-expanded="false"
+                >
                   <i class="fas fa-chart-bar"></i>
                   <p>Dashboard</p>
                 </a>
-              </li>
+              </li>';
+        } 
+        ?>
+              
               <li class="nav-section">
                 <span class="sidebar-mini-icon">
                   <i class="fa fa-ellipsis-h"></i>
@@ -135,27 +176,35 @@ if (isset($_POST['submit'])) {
                 <h4 class="text-section">Components</h4>
               </li>
               <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#tables">
-                  <i class="fas icon-people"></i>
-                  <p>Youth Profiles</p>
-                  <span class="caret"></span>
-                </a>
-                <div class="collapse" id="tables">
-                  <ul class="nav nav-collapse">
-                    <li>
-                      <a href="temp_profiles.php">
-                        <span class="sub-item">Create/View Profiles</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="temp_archive.php">
-                        <span class="sub-item">Archive</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </li>
+              <?php
+                      // Display links based on user's role
+        if ($role == 'user') {
+          echo ' <a data-bs-toggle="collapse" href="#tables">
+                <i class="fas icon-people"></i>
+                <p>Youth Profiles</p>
+                <span class="caret"></span>
+              </a>
+              <div class="collapse" id="tables">
+                <ul class="nav nav-collapse">
+                  <li>
+                    <a href="temp_profiles.php">
+                      <span class="sub-item">Create/View Profiles</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="temp_archive.php">
+                      <span class="sub-item">Archive</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>';
+      } 
+      ?>
               <li class="nav-item">
+              <?php        
+               if ($role == 'admin' || $role == 'superadmin') {
+                echo '
                 <a data-bs-toggle="collapse" href="#forms">
                   <i class="fas icon-user"></i>
                   <p>User Accounts</p>
@@ -170,12 +219,16 @@ if (isset($_POST['submit'])) {
                     </li>
                     <li>
                       <a href="temp_createacc.php">
-                        <span class="sub-item" active>Create Account</span>
+                        <span class="sub-item">Create Account</span>
                       </a>
                     </li>
                   </ul>
                 </div>
-              </li>
+              </li>';
+               }
+               ?>
+
+
               <li class="nav-item">
                 <a href="calendar.php">
                   <i class="fas icon-calendar"></i>
@@ -183,10 +236,14 @@ if (isset($_POST['submit'])) {
                 </a>
               </li>
               <li class="nav-item">
-                <a href="temp_recycle.php">
-                  <i class="fas icon-trash"></i>
-                  <p>Recycle Bin</p>
-                </a>
+              <?php
+            if ($role == 'user') {
+              echo '<a href="temp_recycle.php">
+                <i class="fas icon-trash"></i>
+                <p>Recycle Bin</p>
+              </a>';
+            }
+                    ?>
               </li>
             </ul>
           </div>
@@ -216,7 +273,7 @@ if (isset($_POST['submit'])) {
             <div class="container-fluid">
               <nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
               </nav>
-              <h3>La Trinidad Youth Profiling System</h3>
+              <h3><?php echo $barangay_code; ?>La Trinidad Youth Profiling System</h3>
               <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                 <li class="nav-item topbar-user dropdown hidden-caret">
                   <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" aria-expanded="false">
@@ -224,8 +281,7 @@ if (isset($_POST['submit'])) {
                       <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
                     </div>
                     <span class="profile-username">
-                      <span class="op-7">Hi,</span>
-                      <span class="fw-bold">username!</span>
+                    <span class="fw-bold"><?php echo $_SESSION['email']; ?></span>
                     </span>
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -236,15 +292,20 @@ if (isset($_POST['submit'])) {
                             <img src="assets/img/profile.jpg" alt="image profile" class="avatar-img rounded" />
                           </div>
                           <div class="u-text">
-                            <h4>Hizrian</h4>
-                            <p class="text-muted">hello@example.com</p>
+                          <h4><?php echo $_SESSION['fname'] . " " . $_SESSION['lname']; ?></h4>
+                          <p class="text-muted"><?php echo $_SESSION['email']; ?></p>
                           </div>
                         </div>
                       </li>
                       <li>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Account Setting</a>
-                        <a class="dropdown-item" href="#">Logout</a>
+                        <?php
+                        if ( $role == 'superadmin') {
+                          echo
+                        '<a class="dropdown-item" href="account_setting.php">Account Setting</a>';
+                        }
+                        ?>
+                        <a class="dropdown-item" href="temp_logout.php">Logout</a>
                       </li>
                     </div>
                   </ul>
@@ -284,14 +345,38 @@ if (isset($_POST['submit'])) {
                   <i class="uil uil-lock"></i>
                   <i class="uil uil-eye-slash showHidePw"></i>
                 </div>
+              <?php if ($role == 'superadmin'): ?>
+              <input type="hidden" id="role" name="role" value="admin">
+              <?php elseif ($role == 'admin'): ?>
+              <input type="hidden" id="role" name="role" value="user">
+              <?php endif; ?>
+
+                <?php if ($role == 'admin'): ?>
                 <div class="form-group position-relative">
-                  <select id="role" name="role" class="form-control" required>
-                    <option value="" disabled selected>Select Role</option>
-                    <option value="employee" <?php if (isset($_POST['role']) && $_POST['role'] == 'employee') echo 'selected'; ?>>User</option>
-                    <option value="admin" <?php if (isset($_POST['role']) && $_POST['role'] == 'admin') echo 'selected'; ?>>Admin</option>
-                  </select>
-                  <i class="uil uil-user"></i>
+                <label for="code"></label>
+                <select id="code" name="code" class="form-control" required>
+                <option value="3">1</option>
+                <option value="3">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                </select>
                 </div>
+                <?php endif; ?>
+
+                        <i class="uil uil-user"></i>
+                    </div>
                 <div>
                   <input class="btn btn-primary" type="submit" name="submit" value="Register" style="float: right; margin-right: 10px">
                 </div>

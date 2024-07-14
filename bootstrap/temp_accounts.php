@@ -1,7 +1,26 @@
 <?php
+session_start();
 include("../conne.php");
-$excluded_email = 'administrator@ph';
 
+if (!isset($_SESSION['email'])) {
+  header("location: index.php");
+  exit();
+}
+if (isset($_SESSION['role'])) {
+  $role = $_SESSION['role'];
+} else {
+  echo "Role information not found. Please contact administrator.";
+  exit();
+}
+
+// for barangay code
+$barangay_code = "";
+$code = $_SESSION['code'];
+$fetch_barangay = "SELECT * FROM barangay WHERE CODE = '$_SESSION[code]'";
+$fetch_barangay_result = mysqli_query($conn, $fetch_barangay);
+while($row = mysqli_fetch_assoc($fetch_barangay_result)){
+  $barangay_code = $row['Brngy'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -75,7 +94,12 @@ $excluded_email = 'administrator@ph';
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-secondary">
-              <li class="nav-item">
+             
+            <?php
+        // Display links based on user's role
+        if ($role == 'admin' || $role == 'user') {
+            echo '              
+            <li class="nav-item">
                 <a
                   href="temp_homepage.php"
                   aria-expanded="false"
@@ -83,7 +107,9 @@ $excluded_email = 'administrator@ph';
                   <i class="fas fa-chart-bar"></i>
                   <p>Dashboard</p>
                 </a>
-              </li>
+              </li>';
+        } 
+        ?>
               <li class="nav-section">
                 <span class="sidebar-mini-icon">
                   <i class="fa fa-ellipsis-h"></i>
@@ -91,35 +117,44 @@ $excluded_email = 'administrator@ph';
                 <h4 class="text-section">Components</h4>
               </li>
               <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#tables">
-                  <i class="fas icon-people"></i>
-                  <p>Youth Profiles</p>
-                  <span class="caret"></span>
-                </a>
-                <div class="collapse" id="tables">
-                  <ul class="nav nav-collapse">
-                    <li>
-                      <a href="temp_profiles.php">
-                        <span class="sub-item">Create/View Profiles</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="temp_archive.php">
-                        <span class="sub-item">Archive</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </li>
+              <?php
+                      // Display links based on user's role
+        if ( $role == 'user') {
+          echo ' <a data-bs-toggle="collapse" href="#tables">
+                <i class="fas icon-people"></i>
+                <p>Youth Profiles</p>
+                <span class="caret"></span>
+              </a>
+              <div class="collapse" id="tables">
+                <ul class="nav nav-collapse">
+                  <li>
+                    <a href="temp_profiles.php">
+                      <span class="sub-item">Create/View Profiles</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="temp_archive.php">
+                      <span class="sub-item">Archive</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>';
+      } 
+      ?>
               <li class="nav-item">
+         
+              <?php        
+               if ($role == 'admin' || $role == 'superadmin') {
+                echo '
                 <a data-bs-toggle="collapse" href="#forms">
-                  <i class="fas icon-user" active></i>
+                  <i class="fas icon-user"></i>
                   <p>User Accounts</p>
                   <span class="caret"></span>
                 </a>
                 <div class="collapse" id="forms">
                   <ul class="nav nav-collapse">
-                    <li active>
+                    <li>
                       <a href="temp_accounts.php">
                         <span class="sub-item">View Accounts</span>
                       </a>
@@ -131,7 +166,9 @@ $excluded_email = 'administrator@ph';
                     </li>
                   </ul>
                 </div>
-              </li>
+              </li>';
+               }
+               ?>
               <li class="nav-item">
                 <a href="calendar.php">
                   <i class="fas icon-calendar"></i>
@@ -139,10 +176,14 @@ $excluded_email = 'administrator@ph';
                 </a>
               </li>
               <li class="nav-item">
-                <a href="temp_recycle.php">
-                  <i class="fas icon-trash"></i>
-                  <p>Recycle Bin</p>
-                </a>
+              <?php
+            if ($role == 'user') {
+              echo '<a href="temp_recycle.php">
+                <i class="fas icon-trash"></i>
+                <p>Recycle Bin</p>
+              </a>';
+            }
+                    ?>
               </li>
             </ul>
           </div>
@@ -174,7 +215,7 @@ $excluded_email = 'administrator@ph';
               <nav
                 class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
               </nav>
-              <h2>La Trinidad Youth Profiling System</h2>
+              <h2><?php echo $barangay_code; ?>La Trinidad Youth Profiling System</h2>
               <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                 <li class="nav-item topbar-user dropdown hidden-caret">
                   <a
@@ -189,8 +230,7 @@ $excluded_email = 'administrator@ph';
                       />
                     </div>
                     <span class="profile-username">
-                      <span class="op-7">Hi,</span>
-                      <span class="fw-bold">username!</span>
+                    <span class="fw-bold"><?php echo $_SESSION['email']; ?></span>
                     </span>
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -205,15 +245,21 @@ $excluded_email = 'administrator@ph';
                             />
                           </div>
                           <div class="u-text">
-                            <h4>Hizrian</h4>
-                            <p class="text-muted">hello@example.com</p>
+                            
+                            <h4><?php echo $_SESSION['fname'] . " " . $_SESSION['lname']; ?></h4>
+                            <p class="text-muted"><?php echo $_SESSION['email']; ?></p>
                           </div>
                         </div>
                       </li>
                       <li>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Account Setting</a>
-                        <a class="dropdown-item" href="#">Logout</a>
+                        <?php
+                        if ( $role == 'superadmin') {
+                          echo
+                        '<a class="dropdown-item" href="account_setting.php">Account Setting</a>';
+                        }
+                        ?>
+                        <a class="dropdown-item" href="temp_logout.php">Logout</a>
                       </li>
                     </div>
                   </ul>
@@ -227,10 +273,25 @@ $excluded_email = 'administrator@ph';
         <div class="content">
         <h1>User Accounts</h1>
         <?php
-        $sql_fetch = "SELECT * FROM account WHERE email != '$excluded_email' AND role != 'admin'";
-        $sql_result = mysqli_query($conn, $sql_fetch);
-        if ($sql_result && mysqli_num_rows($sql_result) > 0) {
-            ?>
+        
+        $current_user_email = $_SESSION['email'];
+        $role = $_SESSION['role'];
+
+        // Define the SQL query based on the role
+        if ($role === 'superadmin') {
+        // Superadmin can only see admin accounts
+        $sql_fetch = "SELECT * FROM account WHERE role = 'admin' AND email != '$current_user_email'";
+        } elseif ($role === 'admin') {
+        // Admin can only see user accounts
+        $sql_fetch = "SELECT * FROM account WHERE role = 'user' AND email != '$current_user_email'";
+        } else {
+        echo "Unauthorized access.";
+        exit();
+        }
+
+    $sql_result = mysqli_query($conn, $sql_fetch);
+    if ($sql_result && mysqli_num_rows($sql_result) > 0) {
+        ?>
             <div class="section">
             <div class="table-responsive">
                 <form id="profilesForm" method="POST" action="delete_multiple_acc.php">

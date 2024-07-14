@@ -40,6 +40,37 @@ if (mysqli_query($conn, $move_back_profiles)) {
 // Fetch profiles to display
 $fetch_profiles = "SELECT id, fname, mname, lname, suffix, email FROM profiles_archive WHERE age > 30";
 $result = mysqli_query($conn, $fetch_profiles);
+
+
+if (isset($_GET['delete_id'])) {
+    $id = $_GET['delete_id'];
+    
+    $sql_copy = "INSERT INTO delete_profile (id, lname, fname, mname, suffix, region, province, municipality, barangay, purok, sex, age, email, birth_month, birth_day, birth_year, contactnumber, civil_status, youth_classification, age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk, date_created)
+                 SELECT id, lname, fname, mname, suffix, region, province, municipality, barangay, purok, sex, age, email, birth_month, birth_day, birth_year, contactnumber, civil_status, youth_classification, age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk, date_created
+                 FROM profiles_archive
+                 WHERE id = $id";
+    
+    if (mysqli_query($conn, $sql_copy)) {
+        // Delete the data from profiles_archive table
+        $sql_delete = "DELETE FROM profiles_archive WHERE id=$id";
+        if (mysqli_query($conn, $sql_delete)) {
+            header("location: temp_archive.php");
+            exit;
+        } else {
+            echo "Error deleting record: " . mysqli_error($conn);
+        }
+    } else {
+        echo "Error copying record: " . mysqli_error($conn);
+    }
+}
+
+$barangay_code = "";
+$code = $_SESSION['code'];
+$fetch_barangay = "SELECT * FROM barangay WHERE CODE = '$_SESSION[code]'";
+$fetch_barangay_result = mysqli_query($conn, $fetch_barangay);
+while($row = mysqli_fetch_assoc($fetch_barangay_result)){
+  $barangay_code = $row['Brngy'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -127,26 +158,32 @@ $result = mysqli_query($conn, $fetch_profiles);
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#forms">
-                            <i class="fas icon-user"></i>
-                            <p>User Accounts</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div class="collapse" id="forms">
-                            <ul class="nav nav-collapse">
-                                <li>
-                                    <a href="temp_accounts.php">
-                                        <span class="sub-item">View Accounts</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="temp_createacc.php">
-                                        <span class="sub-item">Create Account</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                       
+              <?php        
+               if ($role == 'admin' || $role == 'superadmin') {
+                echo '
+                <a data-bs-toggle="collapse" href="#forms">
+                  <i class="fas icon-user"></i>
+                  <p>User Accounts</p>
+                  <span class="caret"></span>
+                </a>
+                <div class="collapse" id="forms">
+                  <ul class="nav nav-collapse">
+                    <li>
+                      <a href="temp_accounts.php">
+                        <span class="sub-item">View Accounts</span>
+                      </a>
                     </li>
+                    <li>
+                      <a href="temp_createacc.php">
+                        <span class="sub-item">Create Account</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>';
+               }
+               ?>
                     <li class="nav-item">
                         <a href="calendar.php">
                             <i class="fas icon-calendar"></i>
@@ -186,7 +223,7 @@ $result = mysqli_query($conn, $fetch_profiles);
             <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
                 <div class="container-fluid">
                     <nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex"></nav>
-                    <h3>La Trinidad Youth Profiling System</h3>
+                    <h3><?php echo $barangay_code; ?> La Trinidad Youth Profiling System</h3>
                     <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                         <li class="nav-item topbar-user dropdown hidden-caret">
                             <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" aria-expanded="false">
@@ -194,8 +231,7 @@ $result = mysqli_query($conn, $fetch_profiles);
                                     <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle"/>
                                 </div>
                                 <span class="profile-username">
-                                    <span class="op-7">Hi,</span>
-                                    <span class="fw-bold"><?php echo $_SESSION['fname'] . " " . $_SESSION['lname']; ?></span>
+                                <span class="fw-bold"><?php echo $_SESSION['email']; ?></span>
                                 </span>
                             </a>
                             <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -211,11 +247,16 @@ $result = mysqli_query($conn, $fetch_profiles);
                                             </div>
                                         </div>
                                     </li>
-                                    <li>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Account Setting</a>
-                                        <a class="dropdown-item" href="logout.php">Logout</a>
-                                    </li>
+                                          <li>
+                        <div class="dropdown-divider"></div>
+                        <?php
+                        if ( $role == 'superadmin') {
+                          echo
+                        '<a class="dropdown-item" href="#">Account Setting</a>';
+                        }
+                        ?>
+                        <a class="dropdown-item" href="temp_logout.php">Logout</a>
+                      </li>
                                 </div>
                             </ul>
                         </li>
@@ -257,37 +298,202 @@ $result = mysqli_query($conn, $fetch_profiles);
                                 <div class="col-sm-12">
                                     <table id="basic-datatables" class="display table table-striped table-hover dataTable" role="grid" aria-describedby="basic-datatables_info">
                                         <thead>
+                                        <?php
+                                            $recordsPerPage = 20;
+                                            $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+                                            $offset = ($currentPage - 1) * $recordsPerPage;
+
+                                            if (isset($_GET['search'])) {
+                                                $searchQuery = $_GET['search'];
+                                                $sql = "SELECT * FROM profiles_archive 
+                                                        WHERE fname LIKE '%$searchQuery%' OR lname LIKE '%$searchQuery%' OR mname LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' 
+                                                        ORDER BY id DESC 
+                                                        LIMIT $recordsPerPage OFFSET $offset";
+                                            } else {
+                                                $sql = "SELECT * FROM profiles_archive 
+                                                        ORDER BY id DESC 
+                                                        LIMIT $recordsPerPage OFFSET $offset";
+                                            }
+
+                                            $result = mysqli_query($conn, $sql);
+
+                                            $totalCountSql = "SELECT COUNT(*) AS total FROM profiles_archive";
+                                            $totalCountResult = mysqli_query($conn, $totalCountSql);
+                                            $totalCountRow = mysqli_fetch_assoc($totalCountResult);
+                                            $totalCount = $totalCountRow['total'];
+                                            $totalPages = ceil($totalCount / $recordsPerPage);
+?>
                                             <tr role="row">
-                                                <th class="sorting_asc" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 365.516px;">Name</th>
-                                                <th class="sorting" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 541.766px;">Email</th>
-                                                <th class="sorting" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 287.266px;">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                                    <tr>
-                                        <td><?php echo $row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname'] . ' ' . $row['suffix']; ?></td>
-                                        <td><?php echo $row['email']; ?></td>
-                                        <td>
-                                            <div class="form-button-action">
-                                            <form action="temp_update_archive.php" method="post" style="display: inline;">
-                                                    <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                                                    <button type="submit" name="update" class="btn btn-link btn-success">
-                                                    <i class="fa fa-edit"></i>
-                                                    </button>
-                                                </form>
-                                                <form action="temp_delete_archive.php" method="post" style="display: inline;">
-                                                    <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                                                    <button type="submit" name="delete" class="btn btn-link btn-danger">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
-                                                </form>
-                                                
+                                            <form id="profilesForm" method="POST" action="temp_delete_multiple_archive.php">
+                                            <table id="basic-datatables" class="display table table-striped table-hover dataTable" role="grid" aria-describedby="basic-datatables_info">
+                                                <thead>
+                                                <tr role="row">
+                                                    <th tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" style="width: 30.516px;">
+                                                    <center><button type="d" class="btn btn-default" onclick="return confirm('Are you sure you want to delete the selected profiles?');">
+                                                        <i style="font-size: 17pt" class="fa fa-trash-alt"></i>
+                                                    </button></center>
+                                                    </th>
+                                                    <th class="sorting_asc" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 365.516px;">Name</th>
+                                                    <th class="sorting" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 341.766px;">Email</th>
+                                                    <th class="sorting" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 200.266px;"><center>Actions</center></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                             <!-- Modal structure -->
+                                            <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h6 class="modal-title fw-bold" id="modal-title-default">User Details</h6>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p id="modal-body-content">User details go here...</p>
+                                                </div>
+                                                </div>
                                             </div>
-                                        </td>
-                                    </tr>
-                                <?php endwhile; ?>
-                            </tbody>
+                                            </div>
+
+                                            <!-- PHP and table code from above -->
+                                            <div class="section">
+                                            <form id="profilesForm" method="POST" action="temp_archive.php">
+                                                <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+                                                    <tr>
+                                                        <td>
+                                                            <center>
+                                                            <input type="checkbox" name="selectedProfiles[]" value="<?= $row['id']; ?>">
+                                                            </center>
+                                                        </td>
+                                                        <td>
+                                                        <a href="#" class="profileNameLink" data-id="<?= $row['id']; ?>"
+                                                        data-fullname="<?= $row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']; ?>"
+                                                        data-address="<?= $row['region'] . ' ' . $row['province'] . ' ' . $row['municipality'] . ' ' . $row['barangay'] . ' ' . $row['sitio'] . ' ' . $row['purok']; ?>"
+                                                        data-sex="<?= $row['sex']; ?>" data-age="<?= $row['age']; ?>"
+                                                        data-email="<?= $row['email']; ?>"
+                                                        data-birthday="<?= $row['birth_month'] . '/' . $row['birth_day'] . '/' . $row['birth_year']; ?>"
+                                                        data-youth_with_needs="<?= $row['youth_with_needs']; ?>"
+                                                        data-contact_number="<?= $row['contactnumber']; ?>"
+                                                        data-civil_status="<?= $row['civil_status']; ?>"
+                                                        data-age_group="<?= $row['age_group']; ?>"
+                                                        data-educational_background="<?= $row['educational_background']; ?>"
+                                                        data-youth_classification="<?= $row['youth_classification']; ?>"
+                                                        data-work_status="<?= $row['work_status']; ?>"
+                                                        data-national_voter="<?= $row['national_voter']; ?>"
+                                                        data-register_sk_voter="<?= $row['register_sk_voter']; ?>"
+                                                        data-voted_last_election="<?= $row['voted_last_election']; ?>"
+                                                        data-times_attended="<?= $row['times_attended_kk']; ?>"
+                                                        data-national_voter="<?= $row['national_voter']; ?>"
+                                                        data-reason="<?= $row['no_why']; ?>" data-bs-toggle="modal"
+                                                        data-bs-target="#modal-default"><?= $row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']; ?></a>
+                                                        </td>
+                                                        <td>
+                                                            <p style="text-transform:lowercase"><?= $row['email']; ?></p>
+                                                        </td>
+                                                        
+                                                        <td>
+                                                            <center>
+                                                            <a href="temp_update_archive.php?id=<?= $row['id']; ?>" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Edit"><i
+                                                            class="fa fa-edit"></i></a>
+                                                            <a href="temp_delete.php?id=<?= $row['id']; ?>" class="btn btn-link btn-danger" title="Remove" data-bs-toggle="tooltip"
+                                                                onclick="return confirm('Are you sure you want to delete this profile?');"><i class="fa fa-times"></i></a>
+                                                            </center>
+                                                        </td>
+                                                        </tr>
+                                                <?php } ?>
+                                            </form>
+                                            </div>
+
+                                            <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                document.querySelectorAll('.profileNameLink').forEach(function (link) {
+                                                link.addEventListener('click', function () {
+                                                    var fullName = this.getAttribute('data-fullname');
+                                                    var address = this.getAttribute('data-address');
+                                                    var sex = this.getAttribute('data-sex');
+                                                    var age = this.getAttribute('data-age');
+                                                    var birthday = this.getAttribute('data-birthday');
+                                                    var youthWithNeeds = this.getAttribute('data-youth_with_needs');
+                                                    var email = this.getAttribute('data-email');
+                                                    var contactNumber = this.getAttribute('data-contact_number');
+                                                    var civilStatus = this.getAttribute('data-civil_status');
+                                                    // var ageGroup = this.getAttribute('data-age_group');
+                                                    var educationalBackground = this.getAttribute('data-educational_background');
+                                                    var youthClassification = this.getAttribute('data-youth_classification');
+                                                    var workStatus = this.getAttribute('data-work_status');
+                                                    var nationalVoter = this.getAttribute('data-national_voter');
+                                                    var registeredSkVoter = this.getAttribute('data-register_sk_voter');
+                                                    var votedLastElection = this.getAttribute('data-voted_last_election');
+                                                    var timesAttended = this.getAttribute('data-times_attended');
+                                                    var reason = this.getAttribute('data-reason');
+
+                                                    var bday = new Date(birthday);
+                                                    var today = new Date();
+                                                    // Calculate the difference in years
+                                                    var age = today.getFullYear() - bday.getFullYear();
+
+                                                    // Adjust for partial years
+                                                    var monthDiff = today.getMonth() - bday.getMonth();
+                                                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < bday.getDate())) {
+                                                    age--;
+                                                    }
+
+                                                    var ageGroup = '';
+                                                    // Set age group based on age
+                                                    if (age >= 15 && age <= 17) {
+                                                    ageGroup = 'Child Youth';
+                                                    } else if (age >= 18 && age <= 24) {
+                                                    ageGroup = 'Core Youth';
+                                                    } else if (age >= 25 && age <= 30) {
+                                                    ageGroup = 'Young Adult';
+                                                    }
+
+                                                    var modalContent = `
+                                                        <p><strong>Full Name:</strong> ${fullName}</p>
+                                                        <p><strong>Address:</strong> ${address}</p>
+                                                        <p><strong>Sex:</strong> ${sex}</p>
+                                                        <p><strong>Age:</strong> ${age}</p>
+                                                        <p><strong>Birthday:</strong> ${birthday}</p>
+                                                        <p><strong>Youth with Needs:</strong> ${youthWithNeeds}</p>
+                                                        <p><strong>Email:</strong> ${email}</p>
+                                                        <p><strong>Contact Number:</strong> ${contactNumber}</p>
+                                                        <p><strong>Civil Status:</strong> ${civilStatus}</p>
+                                                        <p><strong>Age Group:</strong> ${ageGroup}</p>
+                                                        <p><strong>Educational Background:</strong> ${educationalBackground}</p>
+                                                        <p><strong>Youth Classification:</strong> ${youthClassification}</p>
+                                                        <p><strong>Work Status:</strong> ${workStatus}</p>
+                                                        <p><strong>National Voter:</strong> ${nationalVoter}</p>
+                                                        <p><strong>Registered SK Voter:</strong> ${registeredSkVoter}</p>
+                                                        <p><strong>Voted Last Election:</strong> ${votedLastElection}</p>
+                                                        <p><strong>Times Attended:</strong> ${timesAttended}</p>
+                                                        <p><strong>If no, why?</strong> ${reason}</p>
+                                                    `;
+
+                                                    document.getElementById('modal-body-content').innerHTML = modalContent;
+                                                });
+                                                });
+                                            });
+                                            </script>
+                                            <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                                                <tr>
+                                                    <td class="sorting_1">
+                                                    <center>
+                                                        <input type="checkbox" name="selectedProfiles[]" value="271">
+                                                    </center>
+                                                    </td>
+                                                    <td><?php echo $row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname'] . ' ' . $row['suffix']; ?></td>
+                                                    <td><?php echo $row['email']; ?></td>
+                                                    <td>
+                                                        <div class="form-button-action">
+                                                            <div class="form-button-action">
+                                                                <a href="temp_update_archive.php?id=<?php echo $row['id'];?>" class="btn btn-link btn-success"><i class="fa fa-edit"></i></a>
+                                                                <a href="temp_archive.php?delete_id=<?php echo $row['id'];?>" class="btn btn-link btn-danger"><i class="fa fa-times"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php endwhile; ?>
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -329,8 +535,6 @@ $result = mysqli_query($conn, $fetch_profiles);
 </body>
 </html>
 
-
-
 <?php
 mysqli_close($conn);
 ?>
@@ -345,6 +549,7 @@ if (isset($_POST['submit'])) {
     $province = $_POST['province'];
     $municipality = $_POST['municipality'];
     $barangay = $_POST['barangay'];
+    $sitio = $_POST['sitio'];
     $purok = $_POST['purok'];
     $sex = $_POST['sex'];
     $age = $_POST['age'];
@@ -361,12 +566,12 @@ if (isset($_POST['submit'])) {
     $attended_kk = $_POST['attended_kk'];
     $times_attended_kk = $_POST['times_attended_kk'];
 
-    $insert = "INSERT INTO profiles 
-            (lname, fname, mname, suffix, region, province, municipality, barangay, purok,
+    $insert = "INSERT INTO profiles
+            (lname, fname, mname, suffix, region, province, municipality, barangay, sitio, purok,
              sex, age, email, birth_date, contactnumber, civil_status, youth_classification,
              age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk)
             VALUES 
-            ('$lname', '$fname', '$mname', '$suffix', '$region', '$province', '$municipality', '$barangay', '$purok',
+            ('$lname', '$fname', '$mname', '$suffix', '$region', '$province', '$municipality', '$barangay', '$sitio', '$purok',
              '$sex', '$age', '$email', '$birth_date', '$contactnumber', '$civil_status', '$youth_classification',
              '$age_group', '$work_status', '$educational_background', '$register_sk_voter', '$voted_last_election', '$attended_kk', '$times_attended_kk')";
 
@@ -375,7 +580,5 @@ if (isset($_POST['submit'])) {
     if (!$result) {
         echo "Error: " . $insert . "<br>" . mysqli_error($conn);
     }
-}
-                                    
-                                    
+}                               
 ?> 

@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['selectedProfiles'])) {
         $id = intval($id);
 
         // Retrieve profile information before deletion
-        $select_sql = "SELECT * FROM profiles WHERE id = '$id'";
+        $select_sql = "SELECT * FROM profiles_archive WHERE id = '$id'";
         $result = mysqli_query($conn, $select_sql);
         $profile_data = mysqli_fetch_assoc($result);
 
@@ -50,19 +50,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['selectedProfiles'])) {
             $insert_sql = "INSERT INTO delete_profile (lname, fname, mname, suffix, region, province, municipality, barangay, purok,
                 sex, age, email, birth_month, birth_day, birth_year, contactnumber, civil_status, youth_classification,
                 age_group, work_status, educational_background, register_sk_voter, voted_last_election, attended_kk, times_attended_kk, date_created)
-                VALUES ('$lname', '$fname', '$mname', '$suffix', '$region', '$province', '$municipality', '$barangay', '$purok',
+                VALUES 
+                ('$lname', '$fname', '$mname', '$suffix', '$region', '$province', '$municipality', '$barangay', '$purok',
                 '$sex', '$age', '$email', '$birth_month', '$birth_day', '$birth_year', '$contactnumber', '$civil_status', '$youth_classification',
                 '$age_group', '$work_status', '$educational_background', '$register_sk_voter', '$voted_last_election', '$attended_kk', '$times_attended_kk', '$date_created')";
 
             if (mysqli_query($conn, $insert_sql)) {
-                // Delete profile from profiles table
-                $delete_sql = "DELETE FROM profiles WHERE id = '$id'";
-                mysqli_query($conn, $delete_sql);
+                // Proceed with deletion from profiles table
+                $delete_sql = "DELETE FROM profiles_archive WHERE id = '$id'";
+                if (!mysqli_query($conn, $delete_sql)) {
+                    echo "Error deleting profile: " . mysqli_error($conn);
+                }
+                
+            } else {
+                echo "Error storing profile information before deletion: " . mysqli_error($conn);
             }
         }
     }
 }
 
-// Redirect back to profiles page
-header("Location: temp_profiles.php");
+header("location: temp_archive.php");
 exit();
+?>

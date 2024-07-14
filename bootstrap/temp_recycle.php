@@ -1,5 +1,19 @@
 <?php
+session_start();
 include("../conne.php");
+
+// Ensure session email is set, otherwise redirect
+if (!isset($_SESSION['email'])) {
+  header("location: bootstrap/temp_index.php");
+  exit(); // Ensure that no further code is executed after the redirection
+}
+if (isset($_SESSION['role'])) {
+  $role = $_SESSION['role'];
+} else {
+  // Handle case where role is not set (e.g., redirect or error message)
+  echo "Role information not found. Please contact administrator.";
+  exit();
+}
 
 // Function to delete a profile permanently
 function deleteProfile($conn, $id) {
@@ -97,6 +111,14 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
 $select_sql = "SELECT * FROM delete_profile";
 $result = mysqli_query($conn, $select_sql);
 
+// for barangay code
+$barangay_code = "";
+$code = $_SESSION['code'];
+$fetch_barangay = "SELECT * FROM barangay WHERE CODE = '$_SESSION[code]'";
+$fetch_barangay_result = mysqli_query($conn, $fetch_barangay);
+while($row = mysqli_fetch_assoc($fetch_barangay_result)){
+  $barangay_code = $row['Brngy'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -163,7 +185,11 @@ $result = mysqli_query($conn, $select_sql);
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-secondary">
-              <li class="nav-item">
+            <?php
+        // Display links based on user's role
+        if ($role == 'admin' || $role == 'user') {
+            echo '              
+            <li class="nav-item">
                 <a
                   href="temp_homepage.php"
                   aria-expanded="false"
@@ -171,7 +197,10 @@ $result = mysqli_query($conn, $select_sql);
                   <i class="fas fa-chart-bar"></i>
                   <p>Dashboard</p>
                 </a>
-              </li>
+              </li>';
+        } 
+        ?>
+
               <li class="nav-section">
                 <span class="sidebar-mini-icon">
                   <i class="fa fa-ellipsis-h"></i>
@@ -179,27 +208,35 @@ $result = mysqli_query($conn, $select_sql);
                 <h4 class="text-section">Components</h4>
               </li>
               <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#tables">
-                  <i class="fas icon-people"></i>
-                  <p>Youth Profiles</p>
-                  <span class="caret"></span>
-                </a>
-                <div class="collapse" id="tables">
-                  <ul class="nav nav-collapse">
-                    <li>
-                      <a href="temp_profiles.php">
-                        <span class="sub-item" active>Create/View Profiles</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="temp_archive.php">
-                        <span class="sub-item">Archive</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </li>
+              <?php
+                      // Display links based on user's role
+        if ($role == 'admin' || $role == 'user') {
+          echo ' <a data-bs-toggle="collapse" href="#tables">
+                <i class="fas icon-people"></i>
+                <p>Youth Profiles</p>
+                <span class="caret"></span>
+              </a>
+              <div class="collapse" id="tables">
+                <ul class="nav nav-collapse">
+                  <li>
+                    <a href="temp_profiles.php">
+                      <span class="sub-item">Create/View Profiles</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="temp_archive.php">
+                      <span class="sub-item">Archive</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>';
+      } 
+      ?>
               <li class="nav-item">
+              <?php        
+               if ($role == 'admin' || $role == 'superadmin') {
+                echo '
                 <a data-bs-toggle="collapse" href="#forms">
                   <i class="fas icon-user"></i>
                   <p>User Accounts</p>
@@ -219,7 +256,10 @@ $result = mysqli_query($conn, $select_sql);
                     </li>
                   </ul>
                 </div>
-              </li>
+              </li>';
+               }
+               ?>
+
               <li class="nav-item">
                 <a href="calendar.php">
                   <i class="fas icon-calendar"></i>
@@ -271,7 +311,7 @@ $result = mysqli_query($conn, $select_sql);
               <nav
                 class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
               </nav>
-              <h3>La Trinidad Youth Profiling System</h3>
+              <h3><?php echo $barangay_code; ?> La Trinidad Youth Profiling System</h3>
               <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                 <li class="nav-item topbar-user dropdown hidden-caret">
                   <a
@@ -279,39 +319,30 @@ $result = mysqli_query($conn, $select_sql);
                     data-bs-toggle="dropdown"
                     aria-expanded="false">
                     <div class="avatar-sm">
-                      <img
-                        src="assets/img/profile.jpg"
-                        alt="..."
-                        class="avatar-img rounded-circle"
-                      />
+                  <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
+                </div>
+                <span class="profile-username">
+                  <span class="fw-bold"><?php echo $_SESSION['email']; ?></span>
+                </span>
+              </a>
+              <ul class="dropdown-menu dropdown-user animated fadeIn">
+                <div class="dropdown-user-scroll scrollbar-outer">
+                  <li>
+                    <div class="user-box">
+                      <div class="avatar-lg">
+                        <img src="assets/img/profile.jpg" alt="image profile" class="avatar-img rounded" />
+                      </div>
+                      <div class="u-text">
+                        <h4><?php echo $_SESSION['fname'] . " " . $_SESSION['lname']; ?></h4>
+                        <p class="text-muted"><?php echo $_SESSION['email']; ?></p>
+                      </div>
                     </div>
-                    <span class="profile-username">
-                      <span class="op-7">Hi,</span>
-                      <span class="fw-bold">username!</span>
-                    </span>
-                  </a>
-                  <ul class="dropdown-menu dropdown-user animated fadeIn">
-                    <div class="dropdown-user-scroll scrollbar-outer">
-                      <li>
-                        <div class="user-box">
-                          <div class="avatar-lg">
-                            <img
-                              src="assets/img/profile.jpg"
-                              alt="image profile"
-                              class="avatar-img rounded"
-                            />
-                          </div>
-                          <div class="u-text">
-                            <h4>Hizrian</h4>
-                            <p class="text-muted">hello@example.com</p>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Account Setting</a>
-                        <a class="dropdown-item" href="#">Logout</a>
-                      </li>
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                    <?php if ($role == 'superadmin') { echo '<a class="dropdown-item" href="#">Account Setting</a>'; } ?>
+                    <a class="dropdown-item" href="temp_logout.php">Logout</a>
+                  </li>
                     </div>
                   </ul>
                 </li>
@@ -332,9 +363,9 @@ $result = mysqli_query($conn, $select_sql);
                             <div id="basic-datatables_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4"><div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="basic-datatables_length"><label>Show <select name="basic-datatables_length" aria-controls="basic-datatables" class="form-control form-control-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div></div><div class="col-sm-12 col-md-6"><div id="basic-datatables_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="basic-datatables"></label></div></div></div><div class="row"><div class="col-sm-12"><table id="basic-datatables" class="display table table-striped table-hover dataTable" role="grid" aria-describedby="basic-datatables_info">
                                 <thead>
                                     <tr role="row"> 
-                                        <th class="sorting_asc" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 365.516px;">Name</th>
-                                        <th class="sorting" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 541.766px;">Age</th>
-                                        <th class="sorting" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 287.266px;">Action</th>
+                                        <th class="sorting_asc" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 541.766px;">Name</th>
+                                        <th class="sorting" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 265.516px;">Age</th>
+                                        <th class="sorting" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 200.266px;"><center>Actions</center></th>
                                 </thead>
                                 <tbody>
                                 <?php
@@ -342,7 +373,7 @@ $result = mysqli_query($conn, $select_sql);
                                     echo "<tr>";
                                     echo "<td>" . $row['lname'] . ", " . $row['fname'] . " " . $row['mname'] . " " . $row['suffix'] . "</td>";
                                     echo "<td>" . $row['age'] . "</td>";
-                                    echo '<td><div class="form-button-action">
+                                    echo '<td><center><div class="form-button-action">
                                             <a href="?action=restore&id=' . $row['id'] . '" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Restore">
                                                 <i class="icon-action-undo"></i>
                                             </a>
@@ -350,7 +381,7 @@ $result = mysqli_query($conn, $select_sql);
                                                 <i class="fa fa-times"></i>
                                             </a>
                                             </div>
-                                        </td>';
+                                        </center></td>';
                                     echo "</tr>";
                                 }
                                 ?>
